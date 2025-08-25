@@ -43,7 +43,7 @@ export default function ServiceHero({
   ScheduleIcon = DefaultScheduleIcon,
   // new props:
   extended,
-  initialExtended = true,
+  initialExtended = false,
   onToggle,
 }: Props) {
   const [internalExtended, setInternalExtended] = useState<boolean>(!!initialExtended);

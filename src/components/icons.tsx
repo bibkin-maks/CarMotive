@@ -86,14 +86,16 @@ export function IconSettings(props: React.SVGProps<SVGSVGElement>) {
 }
 
 
-export const IconBuilding: React.FC = () => (
+export function IconBuilding(props: React.SVGProps<SVGSVGElement>) {
+  return(
   <Image
     src="/image/Vector2.svg"
     alt="Building icon"
     width={80}
     height={64}
   />
-);
+  )
+};
 
 export const Check: React.FC<SafeSvgProps> = (props) => {
   return (

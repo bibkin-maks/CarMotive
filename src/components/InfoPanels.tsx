@@ -32,14 +32,15 @@ export default function InfoPanels() {
               key={i}
               className={`relative overflow-hidden group aspect-[3/4] md:aspect-auto ${i < 2 ? 'md:border-r md:border-blue-900/30' : ''}`}
               style={{
-                height: "clamp(300px, 50vh, 600px)",
+                height: "837px",
+                marginRight: "10px"
               }}
             >
               <Image
                 src={panel.image}
                 alt={panel.title}
                 fill
-                sizes="(max-width: 768px) 100vw, 33vw"
+                sizes="(min-width: 768px) 100vw, 33vw"
                 className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
               />
               
@@ -51,8 +52,18 @@ export default function InfoPanels() {
               />
               
               <div className="absolute inset-0 flex flex-col items-center justify-end text-center text-white px-4 z-10 pb-10 md:pb-16">
-                {panel.icon}
-                <h3 className="mt-6 md:mt-8 text-2xl md:text-3xl lg:text-4xl font-bold leading-tight font-bebas">
+                <div style={{position: 'absolute',marginBottom: '250px',}}>{panel.icon}</div>
+                
+                <h3 className="mt-6 md:mt-8 text-2xl md:text-3xl lg:text-4xl font-bold leading-tight"
+                   style={{
+                      width: '200px',
+                      fontSize: '70px',
+                      
+                      fontFamily: "'Bebas Neue', system-ui, sans-serif",
+
+         
+                    }}
+                >
                   {panel.title}
                 </h3>
               </div>

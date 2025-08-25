@@ -20,7 +20,7 @@ import Header from "@/components/header";
 import InfoPanels from "@/components/InfoPanels";
 import ServiceHero from "@/components/serviceBlock_small";
 import FaqSection from "@/components/faq";
-
+import NewHeader from "@/components/new_header";
 
 export default function Home() {
    const cards = [
@@ -96,6 +96,22 @@ export default function Home() {
           }
           heading="Logbook Servicing"
         />
+
+         <ServiceHero 
+          imageSrc="/image/services/Vehicle Inspections.png" 
+          description="We think that pre-trip inspections are vital if you're planning a long road trip or a camping trip, simply because we think it's a lot better to find a problem with your vehicle in a mechanic's workshop than to find out about it in the middle of nowhere." 
+          heading="Vehicle Inspections"
+        />
+         <ServiceHero 
+          imageSrc="/image/services/Vehicle Inspections.png" 
+          description="We think that pre-trip inspections are vital if you're planning a long road trip or a camping trip, simply because we think it's a lot better to find a problem with your vehicle in a mechanic's workshop than to find out about it in the middle of nowhere." 
+          heading="Vehicle Inspections"
+        />
+         <ServiceHero 
+          imageSrc="/image/services/Vehicle Inspections.png" 
+          description="We think that pre-trip inspections are vital if you're planning a long road trip or a camping trip, simply because we think it's a lot better to find a problem with your vehicle in a mechanic's workshop than to find out about it in the middle of nowhere." 
+          heading="Vehicle Inspections"
+        />
       </div>
 
       {/* FAQ Section */}
@@ -106,6 +122,8 @@ export default function Home() {
       >
         <FaqSection/>
       </div>
+
+      <NewHeader></NewHeader>
     </main>
   );
 }
