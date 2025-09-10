@@ -46,14 +46,7 @@ export const IconInfo: React.FC<SafeSvgProps> = (props) => (
   </svg>
 );
 
-export const IconPhone: React.FC<SafeSvgProps> = (props) => (
-  <Image
-    src="/image/Vector3.svg"
-    alt="Building icon"
-    width={80}
-    height={64}
-  />
-);
+
 
 export const IconCheckCircle: React.FC<SafeSvgProps> = (props) => (
   <svg {...svg({ viewBox: "0 0 24 24", ...props })} aria-hidden>
@@ -74,28 +67,61 @@ export const IconClock: React.FC<SafeSvgProps> = (props) => (
   <path d="M17.5 8.33333V17.5H26.6667M17.5 34C8.3873 34 1 26.6127 1 17.5C1 8.3873 8.3873 1 17.5 1C26.6127 1 34 8.3873 34 17.5C34 26.6127 26.6127 34 17.5 34Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 );
-export function IconSettings(props: React.SVGProps<SVGSVGElement>) {
+
+/**
+ * To allow setting className from the place of usage for your Image-based icons,
+ * accept and forward className prop to the underlying Image component.
+ * Update IconSettings, IconBuilding, and IconPhone as follows:
+ */
+
+export function IconSettings(props: { className?: string }) {
   return (
     <Image
-    src="/image/Vector.svg"
-    alt="Building icon"
-    width={80}
-    height={64}
-  />
+      src="/image/Vector.svg"
+      alt="Building icon"
+      width={80}
+      height={64}
+      className={props.className}
+    />
   );
 }
 
+export function IconBuilding(props: { className?: string }) {
+  return (
+    <Image
+      src="/image/Vector2.svg"
+      alt="Building icon"
+      width={80}
+      height={64}
+      className={props.className}
+    />
+  );
+}
 
-export function IconBuilding(props: React.SVGProps<SVGSVGElement>) {
-  return(
+export const IconPhone: React.FC<{ className?: string }> = (props) => (
   <Image
-    src="/image/Vector2.svg"
+    src="/image/Vector3.svg"
     alt="Building icon"
     width={80}
     height={64}
+    className={props.className}
   />
-  )
-};
+);
+
+
+export function IconServ({ choice, ...props }: SVGProps<SVGSVGElement> & { choice: number }) {
+  if(choice === 0){
+    return IconSettings(props);
+  }else if(choice === 1){
+    return IconBuilding(props);
+  }else{
+    return IconPhone(props);
+  }
+
+}
+
+
+
 
 export const Check: React.FC<SafeSvgProps> = (props) => {
   return (

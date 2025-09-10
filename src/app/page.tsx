@@ -1,29 +1,20 @@
 "use client";
-import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
   IconMenu,
   IconX,
   IconWrench,
-  IconInfo,
-  
-  IconCheckCircle,
-  IconMapPin,
-  IconClock,
   IconSettings,
   IconBuilding,
   IconPhone,
-  Check
 } from "@/components/icons";
 import Header from "@/components/header";
-import InfoPanels from "@/components/InfoPanels";
-import ServiceHero from "@/components/serviceBlock_small";
 import FaqSection from "@/components/faq";
 import NewHeader from "@/components/new_header";
+import { InfoPanels } from "@/components/InfoPanels";
 
 export default function Home() {
-   const cards = [
+  const cards = [
     {
       imageSrc: "/images/service.jpg",
       icon: <IconSettings />,
@@ -46,84 +37,141 @@ export default function Home() {
   // Self-tests (optional)
   useEffect(() => {
     const tests = [
-      { name: "Icons are functions", pass: [IconMenu, IconX, IconWrench].every((c) => typeof c === "function") },
+      {
+        name: "Icons are functions",
+        pass: [IconMenu, IconX, IconWrench].every((c) => typeof c === "function"),
+      },
     ];
     if (process.env.NODE_ENV !== "production" && tests.some((t) => !t.pass)) {
       console.error("Self-tests failed", tests);
     }
   }, []);
 
-  let cardIcons = [['/image/Card1.png', '/image/CardVector.png'] , ['/image/Card2.png', '/image/CardVector-1.png'] , ['/image/Card3.png', '/image/CardVector-2.png'] ]
- 
-   return (
-    <main className="min-h-screen text-white bg-black">
-      <Header backgroundImagePath="/image/header_1.png" logoPath="/image/logo.png"/>
-      <InfoPanels/>
-      
-      {/* Services Section */}
-      <div 
-        className="flex flex-wrap justify-center items-center gap-[120px] p-4"
+  let cardIcons = [
+    ["/image/Card1.png", "/image/CardVector.png"],
+    ["/image/Card2.png", "/image/CardVector-1.png"],
+    ["/image/Card3.png", "/image/CardVector-2.png"],
+  ];
+
+  return (
+    // overflow-x-hidden prevents any horizontal scroll introduced by large backgrounds
+    <main className="min-h-screen text-white bg-[#101B21] overflow-x-hidden relative" style={{zoom: '75%'}}>
+    
+      {/* CONTENT (above the bulbs) */}
+      <div className="relative z-10">
+        <NewHeader className="scale-[0.75]" />
+        <Header />
+        <div
+          className="flex flex-wrap justify-center items-center p-4 mb-40"> 
+           <InfoPanels/>
+          </div>
+        
+
+        <div
+          className="flex flex-wrap justify-center items-center p-4"
+     
+        >
+          <FaqSection className="rounded-[25px]"/>
+        </div>
+      </div>
+
+      {/* FIXED-POSITION BULBS (won't affect page width) */}
+      <div
+        // fixed so it doesn't change document width/flow; centered with translateX
+        className="pointer-events-none"
         style={{
-          background: "linear-gradient(167.068deg, #060D14 0%, #1D2839 55%, #1D293A 61%, #060D14 93%)"
+          position: "fixed",
+          left: "50%",
+          top: 0,
+          transform: "translateX(-50%)",
+          width: 1439,
+          height: 3857,
+          zIndex: 0,
+          overflow: "visible", // bulbs may extend beyond viewport vertically
+          // note: pointer-events-none keeps them non-interactive
         }}
+        aria-hidden="true"
       >
-        <ServiceHero 
-          imageSrc="/image/services/Vehicle Inspections.png" 
-          description="We think that pre-trip inspections are vital if you're planning a long road trip or a camping trip, simply because we think it's a lot better to find a problem with your vehicle in a mechanic's workshop than to find out about it in the middle of nowhere." 
-          heading="Vehicle Inspections"
+        <div
+          style={{
+            width: 405,
+            height: 363,
+            left: -6,
+            top: -137,
+            position: "absolute",
+            background: "rgba(142, 80, 66, 0.81)",
+            boxShadow: "0 0 348px rgba(142,80,66,0.45)",
+            borderRadius: 9999,
+            filter: "blur(174px)",
+          }}
         />
-        <ServiceHero 
-          imageSrc="/image/services/Logbook Servicing.png" 
-          description={
-            <ul className="mt-4 space-y-3">
-              <li className="flex items-center gap-3">
-                <Check className="w-[30px] h-[30px] text-green-400" />
-                <span className="font-montserrat font-semibold">Petrol Vehicles</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Check className="w-[30px] h-[30px] text-green-400" />
-                <span className="font-montserrat font-semibold">Diesel Vehicles</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Check className="w-[30px] h-[30px] text-green-400" />
-                <span className="font-montserrat font-semibold">LPG Vehicles</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Check className="w-[30px] h-[30px] text-green-400" />
-                <span className="font-montserrat font-semibold">Electric/Hybrid Vehicles</span>
-              </li>
-            </ul>
-          }
-          heading="Logbook Servicing"
+        <div
+          style={{
+            width: 309,
+            height: 311,
+            left: 1434,
+            top: -45,
+            position: "absolute",
+            background: "#2A4E6D",
+            boxShadow: "0 0 82px rgba(42,78,109,0.45)",
+            borderRadius: 9999,
+            filter: "blur(41px)",
+          }}
         />
-
-         <ServiceHero 
-          imageSrc="/image/services/Vehicle Inspections.png" 
-          description="We think that pre-trip inspections are vital if you're planning a long road trip or a camping trip, simply because we think it's a lot better to find a problem with your vehicle in a mechanic's workshop than to find out about it in the middle of nowhere." 
-          heading="Vehicle Inspections"
+        <div
+          style={{
+            width: 410,
+            height: 418,
+            left: 1272,
+            top: 601,
+            position: "absolute",
+            background: "#3B73A4",
+            boxShadow: "0 0 348px rgba(59,115,164,0.35)",
+            borderRadius: 9999,
+            filter: "blur(174px)",
+          }}
         />
-         <ServiceHero 
-          imageSrc="/image/services/Vehicle Inspections.png" 
-          description="We think that pre-trip inspections are vital if you're planning a long road trip or a camping trip, simply because we think it's a lot better to find a problem with your vehicle in a mechanic's workshop than to find out about it in the middle of nowhere." 
-          heading="Vehicle Inspections"
+        <div
+          style={{
+            width: 410,
+            height: 418,
+            left: 18,
+            top: 1477,
+            position: "absolute",
+            background: "#3B73A4",
+            boxShadow: "0 0 348px rgba(59,115,164,0.35)",
+            borderRadius: 9999,
+            filter: "blur(174px)",
+          }}
         />
-         <ServiceHero 
-          imageSrc="/image/services/Vehicle Inspections.png" 
-          description="We think that pre-trip inspections are vital if you're planning a long road trip or a camping trip, simply because we think it's a lot better to find a problem with your vehicle in a mechanic's workshop than to find out about it in the middle of nowhere." 
-          heading="Vehicle Inspections"
+        <div
+          style={{
+            width: 410,
+            height: 1400,
+            left: 1333,
+            top: 1760,
+            position: "absolute",
+            background: "#0F2940",
+            boxShadow: "0 0 348px rgba(15,41,64,0.35)",
+            borderRadius: 9999,
+            filter: "blur(174px)",
+          }}
+        />
+        <div
+          style={{
+            width: 481,
+            height: 418,
+            left: -104,
+            top: -164,
+            position: "absolute",
+            background: "#3B73A4",
+            boxShadow: "0 0 348px rgba(59,115,164,0.35)",
+            borderRadius: 9999,
+            filter: "blur(174px)",
+          }}
         />
       </div>
-
-      {/* FAQ Section */}
-      <div className="flex flex-wrap justify-center items-center p-4 bg-gradient-to-b from-[#0b0f14] to-[#0e141a]"
-      style={{
-          background: "linear-gradient(101.527deg, #0A1019 20%, #151E2F 100%)"
-       }}
-      >
-        <FaqSection/>
-      </div>
-
-      <NewHeader></NewHeader>
+     
     </main>
   );
 }

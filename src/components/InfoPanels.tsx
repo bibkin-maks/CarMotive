@@ -2,75 +2,89 @@
 
 import React from "react";
 import Image from "next/image";
-import { IconSettings, IconBuilding, IconPhone } from "@/components/icons";
+import { IconServ } from "./icons";
 
-export default function InfoPanels() {
+export const InfoPanels: React.FC = () => {
   const panels = [
-    {
-      image: "/image/services.png",
-      icon: <IconSettings className="w-8 h-8 md:w-10 md:h-10 text-red-600" />,
-      title: "OUR SERVICES",
-    },
-    {
-      image: "/image/about.png",
-      icon: <IconBuilding className="w-8 h-8 md:w-10 md:h-10 text-red-600" />,
-      title: "ABOUT US",
-    },
-    {
-      image: "/image/contact.png",
-      icon: <IconPhone className="w-8 h-8 md:w-10 md:h-10 text-red-600" />,
-      title: "GET IN TOUCH",
-    },
+    { title: "OUR\nSERVICES", image: "/image/services.png" },
+    { title: "ABOUT\nUS", image: "/image/about.png" },
+    { title: "GET IN TOUCH", image: "/image/contact.png" },
   ];
 
+  // border thickness in px
+  const borderPx = 2;
+
+  const gradient = `linear-gradient(40.411deg,
+    rgba(80, 79, 84, 0.5) 0%,
+    rgba(177, 177, 177, 0.5) 18%,
+    rgba(19, 24, 28, 0.5) 40%,
+    rgba(198, 198, 200, 0.5) 61%,
+    rgba(255, 255, 255, 0.5) 71%,
+    rgba(12, 15, 20, 0.5) 83%,
+    rgba(105, 106, 110, 0.5) 100%)`;
+
   return (
-    <div className="w-full py-10 md:py-20 " style={{background: "linear-gradient(-180deg, #0B131A 0%, #050D14 65%, #040C13 89%, #060D14 100%)"}}>
-      <section className="mx-auto rounded-xl max-w-[90%] md:max-w-6xl p-4 md:p-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-0 w-full">
-          {panels.map((panel, i) => (
-            <div
-              key={i}
-              className={`relative overflow-hidden group aspect-[3/4] md:aspect-auto ${i < 2 ? 'md:border-r md:border-blue-900/30' : ''}`}
-              style={{
-                height: "837px",
-                marginRight: "10px"
-              }}
-            >
+    <div className="inline-flex justify-start items-center gap-7">
+      {panels.map((panel, i) => (
+        // OUTER wrapper: sized to keep INNER exactly at w-72 h-[499px]
+        <div
+          key={i}
+          className="relative rounded-2xl"
+          style={{
+            // outer size = inner size + 2 * borderPx
+            width: `calc(18rem + ${borderPx * 2}px)`, // 18rem == w-72
+            height: `calc(499px + ${borderPx * 2}px)`,
+            padding: `${borderPx}px`,
+            background: gradient,
+          }}
+        >
+          {/* INNER card keeps your original sizes and paddings unchanged */}
+          <div className="relative w-72 h-[499px] rounded-2xl overflow-hidden bg-black/70 backdrop-blur-md flex justify-start items-center gap-2 px-12 pt-56 pb-9">
+            {/* Background image (fills inner card) */}
+            <div className="absolute inset-0 -z-20">
               <Image
                 src={panel.image}
-                alt={panel.title}
+                alt={panel.title.replace("\n", " ")}
                 fill
-                sizes="(min-width: 768px) 100vw, 33vw"
-                className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                sizes="(min-width: 768px) 18rem, 33vw"
+                className="object-cover object-center"
               />
-              
-              <div 
-                className="absolute inset-0"
-                style={{
-                  background: "linear-gradient(rgba(11, 19, 26, 0.1) 0%, rgba(7, 10, 24, 0.96) 83%, rgb(7, 10, 24) 100%)",
-                }}
-              />
-              
-              <div className="absolute inset-0 flex flex-col items-center justify-end text-center text-white px-4 z-10 pb-10 md:pb-16">
-                <div style={{position: 'absolute',marginBottom: '250px',}}>{panel.icon}</div>
-                
-                <h3 className="mt-6 md:mt-8 text-2xl md:text-3xl lg:text-4xl font-bold leading-tight"
-                   style={{
-                      width: '200px',
-                      fontSize: '70px',
-                      
-                      fontFamily: "'Bebas Neue', system-ui, sans-serif",
-
-         
-                    }}
-                >
-                  {panel.title}
-                </h3>
-              </div>
             </div>
-          ))}
+
+            {/* Double gradient overlay (exact overlay you provided) */}
+            <div
+              className="absolute inset-0 rounded-2xl -z-10"
+              style={{
+                background: `
+                  linear-gradient(0deg, rgba(0, 0, 0, 0.71) 0%, rgba(0, 0, 0, 0.71) 100%),
+                  linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.85) 63%)
+                `,
+              }}
+            />
+
+            {/* Content block (keeps your original absolute offsets if you rely on them) */}
+            <div className="w-48 h-60 relative z-10">
+              <div className="w-48 left-[4.5px] top-[11.25px] absolute inline-flex flex-col justify-start items-center gap-10">
+                {/* Glowing red blurred box */}
+                <div className="relative w-24 h-20 outline-[6px] outline-offset-[-3px] outline-red-600 blur-[47px]" />
+
+                {/* Solid red outline box (your IconServ) */}
+                <IconServ choice={i} className="absolute w-92 h-20 outline-red-600 mt-[-10px]" />
+
+                {/* Panel Title */}
+                <div className="self-stretch text-center text-neutral-50 text-[59px] font-normal font-['Bebas_Neue'] leading-[55.5px] tracking-wide whitespace-pre-line">
+                  {panel.title}
+                </div>
+              </div>
+
+              {/* Extra red glow for last panel */}
+              {i === 2 && (
+                <div className="w-16 h-8 left-[103.5px] top-[64.5px] absolute bg-red-700/70 blur-[30px]" />
+              )}
+            </div>
+          </div>
         </div>
-      </section>
+      ))}
     </div>
   );
-}
+};
