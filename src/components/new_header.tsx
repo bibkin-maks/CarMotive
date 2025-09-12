@@ -10,7 +10,7 @@ export default function NewHeader({ className }: NewHeaderProps) {
         <img
           src="/image/logo.png"
           alt="Logo"
-          className="absolute left-8 top-3 w-[100px] h-[39px]"
+          className="absolute left-8 top-3 w-[93px] h-[39px]"
         />
 
         {/* Navigation */}
@@ -23,6 +23,7 @@ export default function NewHeader({ className }: NewHeaderProps) {
               {item}
             </span>
           ))}
+          <div className="rounded-2xl bg-red absolute w-[100] h-[40]"></div>
         </nav>
 
         {/* CTA button */}

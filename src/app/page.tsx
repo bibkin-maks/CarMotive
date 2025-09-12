@@ -12,6 +12,7 @@ import Header from "@/components/header";
 import FaqSection from "@/components/faq";
 import NewHeader from "@/components/new_header";
 import { InfoPanels } from "@/components/InfoPanels";
+import "@/app/globals.css";
 
 export default function Home() {
   const cards = [
@@ -59,7 +60,7 @@ export default function Home() {
     
       {/* CONTENT (above the bulbs) */}
       <div className="relative z-10">
-        <NewHeader className="scale-[0.75]" />
+        <NewHeader  />
         <Header />
         <div
           className="flex flex-wrap justify-center items-center p-4 mb-40"> 
@@ -75,6 +76,17 @@ export default function Home() {
         </div>
       </div>
 
+      <div
+          className="flex flex-wrap justify-center items-center p-30">
+     
+      <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d12578.54541670751!2d145.110033!3d-37.985615!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad66d1adb8689b1%3A0xbb65bc7a9bd67320!2sCarmotive!5e0!3m2!1sen!2sau!4v1757586625186!5m2!1sen!2sau" width="988" height="550" className="border-black border-1  rounded-[42px]" style={{  filter: 'invert(90%) hue-rotate(180deg)'}} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+     </div>
+     
+      <div className="flex flex-wrap justify-center items-center p-10">
+        <div className="flex justify-center items-center mb-[-10] w-[1130px] h-[100px] rounded-[33px] border-[#FFFFFF] border-1 bg-[#050F15]  font-family: 'Montserrat', sans-serif, system-ui "> 
+            <span className="text-white text-[19px]" style={{fontFamily: 'Montserrat, sans-serif, system-ui '}}> Copyright 2025 © Carmotive | Site by OurAuto Digital</span>
+          </div>
+      </div>
       {/* FIXED-POSITION BULBS (won't affect page width) */}
       <div
         // fixed so it doesn't change document width/flow; centered with translateX

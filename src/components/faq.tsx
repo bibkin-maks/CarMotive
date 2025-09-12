@@ -31,149 +31,101 @@ export default function FaqSection({
 }: Props) {
   const [openId, setOpenId] = useState<string | null>(null);
 
-  // layout constants
-  const paddingTop = 130;
-  const sidePadding = 60;
-
-  const headingSize = 61;
-  const gapHeadingUnderline = 23;
-  const underline1Width = 180;
-
-  const imageWidth = 402;
-  const imageHeight = 545;
-  const imageRadius = 16;
-  const gapBetweenImageAndText = 68;
-
-  const infoWidth = 892;
-  const infoHeadingSize = 29;
-  const infoDescriptionSize = 20;
-  const infoPaddingTB = 35; 
-
-  const containerWidth = '1011px'
-  const containerStyle: React.CSSProperties = {
-    paddingTop,
-    paddingLeft: sidePadding,
-    paddingRight: sidePadding,
-    width: containerWidth,
-    background: "linear-gradient(180deg, #0b0f14 0%, #0e141a 100%)",
-    color: "#E6EEF6",
-  };
-
-  const mainHeadingStyle: React.CSSProperties = {
-    fontFamily: "'Bebas Neue', system-ui, sans-serif",
-    fontSize: headingSize,
-    letterSpacing: 1,
-    margin: 0,
-    lineHeight: 1,
-  };
-
   return (
-    <section style={containerStyle} className={className}>
-      {/* Main heading - stays at top */}
-      <div style={{ display: "flex" }}>
+    <section
+      className={`pt-[130px] px-[60px] w-[1011px] h-[1210px] bg-gradient-to-b from-[#0b0f14] to-[#0e141a] text-[#E6EEF6] ${className || ""}`}
+    >
+      {/* Main heading */}
+      <div className="flex">
         <div>
-          <h2 style={mainHeadingStyle}>{heading}</h2>
-          <div style={{ height: gapHeadingUnderline }} />
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <div
-              style={{
-                width: underline1Width,
-                height: 6,
-                background: accentColor,
-                borderRadius: 2,
-              }}
-              aria-hidden
-            />
-          </div>
-          <div style={{ height: 28 }} />
-
-          {/* Flex container for image and content */}
-          <div
+          <h2
             style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "flex-start",
-              gap: gapBetweenImageAndText,
+              fontFamily: "'Bebas Neue', sans-serif",
+              fontSize: "61px",
+              letterSpacing: "1px",
+              lineHeight: "1",
+              margin: 0,
             }}
           >
-            {/* Content block (text + intro) */}
-            <div style={{ display: "flex" }}>
-              {/* Intro paragraphs */}
+            {heading}
+          </h2>
+          <div className="h-[23px]" />
+          <div className="flex flex-col gap-2">
+            <div
+              className="h-[6px] rounded-sm"
+              style={{ width: "180px", background: accentColor }}
+            />
+          </div>
+          <div className="h-7" />
+
+          {/* Content block */}
+          <div className="flex items-start gap-[68px]">
+            <div>
               <div
+                className="text-[#C9D6E6] text-[20px] leading-relaxed mb-[22px] w-[422px] mr-[68px]"
                 style={{
-                  color: "#C9D6E6",
-                  fontSize: infoDescriptionSize,
-                  lineHeight: 1.6,
-                  marginBottom: 22,
-                  width: '422px',
-                  marginRight: '68px',
-                  fontFamily: "'Montserrat', system-ui, sans-serif",
+                  fontFamily: "'Montserrat', sans-serif",
                 }}
               >
-                <p style={{ marginTop: 0 }}>
-                  Carmotive is an automotive repairs workshop which focuses on providing an all encompassing
-                  service to our valued customers in southeastern Melbourne.
+                <p className="mt-0">
+                  Carmotive is an automotive repairs workshop which focuses on
+                  providing an all encompassing service to our valued customers
+                  in southeastern Melbourne.
                 </p>
 
-                <p style={{ marginTop: 12 }}>
-                  Whether it's mechanical, auto electrical, or fleetcare services, Carmotive is fully
-                  equipped and skilled to provide automotive repairs.
+                <p className="mt-3">
+                  Whether it's mechanical, auto electrical, or fleetcare
+                  services, Carmotive is fully equipped and skilled to provide
+                  automotive repairs.
                 </p>
 
-                <p style={{ marginTop: 12 }}>
-                  With over 100 years of combined experience, we are confident in saying that no matter what
-                  automotive problem you're having, we can help.
+                <p className="mt-3">
+                  With over 100 years of combined experience, we are confident
+                  in saying that no matter what automotive problem you're
+                  having, we can help.
                 </p>
               </div>
             </div>
           </div>
         </div>
-        
-        {/* Image block */}
-        <div
-          style={{
-            width: imageWidth,
-            height: imageHeight,
-            flexShrink: 0,
-            borderRadius: imageRadius,
-            overflow: "hidden",
-          }}
-        >
+
+        {/* Image */}
+        <div className="w-[402px] h-[545px] shrink-0 rounded-[16px] overflow-hidden">
           <img
             src={imageSrc}
             alt="Workshop"
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              display: "block",
-            }}
+            className="w-full h-full object-cover block"
           />
-        </div>  
+        </div>
       </div>
 
       {/* FAQ section */}
-      <div style={{ marginTop: 60, maxWidth: infoWidth }}>
+      <div className="mt-[60px] max-w-[892px]">
         {/* FAQ heading */}
-        <div style={{ marginTop: 8, marginBottom: 18 }}>
-          <h3 style={mainHeadingStyle}>FAQS</h3>
-          <div style={{ height: 12 }} />
-          <div style={{ width: 124, height: 6, background: "#E66A6A", borderRadius: 2 }} />
+        <div className="mt-2 mb-[18px]">
+          <h3
+            style={{
+              fontFamily: "'Bebas Neue', sans-serif",
+              letterSpacing: "3px",
+              margin: 0,
+              fontSize: "60px",
+              lineHeight: "1.2",
+              color: "#f4fafff0",
+            }}
+          >
+            FAQS
+          </h3>
+          <div className="h-3" />
+          <div className="w-[124px] h-[6px] rounded-sm bg-[#E66A6A]" />
         </div>
 
         {/* FAQ items */}
         <div
           role="region"
           aria-label="About and FAQs"
-          style={{
-            borderRadius: 16,
-            paddingTop: infoPaddingTB,
-            paddingBottom: infoPaddingTB,
-            paddingLeft: 32,
-            paddingRight: 32,
-          }}
+          className="rounded-2xl py-[35px]"
         >
-          <div style={{ display: "grid", gap: 18 }}>
+          <div className="grid gap-[18px]">
             {items.map((it, index) => {
               const isOpen = openId === it.id;
               return (
@@ -185,68 +137,45 @@ export default function FaqSection({
                   onBlur={() => setOpenId(null)}
                   tabIndex={0}
                   aria-expanded={isOpen}
-                  style={{
-                    display: "block",
-                    width: "100%",
-                    borderRadius: 12,
-                    overflow: "hidden",
-                    background: "rgba(6,11,15,0.55)",
-                    transition: "box-shadow 180ms ease, transform 180ms ease",
-                    boxShadow: isOpen ? "0 10px 30px rgba(0,0,0,0.5)" : "none",
-                    cursor: "pointer",
-                  }}
+                  className={`block w-full rounded-xl overflow-hidden bg-[rgba(6,11,15,0.55)] cursor-pointer transition-all duration-200 ${
+                    isOpen ? "shadow-[0_10px_30px_rgba(0,0,0,0.5)]" : ""
+                  }`}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      padding: "20px 22px",
-                    }}
-                  >
+                  <div className="flex items-center px-[22px] py-[20px]">
                     <div
-                      style={{
-                        width: 42,
-                        height: 42,
-                        borderRadius: 999,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                        color: "#fff",
-                        marginLeft: '22px',
-                        marginRight: '35px'
-                      }}
+                      className="w-[42px] h-[42px] rounded-full flex items-center justify-center shrink-0 text-white ml-[22px] mr-[35px]"
                       aria-hidden
                     >
-                      {/* Use IconClock for first item, ScheduleIcon for second */}
-                      {index === 0 ? <IconClock width='33px' height='33px' /> : <ScheduleIcon width='33px' height='33px'/>}
+                      {index === 0 ? (
+                        <IconClock width="33px" height="33px" />
+                      ) : (
+                        <ScheduleIcon width="33px" height="33px" />
+                      )}
                     </div>
 
                     <h4
                       style={{
-                        fontFamily: "'Montserrat', system-ui, sans-serif",
-                        fontWeight: '400',
+                        fontFamily: 'Bebas Neue',
+                        fontWeight: 400,
                         margin: 0,
-                        fontSize: infoHeadingSize,
-                        lineHeight: 1.2,
+                        fontSize: "29px",
+                        lineHeight: "1.2",
                         color: "#F4FAFF",
                       }}
                     >
                       {it.title}
                     </h4>
 
-                    <div style={{ flex: 1 }} />
+                    <div className="flex-1" />
 
                     <svg
                       width="20"
                       height="20"
                       viewBox="0 0 24 24"
                       fill="none"
-                      style={{
-                        transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
-                        transition: "transform 180ms ease",
-                        marginRight: 8,
-                      }}
+                      className={`mr-2 transition-transform duration-200 ${
+                        isOpen ? "rotate-90" : "rotate-0"
+                      }`}
                       aria-hidden
                     >
                       <path
@@ -260,20 +189,22 @@ export default function FaqSection({
                   </div>
 
                   <div
+                    className={`overflow-hidden transition-all duration-300 ${
+                      isOpen  
+                        ? "max-h-[400px] opacity-100 py-4 px-[120px]"
+                        : "max-h-0 opacity-0 py-0 px-[120px]"
+                    }`}
                     style={{
-                      fontFamily: "'Montserrat', system-ui, sans-serif",
-                      maxHeight: isOpen ? 400 : 0,
-                      transition: "max-height 260ms ease, opacity 260ms ease, padding 200ms ease",
-                      opacity: isOpen ? 1 : 0,
-                      // Apply paddingLeft conditionally to avoid affecting closed state
-                      padding: "0px 137px 18px 120px" ,
-                      lineHeight: 1.6,
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontSize: "22px",
+                      lineHeight: "1.6",
                       color: "#C9D6E6",
-                      overflow: "hidden",
-                      fontSize: '22px',
+                      marginTop: isOpen ? '-25px' : '0px',
                     }}
                   >
+                    <span style={{fontFamily: 'Montserrat, sans-serif, system-ui ', fontWeight: 400}}>
                     {it.body}
+                    </span>
                   </div>
                 </article>
               );
