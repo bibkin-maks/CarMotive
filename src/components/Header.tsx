@@ -164,7 +164,7 @@ const Header: React.FC<HeroIntroSectionProps> = ({
 transition-transform duration-200 ease-in-out hover:scale-105 
                         flex items-center justify-center gap-3 bg-[#BF6069] hover:bg-[#AE4550] 
                         text-white font-semibold px-4 py-3 rounded-[100px] w-[210px] 
-                        max-w-[210px] h-[55px] shadow-md"
+                        max-w-[210px] h-[55px] shadow-md cursor-pointer"
                 style={{ fontFamily: "'Montserrat', system-ui, sans-serif" }}
               >
                 <span>Schedule now</span>
@@ -173,7 +173,7 @@ transition-transform duration-200 ease-in-out hover:scale-105
               <button
                 className="transition-transform duration-200 ease-in-out hover:scale-105 
                         flex items-center justify-center gap-3 bg-[#BF6069] hover:bg-[#AE4550] 
-                        text-white font-semibold px-4 py-3 rounded-[100px] w-[151px] h-[55px] shadow-md"
+                        text-white font-semibold px-4 py-3 rounded-[100px] w-[151px] h-[55px] shadow-md cursor-pointer"
                 style={{ fontFamily: "'Montserrat', system-ui, sans-serif" }}
               >
                 Services
