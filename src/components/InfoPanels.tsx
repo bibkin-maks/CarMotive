@@ -3,12 +3,14 @@
 import React from "react";
 import Image from "next/image";
 import { IconServ } from "./icons";
+import '../app/globals.css'
 
 export const InfoPanels: React.FC = () => {
   const panels = [
-    { title: "OUR\nSERVICES", image: "/image/services.png" },
-    { title: "ABOUT\nUS", image: "/image/about.png" },
-    { title: "GET IN TOUCH", image: "/image/contact.png" },
+    { title: "OUR\nSERVICES", image: "/image/services.png", className: 'gear' },
+    { title: "ABOUT\nUS", image: "/image/about.png" , className: 'pulse'},
+    { title: "GET IN TOUCH", image: "/image/contact.png", className: 'phone-ring'
+     },
   ];
 
   // border thickness in px
@@ -24,12 +26,12 @@ export const InfoPanels: React.FC = () => {
     rgba(105, 106, 110, 0.5) 100%)`;
 
   return (
-    <div className="inline-flex justify-start items-center gap-7">
+    <div className={"inline-flex justify-start items-center gap-17 "}>
       {panels.map((panel, i) => (
         // OUTER wrapper: sized to keep INNER exactly at w-72 h-[499px]
         <div
           key={i}
-          className="relative rounded-2xl"
+          className={`relative rounded-2xl info-panel cursor-pointer block-${panel.className} transform transition-transform duration-300 ease-in-out hover:scale-105`}
           style={{
             // outer size = inner size + 2 * borderPx
             width: `calc(18rem + ${borderPx * 2}px)`, // 18rem == w-72
@@ -39,7 +41,7 @@ export const InfoPanels: React.FC = () => {
           }}
         >
           {/* INNER card keeps your original sizes and paddings unchanged */}
-          <div className="relative w-72 h-[499px] rounded-2xl overflow-hidden bg-black/70 backdrop-blur-md flex justify-start items-center gap-2 px-12 pt-56 pb-9">
+          <div className="relative w-72 h-[499px] rounded-2xl overflow-hidden bg-black/70  backdrop-blur-md flex justify-start items-center gap-2 px-12 pt-56 pb-9">
             {/* Background image (fills inner card) */}
             <div className="absolute inset-0 -z-20">
               <Image
@@ -47,19 +49,14 @@ export const InfoPanels: React.FC = () => {
                 alt={panel.title.replace("\n", " ")}
                 fill
                 sizes="(min-width: 768px) 18rem, 33vw"
-                className="object-cover object-center"
+                className={"object-cover object-center"}
               />
             </div>
 
             {/* Double gradient overlay (exact overlay you provided) */}
             <div
-              className="absolute inset-0 rounded-2xl -z-10"
-              style={{
-                background: `
-                  linear-gradient(0deg, rgba(0, 0, 0, 0.71) 0%, rgba(0, 0, 0, 0.71) 100%),
-                  linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.85) 63%)
-                `,
-              }}
+              className="absolute inset-0 rounded-2xl -z-10 info-panel-bg"
+           
             />
 
             {/* Content block (keeps your original absolute offsets if you rely on them) */}
@@ -69,7 +66,7 @@ export const InfoPanels: React.FC = () => {
                 <div className="relative w-24 h-20 outline-[6px] outline-offset-[-3px] outline-red-600 blur-[47px]" />
 
                 {/* Solid red outline box (your IconServ) */}
-                <IconServ choice={i} className="absolute w-92 h-20 outline-red-600 mt-[-10px]" />
+                <IconServ choice={i} className={"absolute w-92 h-20 outline-red-600 mt-[-10px] " + panel.className} />
 
                 {/* Panel Title */}
                 <div className="self-stretch text-center text-neutral-50 text-[59px] font-normal font-['Bebas_Neue'] leading-[55.5px] tracking-wide whitespace-pre-line">

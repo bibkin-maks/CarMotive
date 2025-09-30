@@ -2,7 +2,6 @@
 import * as React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAward } from "@fortawesome/free-solid-svg-icons";
-import "@/app/globals.css";
 import { useState, useRef, useEffect } from "react";
 
 interface HeroIntroSectionProps {
@@ -108,7 +107,6 @@ const Header: React.FC<HeroIntroSectionProps> = ({
                 style={{
                   width: "378px",
                   height: "45.6px",
-                  fontFamily: "'Montserrat', system-ui, sans-serif",
                   fontWeight: 700,
                   fontSize: "16.0px",
                   border: "1px solid",

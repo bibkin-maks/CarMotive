@@ -18,7 +18,7 @@ export default function FaqSection({
   items = [
     {
       id: "faq-1",
-      title: "What hours are you hours of operation?",
+      title: "What hours are you open?",
       body: "Carmotive is open five days a week, from 8:00am to 5:30pm Monday to Friday.",
     },
     {
@@ -33,7 +33,7 @@ export default function FaqSection({
 
   return (
     <section
-      className={`pt-[130px] px-[60px] w-[1011px] h-[1210px] bg-gradient-to-b from-[#0b0f14] to-[#0e141a] text-[#E6EEF6] ${className || ""}`}
+      className={`border-[#28475A] border-2 pt-[130px] px-[60px] w-[1011px] h-[1210px] bg-gradient-to-b from-[#0b0f14] to-[#0e141a] text-[#E6EEF6] ${className || ""}`}
     >
       {/* Main heading */}
       <div className="flex">
@@ -62,10 +62,8 @@ export default function FaqSection({
           <div className="flex items-start gap-[68px]">
             <div>
               <div
-                className="text-[#C9D6E6] text-[20px] leading-relaxed mb-[22px] w-[422px] mr-[68px]"
-                style={{
-                  fontFamily: "'Montserrat', sans-serif",
-                }}
+                className="text-[#C9D6E6] font-light text-[19px] leading-relaxed mb-[22px] w-[422px] mr-[68px]"
+               
               >
                 <p className="mt-0">
                   Carmotive is an automotive repairs workshop which focuses on
@@ -155,10 +153,10 @@ export default function FaqSection({
 
                     <h4
                       style={{
-                        fontFamily: 'Bebas Neue',
+                      
                         fontWeight: 400,
                         margin: 0,
-                        fontSize: "29px",
+                        fontSize: "20px",
                         lineHeight: "1.2",
                         color: "#F4FAFF",
                       }}
@@ -195,14 +193,14 @@ export default function FaqSection({
                         : "max-h-0 opacity-0 py-0 px-[120px]"
                     }`}
                     style={{
-                      fontFamily: "'Montserrat', sans-serif",
-                      fontSize: "22px",
+                     
+                      fontSize: "20px",
                       lineHeight: "1.6",
                       color: "#C9D6E6",
                       marginTop: isOpen ? '-25px' : '0px',
                     }}
                   >
-                    <span style={{fontFamily: 'Montserrat, sans-serif, system-ui ', fontWeight: 400}}>
+                    <span className="font-thin">
                     {it.body}
                     </span>
                   </div>

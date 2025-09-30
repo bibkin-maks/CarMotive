@@ -16,18 +16,19 @@ export default function NewHeader({ className }: NewHeaderProps) {
         {/* Navigation */}
         <nav className="absolute left-[374px] top-[6px] flex items-center gap-10 rounded-full bg-black/40 px-10 py-2 h-[49px]">
           {["Home", "About", "Services", "Gallery", "Contact"].map((item) => (
-            <span
+            <a
+              href={`/${item.toLowerCase()}`}
               key={item}
-              className="text-[16px] font-normal text-white/90 tracking-wide"
+              className="text-[16px] font-normal text-white/90 tracking-wide cursor-pointer"
             >
               {item}
-            </span>
+            </a>
           ))}
           <div className="rounded-2xl bg-red absolute w-[100] h-[40]"></div>
         </nav>
 
         {/* CTA button */}
-        <button className="absolute right-[20px] top-[6px] flex items-center justify-center h-[49px] w-[182px] rounded-full bg-black/40 text-white font-semibold shadow-md">
+        <button className="cursor-pointer absolute right-[20px] top-[6px] flex items-center justify-center h-[49px] w-[182px] rounded-full bg-black/40 text-white font-semibold shadow-md">
           Schedule Now
         </button>
       </div>
