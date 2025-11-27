@@ -33,7 +33,7 @@ export default function FaqSection({
 
   return (
     <section
-        className={`border-[#28475A] border-2 pt-8 md:pt-10 px-10 sm:px-10 md:px-10 w-full max-w-[1011px] mx-auto h-auto min-h-screen bg-gradient-to-b from-[#0b0f14] to-[#0e141a] text-[#E6EEF6] ${className || ""}`}
+        className={`border-[#28475A] border-2 pt-8 md:pt-10 px-10 sm:px-10 md:px-10 w-full max-w-[1011px] mx-auto h-auto min-h-screen bg-gradient-to-b from-[#0b0f14] to-[#0e141a] text-[#E6EEF6] ${className ?? ""}`}
       >
       {/* Main heading */}
       <div className="flex flex-col lg:flex-row gap-8 md:gap-12">
@@ -181,11 +181,11 @@ export default function FaqSection({
                       lineHeight: "1.6",
                       color: "#C9D6E6",
                       marginTop: isOpen ? '-10px md:-25px' : '0px',
+                      fontWeight: 600, 
                     }}
                   >
-                    <span className="font-thin  ">
+                 
                     {it.body}
-                    </span>
                   </div>
                 </article>
               );
