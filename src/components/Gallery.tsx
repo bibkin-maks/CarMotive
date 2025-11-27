@@ -15,10 +15,10 @@ interface Props {
   showCaptions?: boolean;
 }
 
-let imgArray: ImageItem[] = [];
+const imgArray: ImageItem[] = [];
 
 for (let i = 1; i <= 13; i++) {
-  let item: ImageItem = {
+  const item: ImageItem = {
     src: `/image/gallery/Carmotive-${i}.jpg`,
     alt: `Carmotive ${i}`,
     caption: ''

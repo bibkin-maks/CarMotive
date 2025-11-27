@@ -6,7 +6,6 @@ import Gallery from "@/components/Gallery";
 
 import { Poppins } from "next/font/google";
 
-import images from './image1.jpg'; 
 
 import "@/app/globals.css";
 

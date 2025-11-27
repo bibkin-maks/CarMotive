@@ -1,14 +1,13 @@
 "use client";
 import { useEffect, useState, useRef  } from "react";
 import NewHeader from "@/components/TopFlyingHeader";
-import { InfoPanels } from "@/components/InfoPanels";
 import ContactForm from "@/components/ContactForm";
 import ServiceHero from "@/components/ServicesBlocks";
 import { Poppins } from "next/font/google";
 
 
 import "@/app/globals.css";
-import { FaCheckCircle, FaTools, FaRegClock, FaGasPump,
+import { FaCheckCircle, FaTools, FaRegClock,
   FaTruck,
   FaBurn,
   FaBolt,
@@ -168,7 +167,7 @@ export default function Home() {
                                 description={
                                   <div className={`${poppins.className} text-small`}>
                                     <p className="mt-3 text-gray-300 font-normal text-[18px] leading-relaxed">
-                                      Faults and flaws in your vehicle's steering and suspension affect handling and ride comfort, 
+                                      Faults and flaws in your vehicle&apos;s steering and suspension affect handling and ride comfort, 
                                       causing play in the steering wheel and body lean through corners. Your suspension is also 
                                       responsible for maximising the grip that your tyres exert on the road surface, and a poor 
                                       suspension will increase your stopping distance.
@@ -202,14 +201,14 @@ export default function Home() {
                                 description={
                                   <div className={`${poppins.className} text-small`}>
                                     <p className="mt-3 text-gray-300 font-normal text-[18px] leading-relaxed">
-                                      Your vehicle's air conditioning degrades faster from disuse than from use, as the rubber 
+                                      Your vehicle&apos;s air conditioning degrades faster from disuse than from use, as the rubber 
                                       tubing and seals dry up and crack if unused for long periods, allowing the refrigerant gas 
                                       to leak out and rob your aircon of its cooling power.
                                     </p>
                                     <p className="mt-3 text-gray-300 font-normal text-[18px] leading-relaxed">
-                                      Carmotive's expert technicians can fully repair your air conditioning, starting by swapping 
+                                      Carmotive&apos;s expert technicians can fully repair your air conditioning, starting by swapping 
                                       out any faulty condensers or compressors, then replacing any cracked tubing, and finally 
-                                      recharging your system with refrigerant once we're certain it's airtight.
+                                      recharging your system with refrigerant once we&apos;re certain it&apos;s airtight.
                                     </p>
                                   </div>
                                 }
@@ -263,7 +262,7 @@ export default function Home() {
                                 description={
                                   <div className={`${poppins.className} text-small`}>
                                     <p className="mt-3 text-gray-300 font-normal text-[18px] leading-relaxed">
-                                      The engine is the heart of your vehicle. If the engine breaks down, it doesn't really matter 
+                                      The engine is the heart of your vehicle. If the engine breaks down, it doesn&apos;t really matter 
                                       whether the air conditioning is working or not.
                                     </p>
 

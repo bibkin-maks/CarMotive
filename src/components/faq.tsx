@@ -24,7 +24,7 @@ export default function FaqSection({
     {
       id: "faq-2",
       title: "Do I need to book in a visit?",
-      body: "Yes, you will need to give us a quick call to set up an appointment. We don't want to waste your time and if you show up unannounced you may end up waiting a long time.",
+      body: "Yes, you will need to give us a quick call to set up an appointment. We don&apos;t want to waste your time and if you show up unannounced you may end up waiting a long time.",
     },
   ],
   className,
@@ -69,14 +69,14 @@ export default function FaqSection({
                 </p>
 
                 <p className="mb-4 sm:mb-6">
-                  Whether it's mechanical, auto electrical, or fleetcare
+                  Whether it&apos;s mechanical, auto electrical, or fleetcare
                   services, Carmotive is fully equipped and skilled to provide
                   automotive repairs.
                 </p>
 
                 <p className="mb-0">
                   With over 100 years of combined experience, we are confident
-                  in saying that no matter what automotive problem you're
+                  in saying that no matter what automotive problem you&apos;re
                   having, we can help.
                 </p>
               </div>

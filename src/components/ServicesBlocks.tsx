@@ -33,7 +33,7 @@ const DefaultScheduleIcon: React.FC<SVGProps<SVGSVGElement>> = (p) => (
 export default function ServiceHero({
   imageSrc = "/image/Vehicle Inspections.png",
   heading = "VEHICLE INSPECTIONS",
-  description = "We think that pre-trip inspections are vital if you're planning a long road trip or a camping trip, simply because we think it's a lot better to find a problem with your vehicle in a mechanic's workshop than to find out about it in the middle of nowhere.",
+  description = "We think that pre-trip inspections are vital if you&apos;re planning a long road trip or a camping trip, simply because we think it&apos;s a lot better to find a problem with your vehicle in a mechanic&apos;s workshop than to find out about it in the middle of nowhere.",
   onLearn,
   LearnIcon = DefaultLearnIcon,
   ScheduleIcon = DefaultScheduleIcon,
