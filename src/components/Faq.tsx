@@ -183,7 +183,7 @@ export default function FaqSection({
                       marginTop: isOpen ? '-10px md:-25px' : '0px',
                     }}
                   >
-                    <span className="  ">
+                    <span className="font-thin  ">
                     {it.body}
                     </span>
                   </div>
