@@ -1,12 +1,12 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
-import Header from "@/components/Header";
-import FaqSection from "@/components/Faq";
+import { useEffect, useState } from "react";
 import NewHeader from "@/components/TopFlyingHeader";
-import { InfoPanels } from "@/components/InfoPanels";
 import ContactForm from "@/components/ContactForm";
+import Gallery from "@/components/Gallery";
+
 import { Poppins } from "next/font/google";
 
+import images from './image1.jpg'; 
 
 import "@/app/globals.css";
 
@@ -15,7 +15,6 @@ const poppins = Poppins({
   subsets: ["latin"],
   weight: ["200", "300","400", "500", "600", "700"], // choose the weights you need
 });
-
 
 
 type Bulb = {
@@ -32,6 +31,9 @@ type AnimObj = {
   bulb3?: Bulb;
   bulb4?: Bulb;
 };
+
+
+
 
 function returnOffset(state: number): AnimObj {
   switch (state) {
@@ -77,40 +79,19 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-
-      const contactForm  = useRef<HTMLDivElement>(null);
-      const aboutBlock = useRef<HTMLDivElement>(null);
-
-  
-      const scrollContact = () => {
-        contactForm.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-        };
-      const scrollAbout = () => {
-        aboutBlock.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-        };
-
   return (
     <main className={`${poppins.className} min-h-screen text-white  overflow-x-hidden relative`} style={{ zoom: "75%" }}>
       <div className="relative z-10">
         <NewHeader />
-        <Header onSchedule={scrollContact} />
-        <div className="flex flex-wrap justify-center items-center p-4 mb-20 mt-[100px] md:mt-0">
-          <InfoPanels  handleAbout={scrollAbout} handleContact={scrollContact}/>
-        </div>
-        <div className="flex flex-wrap justify-center items-center p-0 md:p-4 lg:p-4" id="about" ref={aboutBlock}>
-          <FaqSection className="rounded-[5px] md:rounded-[15px] lg:rounded-[25px]" />
-        </div>
+        
       </div>
 
-    
+        <div className="flex flex-wrap justify-center items-center mt-[120px] mb-[40px] relative z-20">
+            <Gallery/>
 
-      <div className="flex flex-wrap justify-center items-center mt-[120px] mb-[40px] relative z-20" id="contactForm" ref={contactForm}>
+        </div>
+
+      <div className="flex flex-wrap justify-center items-center mt-[120px] mb-[40px] relative z-20" id="contactForm">
           <ContactForm/>
 
       </div>

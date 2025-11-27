@@ -64,7 +64,7 @@ export const IconMapPin: React.FC<SafeSvgProps> = (props) => (
 
 export const IconClock: React.FC<SafeSvgProps> = (props) => (
   <svg width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M17.5 8.33333V17.5H26.6667M17.5 34C8.3873 34 1 26.6127 1 17.5C1 8.3873 8.3873 1 17.5 1C26.6127 1 34 8.3873 34 17.5C34 26.6127 26.6127 34 17.5 34Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M17.5 8.33333V17.5H26.6667M17.5 34C8.3873 34 1 26.6127 1 17.5C1 8.3873 8.3873 1 17.5 1C26.6127 1 34 8.3873 34 17.5C34 26.6127 26.6127 34 17.5 34Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
 </svg>
 );
 

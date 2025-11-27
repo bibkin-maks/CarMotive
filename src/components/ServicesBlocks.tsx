@@ -1,22 +1,19 @@
-import React, { SVGProps, useState } from "react";
+import React, { SVGProps } from "react";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["200", "300","400", "500", "600", "700"],
+});
 
 interface Props {
   imageSrc?: string;
   heading?: string;
-  /** Accept string or JSX for richer descriptions */
   description?: React.ReactNode;
-  /** Called when Learn more is clicked (kept as original signature) */
   onLearn?: () => void;
-  onSchedule?: () => void;
-  /** Optional custom icon components for buttons */
   LearnIcon?: React.FC<SVGProps<SVGSVGElement>>;
   ScheduleIcon?: React.FC<SVGProps<SVGSVGElement>>;
-  /** Controlled expanded state (if provided, component becomes controlled) */
-  extended?: boolean;
-  /** Initial uncontrolled state (used only when `extended` is undefined) */
-  initialExtended?: boolean;
-  /** Notifies parent about toggles (receives new expanded value) */
-  onToggle?: (extended: boolean) => void;
+  swapOrder?: boolean;
 }
 
 const DefaultLearnIcon: React.FC<SVGProps<SVGSVGElement>> = (p) => (
@@ -38,161 +35,77 @@ export default function ServiceHero({
   heading = "VEHICLE INSPECTIONS",
   description = "We think that pre-trip inspections are vital if you're planning a long road trip or a camping trip, simply because we think it's a lot better to find a problem with your vehicle in a mechanic's workshop than to find out about it in the middle of nowhere.",
   onLearn,
-  onSchedule,
   LearnIcon = DefaultLearnIcon,
   ScheduleIcon = DefaultScheduleIcon,
-  // new props:
-  extended,
-  initialExtended = false,
-  onToggle,
+  swapOrder = false,
 }: Props) {
-  const [internalExtended, setInternalExtended] = useState<boolean>(!!initialExtended);
-  const isControlled = extended !== undefined;
-  const isExpanded = isControlled ? extended : internalExtended;
-
-  const toggleExpanded = () => {
-    const next = !isExpanded;
-    if (!isControlled) setInternalExtended(next);
-    // keep original onLearn behaviour
+  
+  const handleButtons = () => {
     if (onLearn) onLearn();
-    if (onToggle) onToggle(next);
   };
-
-  // visual values you requested
-  const containerWidth = isExpanded ? "1260px" : "602px";
-  const gap = isExpanded ? "128px" : "63px";
-  const textPaddingTop = isExpanded ? "0px" : "150px";
-  const learnBtnWidth = isExpanded ? "400px" : "192.5px";
-  // example: increase image size when expanded; tweak as needed
-  const imageWidth = isExpanded ? "560px" : "320px";
-  const btnTextSize = isExpanded? "26px" : "22px"
 
   return (
     <section
       aria-label="Vehicle inspection hero"
-      aria-expanded={isExpanded}
-      className="flex flex-col md:flex-row items-start"
-      style={{
-        gap,
-        height: "721px",
-        width: containerWidth,
-        position: "relative",
-        // smooth transition for main layout changes
-        transition: "width 300ms ease, gap 300ms ease",
-      }}
+      className="flex flex-col lg:flex-row items-start w-full max-w-[1260px] bg-[#061217] rounded-2xl overflow-clip mt-6 lg:mt-[50px] gap-6 lg:gap-[90px] 
+      min-h-[400px] lg:min-h-[721px] max-h-[1200px] border-[2px] border-[#28475a99] mx-auto"
     >
+      {/* Text column - always first on mobile, order swaps on desktop based on prop */}
+      <div
+        className={`flex-1 flex flex-col justify-between p-6 lg:p-10 text-white pb-4 lg:pb-[25px] w-full ${
+          swapOrder ? "lg:order-2" : "lg:order-1"
+        }`}
+        style={{
+          height: '-webkit-fill-available'
+        }}
+      >
+        <div className="flex-1 ">
+          <h2
+            className="leading-none m-0 font-['Bebas_Neue',system-ui,sans-serif] text-3xl lg:text-[46.74px] tracking-[1px]"
+          >
+            {heading}
+          </h2>
+
+          <div className="mt-4 lg:mt-[18px] font-bold text-base lg:text-[16.18px] leading-relaxed lg:leading-[23.4px] text-[#D1D5DB] max-w-[800px] lg:max-w-[520px]">
+            {description}
+          </div>
+        </div>
+
+        {/* Buttons container - sticks to bottom */}
+        <div className="flex flex-col mt-6 lg:mt-[60px] w-full max-w-[400px]">
+          <button
+            onClick={handleButtons}
+            className={`inline-flex items-center justify-center gap-2 rounded-md px-4 lg:px-[28px] py-3 lg:py-[12px] w-full lg:max-w-[400px] border-[0.9px] border-[#CE4141] 
+            bg-transparent  font-semibold text-base lg:text-[16.18px] text-white cursor-pointer ${poppins.className}`}
+            aria-label="Learn more"
+          >
+            <span>Learn more</span>
+            <LearnIcon style={{ marginLeft: 8 }} />
+          </button>
+
+          <button
+            onClick={handleButtons}
+            className="rounded-lg px-4 lg:px-[28px] py-3 lg:py-[12px] bg-[#CE4141] text-white border-0 mt-3 lg:mt-[12px] mb-4 lg:mb-[25px] font-['Bebas_Neue',system-ui,sans-serif] font-bold text-xl lg:text-[26px] tracking-[0.5px] w-full lg:max-w-[400px] cursor-pointer"
+            aria-label="Schedule now"
+          >
+            <ScheduleIcon className="inline-block shrink-0 text-inherit -ml-2 lg:-ml-[10px] mr-2 lg:mr-[10px] w-4 h-4 lg:w-5 lg:h-5" />
+            <span>SCHEDULE NOW</span>
+          </button>
+        </div>
+      </div>
+
       {/* Image column */}
       <div
-        className="flex-shrink-0"
+        className={`flex-shrink-0 order-2 w-full lg:w-[560px] ${swapOrder ? "lg:order-1" : "lg:order-2"}`}
         style={{
-          transition: "width 300ms ease",
-          width: imageWidth,
+          height: '-webkit-fill-available'
         }}
       >
         <img
           src={imageSrc}
           alt="Vehicle inspection"
-          style={{
-            width: "100%",
-            height: "721px",
-            display: "block",
-            borderRadius: 0,
-            objectFit: "cover",
-            transition: "transform 300ms ease",
-          }}
+          className="w-full h-[300px] lg:h-[100%] block rounded-none object-cover"
         />
-      </div>
-
-      {/* Text column */}
-      <div
-        className="flex-1 flex flex-col justify-between"
-        style={{
-          height: "721px",
-          paddingTop: textPaddingTop,
-          color: "#FFFFFF",
-          paddingBottom: "25px",
-          transition: "padding-top 300ms ease",
-        }}
-      >
-        <div>
-          <h2
-            className="leading-none"
-            style={{
-              fontFamily: "'Bebas Neue', system-ui, sans-serif",
-              fontSize: 46.74,
-              letterSpacing: 1,
-              margin: 0,
-            }}
-          >
-            {heading}
-          </h2>
-
-          <div
-            style={{
-              marginTop: 18,
-              fontFamily: "'Montserrat', system-ui, sans-serif",
-              fontWeight: 700,
-              fontSize: 16.18,
-              lineHeight: "23.4px",
-              color: "#D1D5DB",
-              maxWidth: 520,
-            }}
-          >
-            {description}
-          </div>
-        </div>
-
-        {/* Buttons container */}
-        <div className="flex flex-col" style={{ marginTop: "auto" }}>
-          <button
-            onClick={toggleExpanded}
-            className="rounded-md"
-            aria-expanded={isExpanded}
-            aria-label="Learn more"
-            style={{
-              padding: "12px 28px",
-              border: "0.9px solid #E91D1D",
-              background: "transparent",
-              fontFamily: "'Montserrat', system-ui, sans-serif",
-              minWidth: learnBtnWidth,
-              width: learnBtnWidth,
-              fontWeight: 600,
-              fontSize: 16.18,
-              color: "#FFFFFF",
-              alignItems: "center",
-              gap: 8,
-              display: "inline-flex",
-              justifyContent: "center",
-              transition: "width 300ms ease",
-            }}
-          >
-            <span>{isExpanded ? "Close" : "Learn more"}</span>
-            <LearnIcon style={{ marginLeft: 8 }} />
-          </button>
-
-          <button
-            onClick={onSchedule}
-            className="rounded-lg"
-            style={{
-              padding: "12px 28px",
-              background: "#CE4141",
-              color: "#ffffff",
-              border: "none",
-              marginTop: "12px",
-              marginBottom: "25px",
-              fontFamily: "'Bebas Neue', system-ui, sans-serif",
-              fontWeight: 700,
-              fontSize: btnTextSize,
-              letterSpacing: 0.5,
-              minWidth: learnBtnWidth,
-              width: learnBtnWidth
-            }}
-            aria-label="Schedule now"
-          >
-            <ScheduleIcon style={{ display: "inline-block", flexShrink: 0, color: "inherit", marginLeft: '-10px', marginRight: '10px'}} />
-            <span>SCHEDULE NOW</span>
-          </button>
-        </div>
       </div>
     </section>
   );

@@ -3,30 +3,34 @@ import * as React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAward } from "@fortawesome/free-solid-svg-icons";
 import { useState, useRef, useEffect } from "react";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["200", "300","400", "500", "600", "700"],
+});
 
 interface HeroIntroSectionProps {
   imageSrc?: string;
   imageAlt?: string;
+  onSchedule?: () => void;
 }
 
 const Header: React.FC<HeroIntroSectionProps> = ({
   imageSrc = "/image/3d_logo_carmotive.png",
   imageAlt = "Carmotive hero",
+  onSchedule
 }) => {
-  // optional visible state for debugging / readout
   const [pos, setPos] = useState({ x: 0, y: 0 });
-
-  // refs
-  const imageRef = useRef<HTMLImageElement | null>(null); // used to measure image center
-  const wrapperRef = useRef<HTMLDivElement | null>(null); // used to apply JS transform
+  const imageRef = useRef<HTMLImageElement | null>(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
   const targetRef = useRef({ x: 0, y: 0 });
   const currentRef = useRef({ x: 0, y: 0 });
   const rafRef = useRef<number | null>(null);
 
-  // tuning
-  const RADIUS = 200; // how far the mouse influences the repulse
-  const STRENGTH = 1.0; // push multiplier
-  const SMOOTHING = 0.01; // lerp (0..1) lower = smoother
+  const RADIUS = 200;
+  const STRENGTH = 1.0;
+  const SMOOTHING = 0.01;
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -72,12 +76,10 @@ const Header: React.FC<HeroIntroSectionProps> = ({
       currentRef.current.x = nx;
       currentRef.current.y = ny;
 
-      // apply transform to wrapper (so img child animation can run independently)
       if (wrapperRef.current) {
         wrapperRef.current.style.transform = `translate(${nx}px, ${ny}px)`;
       }
 
-      // update react state occasionally to keep things in sync
       if (Math.abs(nx - pos.x) > 0.5 || Math.abs(ny - pos.y) > 0.5) {
         setPos({ x: nx, y: ny });
       }
@@ -92,94 +94,65 @@ const Header: React.FC<HeroIntroSectionProps> = ({
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // run on mount only
+  }, []);
 
   return (
     <section className="relative w-full overflow-hidden">
       {/* Content above bulbs */}
-      <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 py-16 lg:py-24">
-        <div className="max-w-[1440px] pl-[115px] flex flex-col-reverse lg:flex-row items-center gap-10 relative z-10">
+      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 py-8 sm:py-12 lg:py-24">
+        <div className="max-w-[1440px] pl-4 sm:pl-0 lg:pl-[115px] flex flex-col-reverse lg:flex-row items-center gap-6 sm:gap-8 lg:gap-10 relative z-10">
           {/* Left: text area */}
-          <div className="flex-1 max-w-2xl w-full text-left">
-            <div className="inline-flex items-center mb-6">
+          <div className="flex-1 max-w-2xl w-full text-center lg:text-left">
+            <div className="inline-flex items-center mb-4 sm:mb-6 justify-center lg:justify-start">
               <div
-                className="flex items-center justify-center text-[#99BACA] text-[14.40px] uppercase font-bold tracking-[4.90px] break-words"
-                style={{
-                  width: "378px",
-                  height: "45.6px",
-                  fontWeight: 700,
-                  fontSize: "16.0px",
-                  border: "1px solid",
-                  borderRadius: "21.6px",
-                }}
+                className={`${poppins.className} flex items-center justify-center w-full max-w-[500px] sm:w-[378px] h-[45px] sm:h-[55.6px] text-[#99BACA] text-[14px] sm:text-[16px] uppercase font-bold tracking-[3.90px] sm:tracking-[4.90px] break-words border border-[#99BACA] rounded-[40.6px] px-4`}
               >
-                <FontAwesomeIcon icon={faAward} className="mr-3" />
+                <FontAwesomeIcon icon={faAward} className="mr-2 sm:mr-3 w-3 h-3 sm:w-4 sm:h-4" />
                 10 YEARS OF EXPERIENCE
               </div>
             </div>
 
             <h2
-              style={{
-                color: "#FEFCFA",
-                fontSize: 60,
-                fontFamily: "Bebas Neue",
-                fontWeight: 400,
-                textTransform: "uppercase",
-                letterSpacing: 6.08,
-                lineHeight: "110%",
-                marginTop: "20px",
-                wordWrap: "break-word",
-              }}
-              className="text-[clamp(28px,4.5vw,64px)] sm:text-[clamp(36px,5.2vw,72px)] font-[Bebas_Neue] uppercase font-normal leading-tight text-white tracking-wide"
+              className="mt-[16px] sm:mt-[20px] text-[clamp(32px,8vw,48px)] sm:text-[clamp(48px,5vw,60px)] lg:text-[60px] font-['Bebas_Neue'] font-normal uppercase leading-[110%] text-[#FEFCFA] tracking-[3.08px] sm:tracking-[4.08px] lg:tracking-[6.08px] break-words"
             >
               Hey, we are Carmotive <span className="inline-block">👋</span>
               <br className="hidden sm:block" />
+              <span className="sm:hidden"><br /></span>
               we do various services for your car.
             </h2>
 
-            <p
-              style={{
-                paddingTop: "30px",
-                alignSelf: "stretch",
-                color: "#e8f7fde6",
-                fontSize: "20px",
-                fontFamily: "'Montserrat', system-ui, sans-serif",
-                fontWeight: 100,
-                textTransform: "capitalize",
-                letterSpacing: "2.08px",
-                wordWrap: "break-word",
-              }}
+            <p className={`pt-[20px] sm:pt-[30px] self-stretch text-[#e8f7fde6] text-[16px] sm:text-[18px] lg:text-[20px] font-[100] capitalize tracking-[1.08px] sm:tracking-[1.58px] lg:tracking-[2.08px] break-words leading-relaxed ${poppins.className}`}
             >
               Service &amp; Maintenance | Roadworthy Check | Brakes &amp;
               Suspension | Ignition &amp; Starting Systems | AC, Heating &amp;
               Cooling | Tyres &amp; Exhaust...
             </p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-4">
+            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4">
               <button
                 type="button"
-                className="
-transition-transform duration-200 ease-in-out hover:scale-105 
+                className={`transition-transform duration-200 ease-in-out hover:scale-105 
                         flex items-center justify-center gap-3 bg-[#BF6069] hover:bg-[#AE4550] 
-                        text-white font-semibold px-4 py-3 rounded-[100px] w-[210px] 
-                        max-w-[210px] h-[55px] shadow-md cursor-pointer"
-                style={{ fontFamily: "'Montserrat', system-ui, sans-serif" }}
+                        text-white font-semibold px-4 py-3 rounded-[100px] w-full sm:w-[210px] 
+                        max-w-[280px] sm:max-w-[210px] h-[50px] sm:h-[55px] shadow-md cursor-pointer text-[14px] sm:text-[16px] ${poppins.className}`}
+                onClick={onSchedule}
               >
                 <span>Schedule now</span>
               </button>
 
               <button
-                className="transition-transform duration-200 ease-in-out hover:scale-105 
+                className={`transition-transform duration-200 ease-in-out hover:scale-105 
                         flex items-center justify-center gap-3 bg-[#BF6069] hover:bg-[#AE4550] 
-                        text-white font-semibold px-4 py-3 rounded-[100px] w-[151px] h-[55px] shadow-md cursor-pointer"
-                style={{ fontFamily: "'Montserrat', system-ui, sans-serif" }}
+                        text-white font-semibold px-4 py-3 rounded-[100px] w-full sm:w-[151px] 
+                        max-w-[280px] sm:max-w-[151px] h-[50px] sm:h-[55px] shadow-md cursor-pointer text-[14px] sm:text-[16px] ${poppins.className}`}
+                onClick={()=>{window.location.href = '/services'}}
               >
                 Services
               </button>
             </div>
           </div>
 
-          {/* Right: hero image - wrapper gets JS transform, img gets levitate animation */}
+          {/* Right: hero image */}
           <div className="w-full lg:w-1/2 max-w-xl flex-shrink-0 flex justify-center lg:justify-end relative z-20">
             <div
               ref={wrapperRef}
@@ -191,7 +164,7 @@ transition-transform duration-200 ease-in-out hover:scale-105
                 src={imageSrc}
                 alt={imageAlt}
                 ref={imageRef}
-                className="max-w-[620px] sm:w-full h-auto rounded-2xl object-cover levitate"
+                className="max-w-[280px] sm:max-w-[400px] lg:max-w-[620px] w-full h-auto rounded-2xl object-cover levitate"
                 style={{ display: "block" }}
               />
             </div>
