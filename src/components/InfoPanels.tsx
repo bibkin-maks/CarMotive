@@ -1,81 +1,125 @@
-  "use client";
+"use client";
 
-  import React from "react";
-  import Image from "next/image";
-  import { IconServ } from "./icons";
-  import "../app/globals.css";
+import React from "react";
+import Image from "next/image";
+import { IconServ } from "./icons";
+import "../app/globals.css";
+import { motion, Variants } from "framer-motion";
 
-  interface InfoPanelsProps {
+interface InfoPanelsProps {
     handleAbout?: () => void;
     handleContact?: () => void;
-  }
+}
 
-  export const InfoPanels: React.FC<InfoPanelsProps> = ({ handleAbout, handleContact }) => {
+export const InfoPanels: React.FC<InfoPanelsProps> = ({ handleAbout, handleContact }) => {
+    // Animation variants for each panel
+    const cardVariants: Variants = {
+        hidden: { opacity: 0, y: 30 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
+    };
+
+    // Container variant to stagger children
+    const containerVariants: Variants = {
+        hidden: {},
+        visible: { transition: { staggerChildren: 0.15 } },
+    };
     const panels = [
-      { title: "OUR\nSERVICES", image: "/image/services.png", className: "gear", onClick: ()=>{window.location.href = '/services'} },
-      { title: "ABOUT\nUS", image: "/image/about.png", className: "pulse", onClick: handleAbout },
-      { title: "GET IN TOUCH", image: "/image/contact.png", className: "phone-ring", onClick: handleContact },
+        {
+            title: "OUR\nSERVICES",
+            image: "/image/services.png",
+            className: "gear",
+            onClick: () => { window.location.href = '/services' }
+        },
+        {
+            title: "ABOUT\nUS",
+            image: "/image/about.png",
+            className: "pulse",
+            onClick: handleAbout
+        },
+        {
+            title: "GET IN TOUCH",
+            image: "/image/contact.png",
+            className: "phone-ring",
+            onClick: handleContact
+        },
     ];
 
-    // border thickness in px
-    const borderPx = 2;
-
-    const gradient = `linear-gradient(40.411deg,
-      rgba(80, 79, 84, 0.5) 0%,
-      rgba(177, 177, 177, 0.5) 18%,
-      rgba(19, 24, 28, 0.5) 40%,
-      rgba(198, 198, 200, 0.5) 61%,
-      rgba(255, 255, 255, 0.5) 71%,
-      rgba(12, 15, 20, 0.5) 83%,
-      rgba(105, 106, 110, 0.5) 100%)`;
-
     return (
-      <div className="inline-flex justify-start items-center gap-17 max-md:flex max-md:flex-col max-md:w-full max-md:gap-6">
-        {panels.map((panel, i) => (
-          <div
-            key={i}
-            onClick={panel.onClick}
-            className={`relative rounded-2xl info-panel cursor-pointer block-${panel.className} transform transition-transform duration-300 ease-in-out hover:scale-105 max-md:w-full max-md:mb-4`}
-            style={{
-              padding: `${borderPx}px`,
-              background: gradient,
-            }}
-          >
-            {/* INNER card */}
-            <div 
-              style={{height: '100%',}}
-              className="relative w-72 rounded-2xl overflow-hidden bg-black/70 backdrop-blur-md flex justify-start items-center gap-2 px-12 pt-56 pb-9 max-md:flex max-md:justify-center max-md:w-full max-md:h-full max-md:pt-48 max-md:px-6"
-            >
-              {/* Background image */}
-              <div className="absolute inset-0 -z-20 ">
-                <Image
-                  src={panel.image}
-                  alt={panel.title.replace("\n", " ")}
-                  fill
-                  sizes="(min-width: 768px) 18rem, 100vw"
-                  className="object-cover object-center"
-                />
-              </div>
+        <motion.div
+            className="flex flex-wrap justify-center gap-8 w-full max-w-7xl mx-auto px-4 py-8"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+        >
+            {panels.map((panel, i) => (
+                <motion.div
+                    key={i}
+                    onClick={panel.onClick}
+                    variants={cardVariants}
+                    className={`
+                        group relative w-full md:w-80 min-w-[20rem] h-[28rem]
+                        rounded-2xl cursor-pointer flex-shrink-0
+                        transform transition-all duration-500 ease-out
+                        hover:scale-[1.02] hover:-translate-y-2
+                        block-${panel.className}
+                        fade-in-up delay-${(i + 1) * 100}
+                    `}
+                >
+                    {/* Metallic Border Gradient Background */}
+                    < div
+                        className="absolute inset-0 rounded-2xl opacity-80 transition-opacity duration-300 group-hover:opacity-100"
+                        style={{
+                            background: `linear-gradient(145deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 20%, rgba(0,0,0,0.8) 50%, rgba(255,255,255,0.1) 80%, rgba(255,255,255,0.4) 100%)`,
+                            padding: '1px',
+                        }}
+                    >
+                        {/* Inner Content Container */}
+                        <div className="relative h-full w-full rounded-2xl overflow-hidden bg-[#0a0a0a] flex flex-col items-center justify-end pb-12">
 
-              {/* Overlay */}
-              <div className="absolute inset-0 rounded-2xl -z-10 info-panel-bg" />
+                            {/* Background Image with Overlay */}
+                            <div className="absolute inset-0 z-0 select-none">
+                                <Image
+                                    src={panel.image}
+                                    alt={panel.title.replace("\n", " ")}
+                                    fill
+                                    className="object-cover object-center transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40"
+                                    sizes="(min-width: 768px) 20rem, 100vw"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent" />
+                            </div>
 
-              {/* Content */}
-              <div className="w-48 h-60 relative z-10 max-md:w-full max-md:flex max-md:justify-center max-md:items-center">
-                <div className="w-48 left-[4.5px] top-[11.25px] absolute inline-flex flex-col justify-start items-center gap-10 max-md:relative max-md:left-0 max-md:top-0 max-md:w-full max-md:gap-10">
-                 <div className="relative w-24 h-20 outline-[6px] outline-offset-[-3px] outline-red-600 blur-[47px] max-md:w-36 max-md:h-28 max-md:blur-[40px] max-md:hidden"></div>
-                  <IconServ choice={i} className={"absolute w-92 h-20 outline-red-600 mt-[-10px] " + panel.className + " max-md:relative max-md:w-36 max-md:h-28 max-md:mt-0"} />
-                  <div className="self-stretch text-center text-neutral-50 text-[59px] font-normal font-['Bebas_Neue'] leading-[55.5px] tracking-wide whitespace-pre-line max-md:text-7xl max-md:leading-[4rem]">
-                    {panel.title}
-                  </div>
-                </div>
-                {i === 2 && (
-                  <div className="w-16 h-8 left-[103.5px] top-[64.5px] absolute bg-red-700/70 blur-[30px] max-md:left-1/2 max-md:-translate-x-1/2 max-md:w-16 max-md:h-8 max-md:blur-[30px]" />
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+                            {/* Main Content */}
+                            <div className="relative z-10 flex flex-col items-center gap-8 text-center p-6">
+
+                                {/* Icon Container with Glow */}
+                                <div className="relative flex items-center justify-center">
+                                    {/* Ambient Glow behind icon */}
+                                    <div className="absolute w-24 h-24 bg-red-600/30 blur-[40px] rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
+                                    <IconServ
+                                        choice={i}
+                                        className={`w-20 h-20 text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-transform duration-500 ${panel.className}`}
+                                    />
+                                </div>
+
+                                {/* Typography */}
+                                <div className="space-y-2">
+                                    <h3 className="text-5xl font-['Bebas_Neue'] tracking-widest text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400 drop-shadow-lg leading-[0.9]">
+                                        {panel.title}
+                                    </h3>
+                                    <div className="h-[2px] w-0 bg-red-600 mx-auto transition-all duration-300 group-hover:w-16" />
+                                </div>
+                            </div>
+
+                            {/* Decorative element for 3rd item */}
+                            {i === 2 && (
+                                <div className="absolute bottom-20 right-10 w-32 h-32 bg-red-600/20 blur-[50px] -z-10 rounded-full pointer-events-none" />
+                            )}
+                        </div>
+                    </div>
+                </motion.div>
+            ))}
+        </motion.div>
     );
-  };
+};
