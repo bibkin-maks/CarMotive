@@ -1,181 +1,149 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useRef, useCallback, useEffect, useState } from "react";
 import Header from "@/components/Header";
 import FaqSection from "@/components/Faq";
 import NewHeader from "@/components/TopFlyingHeader";
 import { InfoPanels } from "@/components/InfoPanels";
 import ContactForm from "@/components/ContactForm";
-import { Poppins } from "next/font/google";
-
-
+import { Poppins } from "next/font/google"; // Keep font for now, though it might be better in layout
 import "@/app/globals.css";
-
 
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["200", "300","400", "500", "600", "700"], // choose the weights you need
+  weight: ["200", "300", "400", "500", "600", "700"],
 });
 
-
-
-type Bulb = {
-  left: number;
-  top: number;
-  bg: string;
-  width: number;
-  height: number;
-  blur: number; // pixels
-};
-type AnimObj = {
-  bulb1: Bulb;
-  bulb2?: Bulb;
-  bulb3?: Bulb;
-  bulb4?: Bulb;
-};
-
-function returnOffset(state: number): AnimObj {
-  switch (state) {
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-      return {
-        bulb1: { left: 1000, top: -200, bg: "#2D222A", width: 481, height: 418, blur: 100 },
-        bulb2: { left: -200, top: -200, bg: "#2D222A", width: 481, height: 418, blur: 100 },
-        bulb3: { left: -200, top: -200, bg: "#2D222A", width: 481, height: 418, blur: 100 },
-        bulb4: { left: -200, top: -200, bg: "#8E5042", width: 481, height: 418, blur: 100 },
-      };
-    case 0:
-    default:
-      return {
-        bulb1: { left: -6, top: -137, bg: "#2D222A", width: 481, height: 418, blur: 100 },
-        bulb2: { left: 1200, top: -137, bg: "#2B4263", width: 311, height: 311, blur: 81 },
-        bulb3: { left: 1272, top: 601, bg: "#2D222A", width: 410, height: 418, blur: 174 },
-      };
-  }
-}
-
-export default function Home() {
-  const [animationObj, setAnimation] = useState<AnimObj>(() => returnOffset(0));
+const ScrollProgress = () => {
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY 
-      let offsetState = 0
-      if(scrollY < 550) offsetState = 0; 
-      else if(scrollY < 2120) offsetState = 2;
-      else if(scrollY < 2240) offsetState = 3;
-      else offsetState = 4; 
-      setAnimation(returnOffset(offsetState));
+    const updateProgress = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.body.scrollHeight - window.innerHeight;
+      setProgress((scrollTop / docHeight) * 100);
     };
 
-    handleScroll();
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    console.log("page height:", document.body.scrollHeight, "viewport:", window.innerHeight);
-
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', updateProgress);
+    return () => window.removeEventListener('scroll', updateProgress);
   }, []);
 
+  return (
+    <div className="fixed top-0 left-0 right-0 h-1 z-50 bg-gray-900/50">
+      <div
+        className="h-full bg-gradient-to-r from-[#BE5161] to-[#1e3a5f] transition-all duration-300"
+        style={{ width: `${progress}%` }}
+      />
+    </div>
+  );
+};
 
-      const contactForm  = useRef<HTMLDivElement>(null);
-      const aboutBlock = useRef<HTMLDivElement>(null);
+export default function Home() {
+  const contactForm = useRef<HTMLDivElement>(null);
+  const aboutBlock = useRef<HTMLDivElement>(null);
+  const [showBackToTop, setShowBackToTop] = useState(false);
 
-  
-      const scrollContact = () => {
-        contactForm.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-        };
-      const scrollAbout = () => {
-        aboutBlock.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-        };
+  useEffect(() => {
+    const toggleVisibility = () => {
+      setShowBackToTop(window.scrollY > 500);
+    };
+    window.addEventListener('scroll', toggleVisibility);
+    return () => window.removeEventListener('scroll', toggleVisibility);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  const scrollContact = useCallback(() => {
+    contactForm.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, []);
+
+  const scrollAbout = useCallback(() => {
+    aboutBlock.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, []);
 
   return (
-    <main className={`${poppins.className} min-h-screen text-white  overflow-x-hidden relative`} style={{ zoom: "75%" }}>
-      <div className="relative z-10">
-        <NewHeader />
-        <Header onSchedule={scrollContact} />
-        <div className="flex flex-wrap justify-center items-center p-4 mb-20 mt-[100px] md:mt-0">
-          <InfoPanels  handleAbout={scrollAbout} handleContact={scrollContact}/>
-        </div>
-        <div className="flex flex-wrap justify-center items-center p-0 md:p-4 lg:p-4" id="about" ref={aboutBlock}>
-          <FaqSection className="rounded-[5px] md:rounded-[15px] lg:rounded-[25px]" />
-        </div>
+    <main
+      className={`${poppins.className} bg-background min-h-screen text-white relative selection:bg-[#BE5161] selection:text-white`}
+      style={{ zoom: "75%" }}
+    >
+      <ScrollProgress />
+
+      {/* GLOBAL BACKGROUND - Ambient Glows */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none glows-container">
+        <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] sm:w-[30vw] sm:h-[30vw] bg-[#2D222A] rounded-full blur-[120px] opacity-60 mix-blend-screen animate-pulse-slow"></div>
+        <div className="absolute top-[20%] right-[-5%] w-[40vw] h-[40vw] sm:w-[25vw] sm:h-[25vw] bg-[#1e3a5f] rounded-full blur-[120px] opacity-40 mix-blend-screen"></div>
+        <div className="absolute bottom-[-10%] left-[20%] w-[45vw] h-[45vw] sm:w-[35vw] sm:h-[35vw] bg-[#0F2940] rounded-full blur-[100px] opacity-50 mix-blend-screen"></div>
       </div>
 
-    
+      <div className="relative z-10 flex flex-col items-center w-full">
+        <div className="relative z-50 w-full flex flex-col items-center">
+          <NewHeader className="mb-4 sm:mb-8" />
 
-      <div className="flex flex-wrap justify-center items-center mt-[120px] mb-[40px] relative z-20" id="contactForm" ref={contactForm}>
-          <ContactForm/>
-
-      </div>
-
-      <div className="flex flex-wrap justify-center items-center p-10 relative z-20">
-        <div className="flex justify-center items-center w-[1130px] h-[100px] rounded-[33px] border-[#28475A] border-2 bg-[#050F15]">
-          <span className="text-white text-[19px]" >
-            Copyright 2025 © Carmotive | Site by OurAuto Digital
-          </span>
         </div>
-      </div>
 
-      {/* FIXED BULBS */}
-      <div
-        className="pointer-events-none"
-        style={{
-          position: "fixed",
-          left: "50%",
-          top: 0,
-          transform: "translateX(-50%)",
-          width: 1439,
-          height: 3857,
-          zIndex: 0,
-          overflow: "visible",
-          transition: "all 1s ease-in-out", 
-        }}
-        aria-hidden="true"
-      >
-        {/* dynamic bulbs - ensure units in styles */}
+        <div className="relative z-0">
+          <Header onSchedule={scrollContact} />
+        </div>
+
+        <div className="flex flex-wrap justify-center items-center p-4 my-16 sm:my-24 w-full ">
+          <div className="transition-all duration-300 w-full">
+            <InfoPanels handleAbout={scrollAbout} handleContact={scrollContact} />
+          </div>
+        </div>
+
+        <section
+          className="flex flex-wrap justify-center items-center w-full max-w-[1440px] px-4 md:px-8 mb-24 scroll-mt-20 sm:scroll-mt-28"
+          id="about"
+          ref={aboutBlock}
+          aria-label="About section"
+        >
+          <FaqSection className="rounded-[20px] sm:rounded-[40px] shadow-2xl shadow-black/20" />
+        </section>
+
         <div
-          style={{
-            width: animationObj.bulb1.width,
-            height: animationObj.bulb1.height,
-            left: animationObj.bulb1.left,
-            top: animationObj.bulb1.top,
-            position: "absolute",
-            background: animationObj.bulb1.bg,
-            boxShadow: "0 0 82px rgba(42,78,109,0.45)",
-            borderRadius: 9999,
-            filter: `blur(${animationObj.bulb1.blur}px)`,
-            transition: "all 1s ease-in-out", 
-          }}
-        />
-        {animationObj.bulb2 && (
-          <div
-            style={{
-              width: animationObj.bulb2.width,
-              height: animationObj.bulb2.height,
-              left: animationObj.bulb2.left,
-              top: animationObj.bulb2.top,
-              position: "absolute",
-              background: animationObj.bulb2.bg,
-              boxShadow: "0 0 82px rgba(42,78,109,0.45)",
-              borderRadius: 9999,
-              filter: `blur(${animationObj.bulb2.blur}px)`,
-              transition: "all 1s ease-in-out", 
-            }}
-          />
-        )}
+          className="flex flex-wrap justify-center items-center w-full px-4 mb-20 scroll-mt-20 sm:scroll-mt-28 relative z-20"
+          id="contactForm"
+          ref={contactForm}
+        >
+          <ContactForm />
+        </div>
 
-        {/* rest of the static bulbs */}
-        <div style={{ width: 410, height: 418, left: 18, top: 1477, position: "absolute", background: "#3B73A4", boxShadow: "0 0 348px rgba(59,115,164,0.35)", borderRadius: 9999, filter: "blur(174px)" }} />
-        <div style={{ width: 410, height: 1400, left: 1333, top: 1760, position: "absolute", background: "#0F2940", boxShadow: "0 0 348px rgba(15,41,64,0.35)", borderRadius: 9999, filter: "blur(174px)" }} />
-        <div style={{ width: 481, height: 418, left: -104, top: -164, position: "absolute", background: "#3B73A4", boxShadow: "0 0 348px rgba(59,115,164,0.35)", borderRadius: 9999, filter: "blur(174px)" }} />
+        <footer className="w-full flex justify-center pb-10 px-4">
+          <div className="flex justify-center items-center w-full max-w-[1130px] py-8 rounded-3xl border border-[#28475A] bg-[#050F15]/80 backdrop-blur-sm text-center">
+            <span className="footer-text text-sm sm:text-base">
+              Copyright 2025 © Carmotive | Site by OurAuto Digital
+            </span>
+          </div>
+        </footer>
       </div>
+
+      {/* Back to Top Button */}
+      {showBackToTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-8 right-8 z-50 p-4 rounded-full bg-[#BE5161] text-white shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50"
+          aria-label="Back to top"
+        >
+          <svg
+            className="w-5 h-5 sm:w-6 sm:h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+          </svg>
+        </button>
+      )}
     </main>
   );
 }
