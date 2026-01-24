@@ -1,43 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useCallback, useMemo, memo } from "react";
 import {
   motion,
-  AnimatePresence,
   useInView,
-  useScroll,
-  useTransform,
-  Easing,
-  Variants
 } from "framer-motion";
+import Image from "next/image";
 import { IconClock, ScheduleIcon } from "@/components/icons";
 import { ChevronRight } from "lucide-react";
-
-// Luxury easing presets
-const LUXURY_EASING = {
-  enter: [0.22, 1, 0.36, 1] as Easing,
-  exit: [0.87, 0, 0.13, 1] as Easing,
-  bounce: [0.68, -0.55, 0.265, 1.55] as Easing
-};
-
-// Container variant for staggered children
-const faqContainerVariants: Variants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.15, delayChildren: 0.1 }
-  }
-};
-
-// Item variant for smooth reveal
-const faqItemVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.8,
-      ease: LUXURY_EASING.enter
-    }
-  }
-};
+import { containerVariants, itemVariants } from "@/utils/animations";
+import { LuxuryHeading, AnimatedBackground } from "@/components/ui/LuxuryElements";
 
 interface FAQItem {
   id: string;
@@ -53,83 +23,37 @@ interface Props {
   className?: string;
 }
 
-const AnimatedBackground = () => (
-  <>
-    <motion.div
-      animate={{
-        scale: [1, 1.2, 1],
-        rotate: [0, 180, 360],
-        x: [0, 50, 0],
-        y: [0, -30, 0]
-      }}
-      transition={{
-        duration: 20,
-        repeat: Infinity,
-        ease: "linear"
-      }}
-      className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-[#BE5161]/10 via-transparent to-[#8B5CF6]/10 rounded-full blur-[120px] pointer-events-none"
-    />
+// 5. Extract static data
+const DEFAULT_ITEMS: FAQItem[] = [
+  {
+    id: "faq-1",
+    title: "What hours are you open?",
+    body: "Carmotive is open five days a week, from 8:00am to 5:30pm Monday to Friday.",
+  },
+  {
+    id: "faq-2",
+    title: "Do I need to book in a visit?",
+    body: "Yes, you will need to give us a quick call to set up an appointment. We don't want to waste your time and if you show up unannounced you may end up waiting a long time.",
+  },
+];
 
-    <motion.div
-      animate={{
-        scale: [1, 1.1, 1],
-        x: [0, 30, 0],
-        y: [0, -20, 0]
-      }}
-      transition={{
-        duration: 15,
-        repeat: Infinity,
-        ease: "linear"
-      }}
-      className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-blue-900/15 via-transparent to-emerald-500/10 rounded-full blur-[100px] pointer-events-none"
-    />
-  </>
-);
-
-const LuxuryHeading = ({ heading, accentColor }: { heading: string; accentColor: string }) => {
-  return (
-    <div className="relative mb-2">
-      <motion.h2
-        variants={faqItemVariants}
-        className="font-['Bebas_Neue'] text-4xl sm:text-7xl tracking-wide leading-none"
-      >
-        <span className="bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
-          {heading}
-        </span>
-      </motion.h2>
-      <motion.div
-        variants={{
-          hidden: { width: 0 },
-          visible: {
-            width: 406,
-            transition: { duration: 0.8, ease: LUXURY_EASING.enter }
-          }
-        }}
-        className="bg-gradient-to-r from-[#BE5161] to-transparent h-1.5 rounded-full"
-      />
-    </div>
-  );
-};
-
-const LuxuryAccordionItem = ({
+// 1. Memoize static components & 3. Optimize animations
+const LuxuryAccordionItem = memo(function LuxuryAccordionItem({
   item,
   index,
   isOpen,
-  onClick,
-  accentColor
+  onClick
 }: {
   item: FAQItem;
   index: number;
   isOpen: boolean;
   onClick: () => void;
-  accentColor: string;
-}) => {
-  const contentRef = useRef<HTMLDivElement>(null);
-
+}) {
   return (
     <motion.article
-      variants={faqItemVariants}
+      variants={itemVariants}
       onClick={onClick}
+      style={{ willChange: 'transform, opacity' }} // GPU acceleration
       className={`
         group relative w-full rounded-xl overflow-hidden 
         cursor-pointer transition-all duration-300
@@ -177,92 +101,80 @@ const LuxuryAccordionItem = ({
       </div>
 
       {/* Content */}
-      <motion.div
-        initial={false}
-        animate={{
-          height: isOpen ? "auto" : 0,
-          opacity: isOpen ? 1 : 0
-        }}
-        transition={{
-          height: {
-            duration: 0.4,
-            ease: LUXURY_EASING.bounce
-          },
-          opacity: {
-            duration: 0.3
-          }
-        }}
-        className="overflow-hidden"
+      <div
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}
       >
-        <div ref={contentRef} className="px-6 pb-6 pt-0 pl-[4.5rem]">
+        <div className="px-6 pb-6 pt-0 pl-[4.5rem]">
           <p className="text-gray-400 font-light text-base leading-relaxed">
             {item.body}
           </p>
         </div>
-      </motion.div>
+      </div>
     </motion.article>
   );
-};
+});
 
-const LuxuryImage = ({ imageSrc }: { imageSrc: string }) => {
-  const [isLoaded, setIsLoaded] = useState(true);
-
+// 4. Use CSS containment for image & memoize
+const LuxuryImage = memo(function LuxuryImage({ imageSrc }: { imageSrc: string }) {
   return (
     <motion.div
-      variants={faqItemVariants}
+      variants={itemVariants}
+      style={{ contain: 'layout paint' }} // CSS containment
       className="relative w-full h-[400px] lg:h-full rounded-2xl overflow-hidden 
                  border border-white/10 bg-black/20"
     >
-      <motion.img
+      <Image
         src={imageSrc}
         alt="Workshop"
-        className="w-full h-full object-cover opacity-90 transition-opacity duration-500 hover:opacity-100"
-        onLoad={() => setIsLoaded(true)}
+        fill
+        priority={false}
+        loading="lazy" // Lazy load non-critical images
+        quality={85} // Reduce image quality slightly
+        className="object-cover opacity-90 transition-opacity duration-500 hover:opacity-100"
+        sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 450px"
       />
 
       {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0e141a] via-transparent to-transparent opacity-40" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0e141a] via-transparent to-transparent opacity-40 z-10" />
     </motion.div>
   );
-};
+});
 
-export default function FaqSection({
+const FaqSection = ({
   heading = "WHO WE ARE",
   accentColor = "#BE5161",
-  imageSrc = "/image/FAQ.png",
-  items = [
-    {
-      id: "faq-1",
-      title: "What hours are you open?",
-      body: "Carmotive is open five days a week, from 8:00am to 5:30pm Monday to Friday.",
-    },
-    {
-      id: "faq-2",
-      title: "Do I need to book in a visit?",
-      body: "Yes, you will need to give us a quick call to set up an appointment. We don't want to waste your time and if you show up unannounced you may end up waiting a long time.",
-    },
-  ],
+  imageSrc = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/FAQ.png`,
+  items = DEFAULT_ITEMS,
   className,
-}: Props) {
+}: Props) => {
   const [openId, setOpenId] = useState<string | null>(null);
-  const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
+  const sectionRef = useRef<HTMLDivElement>(null);
 
-  // Parallax effect for image
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"]
-  });
+  // Reduced threshold for better performance
+  const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
 
-  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "5%"]);
+  // 2. Optimize handlers with useCallback
+  const handleItemClick = useCallback((id: string) => {
+    setOpenId(prev => prev === id ? null : id);
+  }, []);
+
+  // Memoize items array to prevent unnecessary re-renders of list
+  const memoizedItems = useMemo(() => items, [items]);
+
+  // 7. Optimize re-renders with key selection and stable render function
+  const renderItem = useCallback((item: FAQItem, index: number) => (
+    <LuxuryAccordionItem
+      key={item.id}
+      item={item}
+      index={index}
+      isOpen={openId === item.id}
+      onClick={() => handleItemClick(item.id)}
+    />
+  ), [openId, handleItemClick]);
 
   return (
-    <motion.section
+    <section
       ref={sectionRef}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      variants={faqContainerVariants}
       className={`relative w-full max-w-7xl mx-auto rounded-[32px] 
                   border border-white/10 bg-gradient-to-br 
                   from-[#0e141a] to-[#131c24] overflow-hidden 
@@ -272,19 +184,24 @@ export default function FaqSection({
           0 20px 60px rgba(190, 81, 97, 0.15),
           0 0 0 1px rgba(255,255,255,0.1),
           inset 0 1px 0 rgba(255,255,255,0.1)
-        `
-      }}
+        `,
+        '--accent-color': accentColor,
+      } as React.CSSProperties}
     >
       <AnimatedBackground />
 
-      <div className="relative z-10 flex flex-col xl:flex-row gap-12 xl:gap-20 p-10">
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate={isInView ? "visible" : "hidden"}
+        className="relative z-10 flex flex-col xl:flex-row gap-12 xl:gap-20 p-10"
+      >
         {/* Left Content */}
         <div className="flex-1 flex flex-col">
-          <LuxuryHeading heading={heading} accentColor={accentColor} />
+          <LuxuryHeading heading={heading} />
 
-          {/* Text content with staggered reveal */}
-          <motion.div
-            variants={faqContainerVariants}
+          {/* Text content */}
+          <div
             className="text-gray-300/90 font-light text-lg 
                        leading-relaxed space-y-6 max-w-2xl my-12"
           >
@@ -295,17 +212,17 @@ export default function FaqSection({
             ].map((paragraph, index) => (
               <motion.p
                 key={index}
-                variants={faqItemVariants}
+                variants={itemVariants}
               >
                 {paragraph}
               </motion.p>
             ))}
-          </motion.div>
+          </div>
 
           {/* FAQ Section */}
-          <motion.div variants={faqContainerVariants}>
+          <div>
             <motion.div
-              variants={faqItemVariants}
+              variants={itemVariants}
               className="flex items-center gap-4 mb-8"
             >
               <h3 className="font-['Bebas_Neue'] tracking-wider text-5xl text-white">
@@ -314,44 +231,30 @@ export default function FaqSection({
                   FAQS
                 </span>
               </h3>
-              <motion.div
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.2, ease: LUXURY_EASING.enter }}
+              <div
                 className="flex-1 h-[1px] bg-gradient-to-r from-white/20 
-                          via-white/40 to-transparent origin-left"
+                          via-white/40 to-transparent origin-left opacity-100"
               />
             </motion.div>
 
             {/* Accordion List */}
-            <motion.div
+            <div
               className="flex flex-col gap-4"
-              variants={faqContainerVariants}
             >
-              {items.map((item, index) => (
-                <LuxuryAccordionItem
-                  key={item.id}
-                  item={item}
-                  index={index}
-                  isOpen={openId === item.id}
-                  onClick={() => setOpenId(openId === item.id ? null : item.id)}
-                  accentColor={accentColor}
-                />
-              ))}
-            </motion.div>
-          </motion.div>
+              {memoizedItems.map(renderItem)}
+            </div>
+          </div>
         </div>
 
         {/* Right Image */}
-        <motion.div
-          style={{ y: imageY }}
+        <div
           className="w-full xl:w-[450px] shrink-0"
-          variants={faqItemVariants}
         >
           <LuxuryImage imageSrc={imageSrc} />
-        </motion.div>
-      </div>
-    </motion.section>
+        </div>
+      </motion.div>
+    </section>
   );
-}
+};
+
+export default memo(FaqSection);
