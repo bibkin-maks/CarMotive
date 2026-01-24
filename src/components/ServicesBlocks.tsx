@@ -3,7 +3,7 @@ import { Poppins } from "next/font/google";
 
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["200", "300","400", "500", "600", "700"],
+  weight: ["200", "300", "400", "500", "600", "700"],
 });
 
 interface Props {
@@ -18,15 +18,15 @@ interface Props {
 
 const DefaultLearnIcon: React.FC<SVGProps<SVGSVGElement>> = (p) => (
   <svg width={16} height={16} viewBox="0 0 24 24" fill="none" {...p} xmlns="http://www.w3.org/2000/svg" aria-hidden>
-    <path d="M5 12h14" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M12 5l7 7-7 7" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M5 12h14" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M12 5l7 7-7 7" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
 const DefaultScheduleIcon: React.FC<SVGProps<SVGSVGElement>> = (p) => (
   <svg width={20} height={20} viewBox="0 0 24 24" fill="none" {...p} xmlns="http://www.w3.org/2000/svg" aria-hidden>
     <rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" strokeWidth={2} />
-    <path d="M16 3v4M8 3v4" stroke="currentColor" strokeWidth={2} strokeLinecap="round"/>
+    <path d="M16 3v4M8 3v4" stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
   </svg>
 );
 
@@ -39,7 +39,7 @@ export default function ServiceHero({
   ScheduleIcon = DefaultScheduleIcon,
   swapOrder = false,
 }: Props) {
-  
+
   const handleButtons = () => {
     if (onLearn) onLearn();
   };
@@ -47,48 +47,89 @@ export default function ServiceHero({
   return (
     <section
       aria-label="Vehicle inspection hero"
-      className="flex flex-col lg:flex-row items-start w-full max-w-[1260px] bg-[#061217] rounded-2xl overflow-clip mt-6 lg:mt-[50px] gap-6 lg:gap-[90px] 
-      min-h-[400px] lg:min-h-[721px] max-h-[1200px] border-[2px] border-[#28475a99] mx-auto"
+      className="relative flex flex-col lg:flex-row items-stretch w-full max-w-[1260px] 
+      bg-[#05090C]
+      rounded-3xl overflow-hidden mt-6 lg:mt-[50px] 
+      min-h-[400px] lg:min-h-[600px] 
+      shadow-[0_20px_50px_rgba(0,0,0,0.4)]
+      hover:shadow-[0_20px_60px_rgba(59,130,246,0.15)]
+      transition-all duration-500
+      mx-auto group isolate"
     >
-      {/* Text column - always first on mobile, order swaps on desktop based on prop */}
+      {/* Gradient Border Implementation - Blue Accent */}
+      <div className="absolute inset-0 rounded-3xl p-[1px] bg-gradient-to-br from-white/10 via-white/5 to-[#3B82F6]/40 -z-10 group-hover:via-[#3B82F6]/20 transition-all duration-700" />
+
+      {/* Slight Background Grid */}
       <div
-        className={`flex-1 flex flex-col justify-between p-6 lg:p-10 text-white pb-4 lg:pb-[25px] w-full ${
-          swapOrder ? "lg:order-2" : "lg:order-1"
-        }`}
+        className="absolute inset-0 pointer-events-none opacity-[0.03]"
         style={{
-          height: '-webkit-fill-available'
+          backgroundImage: `linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px)`,
+          backgroundSize: '40px 40px',
         }}
+      />
+
+      {/* Text column */}
+      <div
+        className={`flex-1 flex flex-col justify-center p-8 lg:p-16 relative z-10 ${swapOrder ? "lg:order-2" : "lg:order-1"
+          }`}
       >
-        <div className="flex-1 ">
+        {/* Engineered Corner Accents - Blue */}
+        <div className="absolute top-8 left-8 w-8 h-8 border-t border-l border-[#3B82F6]/30 rounded-tl-lg" />
+        <div className="absolute bottom-8 right-8 w-8 h-8 border-b border-r border-[#3B82F6]/30 rounded-br-lg hidden lg:block" />
+
+        {/* Background Glow - Blue */}
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-[#3B82F6]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+
+        <div className="relative z-10 mt-[1rem]">
           <h2
-            className="leading-none m-0 font-['Bebas_Neue',system-ui,sans-serif] text-3xl lg:text-[46.74px] tracking-[1px]"
+            className="leading-[0.9] m-0 font-['Bebas_Neue',system-ui,sans-serif] text-4xl lg:text-7xl tracking-wide  mb-6
+            text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-gray-400 drop-shadow-sm"
           >
             {heading}
           </h2>
 
-          <div className="mt-4 lg:mt-[18px] font-bold text-base lg:text-[16.18px] leading-relaxed lg:leading-[23.4px] text-[#D1D5DB] max-w-[800px] lg:max-w-[520px]">
+          <div className="font-light text-base lg:text-lg leading-relaxed text-gray-300/80 max-w-[600px]">
             {description}
           </div>
         </div>
 
-        {/* Buttons container - sticks to bottom */}
-        <div className="flex flex-col mt-6 lg:mt-[60px] w-full max-w-[400px]">
+        {/* Buttons container */}
+        <div className="flex flex-col sm:flex-row gap-4 mt-8 lg:mt-12 w-full max-w-[500px]">
           <button
             onClick={handleButtons}
-            className={`inline-flex items-center justify-center gap-2 rounded-md px-4 lg:px-[28px] py-3 lg:py-[12px] w-full lg:max-w-[400px] border-[0.9px] border-[#CE4141] 
-            bg-transparent  font-semibold text-base lg:text-[16.18px] text-white cursor-pointer ${poppins.className}`}
+            className={`
+              flex-1 inline-flex items-center justify-center gap-2 
+              rounded-full px-6 py-4 
+              border border-white/10 hover:border-[#3B82F6]/50
+              bg-white/5 hover:bg-white/10
+              font-medium text-sm lg:text-base text-white 
+              transition-all duration-300
+              backdrop-blur-sm
+              ${poppins.className}
+            `}
             aria-label="Learn more"
           >
             <span>Learn more</span>
-            <LearnIcon style={{ marginLeft: 8 }} />
+            <LearnIcon className="w-4 h-4 opacity-70" />
           </button>
 
           <button
             onClick={handleButtons}
-            className="rounded-lg px-4 lg:px-[28px] py-3 lg:py-[12px] bg-[#CE4141] text-white border-0 mt-3 lg:mt-[12px] mb-4 lg:mb-[25px] font-['Bebas_Neue',system-ui,sans-serif] font-bold text-xl lg:text-[26px] tracking-[0.5px] w-full lg:max-w-[400px] cursor-pointer"
+            className={`
+              flex-[1.5] inline-flex items-center justify-center gap-2
+              rounded-full px-6 py-4 
+              bg-gradient-to-r from-[#BE5161] to-[#a34452]
+              hover:from-[#D65D6E] hover:to-[#BE5161]
+              text-white font-semibold text-sm lg:text-base tracking-wide
+              shadow-[0_10px_30px_rgba(190,81,97,0.3)]
+              hover:shadow-[0_10px_40px_rgba(190,81,97,0.5)]
+              hover:-translate-y-0.5
+              transition-all duration-300
+              ${poppins.className}
+            `}
             aria-label="Schedule now"
           >
-            <ScheduleIcon className="inline-block shrink-0 text-inherit -ml-2 lg:-ml-[10px] mr-2 lg:mr-[10px] w-4 h-4 lg:w-5 lg:h-5" />
+            <ScheduleIcon className="w-5 h-5" />
             <span>SCHEDULE NOW</span>
           </button>
         </div>
@@ -96,15 +137,16 @@ export default function ServiceHero({
 
       {/* Image column */}
       <div
-        className={`flex-shrink-0 order-2 w-full lg:w-[560px] ${swapOrder ? "lg:order-1" : "lg:order-2"}`}
-        style={{
-          height: '-webkit-fill-available'
-        }}
+        className={`relative w-full lg:w-[45%] h-[300px] lg:h-auto overflow-hidden ${swapOrder ? "lg:order-1" : "lg:order-2"}`}
       >
+        {/* Enhanced Image Blending */}
+        {/* <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-l from-[#05090C] via-[#05090C]/20 to-transparent z-10" /> */}
+        <div className="absolute inset-0 bg-[#3B82F6] mix-blend-overlay opacity-0 group-hover:opacity-10 transition-opacity duration-700 z-20" />
+
         <img
           src={imageSrc}
           alt="Vehicle inspection"
-          className="w-full h-[300px] lg:h-[100%] block rounded-none object-cover"
+          className="w-full h-full object-cover transform transition-transform duration-1000 ease-out group-hover:scale-105"
         />
       </div>
     </section>
