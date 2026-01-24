@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useMemo } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll } from "framer-motion";
 import NewHeader from "@/components/TopFlyingHeader";
 import ContactForm from "@/components/ContactForm";
 import ServiceHero from "@/components/ServicesBlocks";
@@ -127,7 +127,8 @@ export default function ServicesPage() {
   const containerRef = useRef(null);
 
   // Scroll progress for parallax or extra effects if needed
-  const { scrollYProgress } = useScroll({
+  // Scroll progress for parallax or extra effects if needed
+  useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
   });
@@ -179,7 +180,7 @@ export default function ServicesPage() {
           <ServiceHero
             onLearn={handleClickToContact}
             swapOrder={false}
-            imageSrc="/image/services/Brake Services.png"
+            imageSrc={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/services/Brake Services.png`}
             heading="Brake Services"
             description={
               <div className="text-base text-gray-300 font-light leading-relaxed space-y-4">
@@ -214,7 +215,7 @@ export default function ServicesPage() {
           <ServiceHero
             onLearn={handleClickToContact}
             swapOrder={true}
-            imageSrc="/image/services/Logbook Servicing.png"
+            imageSrc={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/services/Logbook Servicing.png`}
             heading="Logbook Servicing"
             description={
               <div className="text-base text-gray-300 font-light leading-relaxed space-y-4">
@@ -250,7 +251,7 @@ export default function ServicesPage() {
           <ServiceHero
             onLearn={handleClickToContact}
             swapOrder={false}
-            imageSrc="/image/services/Vehicle Inspections.png"
+            imageSrc={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/services/Vehicle Inspections.png`}
             heading="Vehicle Inspections"
             description={
               <div className="text-base text-gray-300 font-light leading-relaxed space-y-4">
@@ -272,7 +273,7 @@ export default function ServicesPage() {
           <ServiceHero
             onLearn={handleClickToContact}
             swapOrder={true}
-            imageSrc="/image/services/Steering and Suspension.png"
+            imageSrc={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/services/Steering and Suspension.png`}
             heading="Steering and Suspension"
             description={
               <div className="text-base text-gray-300 font-light leading-relaxed space-y-4">
@@ -306,7 +307,7 @@ export default function ServicesPage() {
           <ServiceHero
             onLearn={handleClickToContact}
             swapOrder={false}
-            imageSrc="/image/services/Air Conditioning.png"
+            imageSrc={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/services/Air Conditioning.png`}
             heading="Air Conditioning"
             description={
               <div className="text-base text-gray-300 font-light leading-relaxed space-y-4">
@@ -326,7 +327,7 @@ export default function ServicesPage() {
           <ServiceHero
             onLearn={handleClickToContact}
             swapOrder={true}
-            imageSrc="/image/services/Clutch and Transmission.png"
+            imageSrc={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/services/Clutch and Transmission.png`}
             heading="Clutch and Transmission"
             description={
               <div className="text-base text-gray-300 font-light leading-relaxed space-y-4">
@@ -356,7 +357,7 @@ export default function ServicesPage() {
           <ServiceHero
             onLearn={handleClickToContact}
             swapOrder={false}
-            imageSrc="/image/services/Engine Repairs.png"
+            imageSrc={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/services/Engine Repairs.png`}
             heading="Engine Repairs"
             description={
               <div className="text-base text-gray-300 font-light leading-relaxed space-y-4">
@@ -384,7 +385,7 @@ export default function ServicesPage() {
           <ServiceHero
             onLearn={handleClickToContact}
             swapOrder={true}
-            imageSrc="/image/services/Cooling Systems.png"
+            imageSrc={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/services/Cooling Systems.png`}
             heading="Cooling Systems"
             description={
               <div className="text-base text-gray-300 font-light leading-relaxed space-y-4">
@@ -412,7 +413,7 @@ export default function ServicesPage() {
           <ServiceHero
             onLearn={handleClickToContact}
             swapOrder={false}
-            imageSrc="/image/services/Auto Electrical Services.png"
+            imageSrc={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/services/Auto Electrical Services.png`}
             heading="Auto Electrical Services"
             description={
               <div className="text-base text-gray-300 font-light leading-relaxed space-y-4">
@@ -443,7 +444,7 @@ export default function ServicesPage() {
           <ServiceHero
             onLearn={handleClickToContact}
             swapOrder={true}
-            imageSrc="/image/services/Other Services.png"
+            imageSrc={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/services/Other Services.png`}
             heading="Other Services"
             description={
               <div className="text-base text-gray-300 font-light leading-relaxed space-y-4">
@@ -471,7 +472,7 @@ export default function ServicesPage() {
           <ServiceHero
             onLearn={handleClickToContact}
             swapOrder={false}
-            imageSrc="/image/services/Fleet Management.png"
+            imageSrc={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/services/Fleet Management.png`}
             heading="Fleet Management"
             description={
               <div className="text-base text-gray-300 font-light leading-relaxed space-y-4">

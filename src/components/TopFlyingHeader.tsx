@@ -2,16 +2,16 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
-import { FaBars, FaTimes } from "react-icons/fa"; // Fallback if custom SVGs aren't preferred, but we'll use custom for luxury
-import Link from "next/link"; // Use next/link if available, otherwise a tag
+import { FaTimes } from "react-icons/fa"; // Fallback if custom SVGs aren't preferred, but we'll use custom for luxury
+import Image from "next/image";
 
 // Navigation Data
 const navigationItems = [
-  { name: "Home", href: "/" },
-  { name: "About", href: "/home#about" },
-  { name: "Services", href: "/services" },
-  { name: "Gallery", href: "/gallery" },
-  { name: "Contact", href: "#contactForm" },
+  { name: "Home", href: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/` },
+  { name: "About", href: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/home#about` },
+  { name: "Services", href: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/services` },
+  { name: "Gallery", href: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/gallery` },
+  { name: "Contact", href: `#contactForm` },
 ];
 
 export default function TopFlyingHeader({ className }: { className?: string }) {
@@ -59,14 +59,16 @@ export default function TopFlyingHeader({ className }: { className?: string }) {
           `}
         >
           {/* 1. Logo Section */}
-          <div className="flex-shrink-0 z-20 flex items-center gap-4 cursor-pointer" onClick={() => window.location.href = '/'}>
+          <div className="flex-shrink-0 z-20 flex items-center gap-4 cursor-pointer" onClick={() => window.location.href = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}`}>
             <div className="relative group/logo">
-              <img
-                src="/image/logo.png"
+              <Image
+                src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/logo.png`}
                 alt="CarMotive Logo"
+                width={150}
+                height={55}
                 className={`
                   object-contain transition-all duration-500
-                  ${isScrolled ? "h-[32px] sm:h-[35px]" : "h-[38px] sm:h-[55px]"}
+                  ${isScrolled ? "h-[32px] sm:h-[35px]" : "h-[38px] sm:h-[55px]"} w-auto
                   drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]
                   group-hover/logo:scale-105 group-hover/logo:brightness-110
                 `}
@@ -166,8 +168,8 @@ export default function TopFlyingHeader({ className }: { className?: string }) {
             className="fixed inset-0 z-[100] flex flex-col bg-[#05090C]/98 backdrop-blur-3xl"
           >
             {/* Abstract Background Elements */}
-            <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-[#BE5161]/10 rounded-full blur-[120px] pointer-events-none mix-blend-screen" />
-            <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#28475A]/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen" />
+            <div className="hidden sm:block absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-[#BE5161]/10 rounded-full blur-[120px] pointer-events-none mix-blend-screen" />
+            <div className="hidden sm:block absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#28475A]/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen" />
 
             {/* Watermark */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
@@ -178,7 +180,9 @@ export default function TopFlyingHeader({ className }: { className?: string }) {
 
             {/* Header in Overlay */}
             <div className="w-full flex items-center justify-between px-6 py-6 sm:px-10 mt-2 z-10">
-              <img src="/image/logo.png" alt="Logo" className="h-[40px] opacity-90" />
+              <div className="relative h-[40px] w-[120px]">
+                <Image src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/logo.png`} alt="Logo" fill className="object-contain opacity-90" />
+              </div>
               <motion.button
                 whileHover={{ rotate: 90 }}
                 whileTap={{ scale: 0.9 }}

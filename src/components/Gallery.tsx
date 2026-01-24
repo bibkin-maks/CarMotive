@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence, Variants } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { containerVariants, itemVariants } from "@/utils/animations";
 
 type ImageItem = {
   src: string;
@@ -20,34 +21,12 @@ const imgArray: ImageItem[] = [];
 
 for (let i = 1; i <= 13; i++) {
   const item: ImageItem = {
-    src: `/image/gallery/Carmotive-${i}.jpg`,
+    src: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/gallery/Carmotive-${i}.jpg`,
     alt: `Carmotive ${i}`,
     caption: ''
   };
   imgArray.push(item);
 }
-
-// Animation Variants
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.3
-    }
-  }
-};
-
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 30, scale: 0.95 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
-  }
-};
 
 export default function Gallery({
   images = [...imgArray],
@@ -80,7 +59,7 @@ export default function Gallery({
         <div className="absolute bottom-6 right-6 w-12 h-12 border-b-2 border-r-2 border-[#BE5161]/30 rounded-br-xl pointer-events-none" />
 
         {/* Background Ambient Glow */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#BE5161]/5 blur-[120px] rounded-full pointer-events-none -z-10 mix-blend-screen" />
+        <div className="hidden sm:block absolute top-0 right-0 w-[500px] h-[500px] bg-[#BE5161]/5 blur-[120px] rounded-full pointer-events-none -z-10 mix-blend-screen" />
 
         {/* Gallery Grid */}
         <motion.div

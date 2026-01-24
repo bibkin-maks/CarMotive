@@ -77,7 +77,7 @@ export const IconClock: React.FC<SafeSvgProps> = (props) => (
 export function IconSettings(props: { className?: string }) {
   return (
     <Image
-      src="/image/Vector.svg"
+      src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/Vector.svg`}
       alt="Building icon"
       width={80}
       height={64}
@@ -89,7 +89,7 @@ export function IconSettings(props: { className?: string }) {
 export function IconBuilding(props: { className?: string }) {
   return (
     <Image
-      src="/image/Vector2.svg"
+      src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/Vector2.svg`}
       alt="Building icon"
       width={80}
       height={64}
@@ -100,7 +100,7 @@ export function IconBuilding(props: { className?: string }) {
 
 export const IconPhone: React.FC<{ className?: string }> = (props) => (
   <Image
-    src="/image/Vector3.svg"
+    src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/Vector3.svg`}
     alt="Building icon"
     width={80}
     height={64}

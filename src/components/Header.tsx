@@ -2,9 +2,10 @@
 import * as React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAward } from "@fortawesome/free-solid-svg-icons";
-import { useRef } from "react";
 import { Poppins } from "next/font/google";
+import Image from "next/image";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { containerVariants, itemVariants } from "@/utils/animations";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -14,13 +15,11 @@ const poppins = Poppins({
 interface HeroIntroSectionProps {
   imageSrc?: string;
   imageAlt?: string;
-  onSchedule?: () => void;
 }
 
 const Header: React.FC<HeroIntroSectionProps> = ({
-  imageSrc = "/image/3d_logo_carmotive.png",
+  imageSrc = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/3d_logo_carmotive.png`,
   imageAlt = "Carmotive hero",
-  onSchedule,
 }) => {
   // --- Mouse Parallax / Magnetic Effect using Framer Motion ---
   const x = useMotionValue(0);
@@ -47,25 +46,7 @@ const Header: React.FC<HeroIntroSectionProps> = ({
   };
 
   // --- Animation Variants ---
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.2, // Small delay to let page load
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }
-    },
-  };
+  // Imported from utils
 
   return (
     <section
@@ -170,7 +151,7 @@ const Header: React.FC<HeroIntroSectionProps> = ({
                 whileTap={{ scale: 0.95 }}
                 className={`group bg-transparent border border-white/20 hover:border-white/50 text-white font-semibold px-8 py-4 rounded-full w-full sm:w-auto min-w-[160px] transition-colors ${poppins.className}`}
                 onClick={() => {
-                  window.location.href = "/services";
+                  window.location.href = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/services`;
                 }}
               >
                 <span className="text-lg">Services</span>
@@ -194,9 +175,11 @@ const Header: React.FC<HeroIntroSectionProps> = ({
             }}
           >
             <div className="relative z-10">
-              <img
+              <Image
                 src={imageSrc}
                 alt={imageAlt}
+                width={700}
+                height={700}
                 className="w-full max-w-[320px] sm:max-w-[480px] lg:max-w-[700px] h-auto object-contain drop-shadow-2xl"
                 style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.5))" }}
               />

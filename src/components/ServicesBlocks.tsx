@@ -1,4 +1,5 @@
 import React, { SVGProps } from "react";
+import Image from "next/image";
 import { Poppins } from "next/font/google";
 
 const poppins = Poppins({
@@ -31,7 +32,7 @@ const DefaultScheduleIcon: React.FC<SVGProps<SVGSVGElement>> = (p) => (
 );
 
 export default function ServiceHero({
-  imageSrc = "/image/Vehicle Inspections.png",
+  imageSrc = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/Vehicle Inspections.png`,
   heading = "VEHICLE INSPECTIONS",
   description = "We think that pre-trip inspections are vital if you&apos;re planning a long road trip or a camping trip, simply because we think it&apos;s a lot better to find a problem with your vehicle in a mechanic&apos;s workshop than to find out about it in the middle of nowhere.",
   onLearn,
@@ -143,9 +144,10 @@ export default function ServiceHero({
         {/* <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-l from-[#05090C] via-[#05090C]/20 to-transparent z-10" /> */}
         <div className="absolute inset-0 bg-[#3B82F6] mix-blend-overlay opacity-0 group-hover:opacity-10 transition-opacity duration-700 z-20" />
 
-        <img
+        <Image
           src={imageSrc}
           alt="Vehicle inspection"
+          fill
           className="w-full h-full object-cover transform transition-transform duration-1000 ease-out group-hover:scale-105"
         />
       </div>

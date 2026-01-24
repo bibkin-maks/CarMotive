@@ -92,7 +92,7 @@ export default function Home() {
         </div>
 
         <div className="relative z-0">
-          <Header onSchedule={scrollContact} />
+          <Header />
         </div>
 
         <div className="flex flex-wrap justify-center items-center p-4 my-16 sm:my-24 w-full ">

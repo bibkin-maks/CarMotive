@@ -4,7 +4,8 @@ import React from "react";
 import Image from "next/image";
 import { IconServ } from "./icons";
 import "../app/globals.css";
-import { motion, Variants } from "framer-motion";
+import { motion } from "framer-motion";
+import { containerVariants, itemVariants } from "@/utils/animations";
 
 interface InfoPanelsProps {
     handleAbout?: () => void;
@@ -12,33 +13,22 @@ interface InfoPanelsProps {
 }
 
 export const InfoPanels: React.FC<InfoPanelsProps> = ({ handleAbout, handleContact }) => {
-    // Animation variants for each panel
-    const cardVariants: Variants = {
-        hidden: { opacity: 0, y: 30 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
-    };
-
-    // Container variant to stagger children
-    const containerVariants: Variants = {
-        hidden: {},
-        visible: { transition: { staggerChildren: 0.15 } },
-    };
     const panels = [
         {
             title: "OUR\nSERVICES",
-            image: "/image/services.png",
+            image: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/services.png`,
             className: "gear",
-            onClick: () => { window.location.href = '/services' }
+            onClick: () => { window.location.href = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/services` }
         },
         {
             title: "ABOUT\nUS",
-            image: "/image/about.png",
+            image: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/about.png`,
             className: "pulse",
             onClick: handleAbout
         },
         {
             title: "GET IN TOUCH",
-            image: "/image/contact.png",
+            image: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/contact.png`,
             className: "phone-ring",
             onClick: handleContact
         },
@@ -56,7 +46,7 @@ export const InfoPanels: React.FC<InfoPanelsProps> = ({ handleAbout, handleConta
                 <motion.div
                     key={i}
                     onClick={panel.onClick}
-                    variants={cardVariants}
+                    variants={itemVariants}
                     className={`
                         group relative w-full md:w-80 min-w-[20rem] h-[28rem]
                         rounded-2xl cursor-pointer flex-shrink-0
