@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 
 type ImageItem = {
   src: string;
@@ -26,10 +27,31 @@ for (let i = 1; i <= 13; i++) {
   imgArray.push(item);
 }
 
+// Animation Variants
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.3
+    }
+  }
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 30, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+  }
+};
+
 export default function Gallery({
   images = [...imgArray],
-  maxWidthClass = "max-w-6xl",
-  minItemWidth = 220,
+  maxWidthClass = "max-w-7xl",
   gapClass = "gap-3 sm:gap-6",
   showCaptions = true,
 }: Props) {
@@ -47,84 +69,152 @@ export default function Gallery({
   }, [openIndex, images.length]);
 
   return (
-    <div className={`mx-auto px-3 sm:px-6 lg:px-8 ${maxWidthClass}`}>
-      <div className={`grid ${gapClass} grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5`}>
-        {images.map((img, idx) => (
-          <figure
-            key={idx}
-            className="overflow-hidden rounded-lg bg-gray-800/50 cursor-pointer relative"
-            onClick={() => setOpenIndex(idx)}
-          >
-            <Image
-              src={img.src}
-              alt={img.alt ?? `image-${idx}`}
-              width={500}
-              height={400}
-              className="w-full h-40 sm:h-48 md:h-56 lg:h-64 xl:h-72 object-cover transition-transform duration-300 ease-out hover:scale-105"
-              priority={idx < 4}
-            />
-            {showCaptions && img.caption && (
-              <figcaption className="absolute left-0 right-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent text-white px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm">
-                {img.caption}
-              </figcaption>
-            )}
-          </figure>
-        ))}
+    <div className={`mx-auto px-4 ${maxWidthClass}`}>
+      <div className="relative rounded-[2rem] bg-[#02050ad4] border border-white/5 p-6 sm:p-10 lg:p-14 overflow-hidden group/gallery isolate shadow-2xl shadow-black/50">
+
+        {/* Gradient Border Accent */}
+        <div className="absolute inset-0 rounded-[2rem] p-[1px] bg-gradient-to-br from-white/10 via-white/5 to-[#BE5161]/20 -z-10 pointer-events-none" />
+
+        {/* Engineered Corner Accents (Brand Red) */}
+        <div className="absolute top-6 left-6 w-12 h-12 border-t-2 border-l-2 border-[#BE5161]/30 rounded-tl-xl pointer-events-none" />
+        <div className="absolute bottom-6 right-6 w-12 h-12 border-b-2 border-r-2 border-[#BE5161]/30 rounded-br-xl pointer-events-none" />
+
+        {/* Background Ambient Glow */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#BE5161]/5 blur-[120px] rounded-full pointer-events-none -z-10 mix-blend-screen" />
+
+        {/* Gallery Grid */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+          className={`grid ${gapClass} grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 relative z-10`}
+        >
+          {images.map((img, idx) => (
+            <motion.figure
+              key={idx}
+              variants={itemVariants}
+              className="group/card relative overflow-hidden rounded-xl border border-white/5 bg-white/5 cursor-pointer 
+              transition-all duration-500 ease-out
+              hover:-translate-y-2 hover:border-[#BE5161]/50
+              hover:shadow-[0_15px_40px_-5px_rgba(190,81,97,0.3)]"
+              onClick={() => setOpenIndex(idx)}
+            >
+              <div className="absolute inset-0 bg-gradient-to-t from-[#05090C] via-transparent to-transparent opacity-80 z-10 transition-opacity duration-300 group-hover/card:opacity-40" />
+
+              <Image
+                src={img.src}
+                alt={img.alt ?? `image-${idx}`}
+                width={500}
+                height={400}
+                className="w-full h-40 sm:h-52 md:h-60 lg:h-64 xl:h-72 object-cover transition-transform duration-700 ease-out group-hover/card:scale-110 grayscale-[20%] group-hover/card:grayscale-0"
+                priority={idx < 4}
+              />
+
+              {/* Central Interact Icon */}
+              <div className="absolute inset-0 z-20 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-all duration-300 transform scale-75 group-hover/card:scale-100">
+                <div className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-[0_0_20px_rgba(190,81,97,0.5)]">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5">
+                    <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                  </svg>
+                </div>
+              </div>
+
+              {showCaptions && img.caption && (
+                <figcaption className="absolute left-0 right-0 bottom-0 z-20 px-4 py-3 text-xs sm:text-sm font-medium text-white/90 transform translate-y-full group-hover/card:translate-y-0 transition-transform duration-300">
+                  {img.caption}
+                </figcaption>
+              )}
+            </motion.figure>
+          ))}
+        </motion.div>
       </div>
 
-      {openIndex !== null && images[openIndex] && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6"
-          onClick={() => setOpenIndex(null)}
-        >
-          <div className="absolute inset-0 bg-black/70" />
-
-          <div
-            className="relative z-10 w-full max-w-[95vw] sm:max-w-[90vw] max-h-[90vh] flex items-center"
-            onClick={e => e.stopPropagation()}
+      <AnimatePresence>
+        {openIndex !== null && images[openIndex] && (
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8"
+            onClick={() => setOpenIndex(null)}
           >
-            <button
-              aria-label="Close"
-              onClick={() => setOpenIndex(null)}
-              className="absolute top-2 sm:top-3 right-2 sm:right-3 z-20 rounded-md bg-black/60 text-white px-2 sm:px-3 py-1 text-sm sm:text-base"
-            >
-              ✕
-            </button>
+            {/* Backdrop */}
+            <div className="absolute inset-0 bg-[#05090C]/98 backdrop-blur-3xl" />
 
-            <button
-              aria-label="Previous"
-              onClick={() => setOpenIndex(i => (i === null ? null : Math.max(0, i - 1)))}
-              className="absolute left-2 sm:left-3 md:left-6 z-20 rounded-full bg-black/40 text-white p-1 sm:p-2 text-sm"
-            >
-              ◀
-            </button>
-
-            <Image
-              src={images[openIndex].src}
-              alt={images[openIndex].alt ?? `image-${openIndex}`}
-              width={800}
-              height={600}
-              className="w-full max-w-[95vw] sm:max-w-[90vw] max-h-[80vh] object-contain rounded-md"
-              priority
-            />
-
-            <button
-              aria-label="Next"
-              onClick={() => setOpenIndex(i => (i === null ? null : Math.min(images.length - 1, i + 1)))}
-              className="absolute right-2 sm:right-3 md:right-6 z-20 rounded-full bg-black/40 text-white p-1 sm:p-2 text-sm"
-            >
-              ▶
-            </button>
-
-            {/* Mobile-friendly indicator */}
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-20 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
-              {openIndex + 1} / {images.length}
+            {/* Controls Container */}
+            <div className="fixed top-0 left-0 right-0 p-6 flex justify-between z-[110] pointer-events-none">
+              <div className="pointer-events-auto flex items-center gap-4">
+                <span className="text-[#BE5161] text-lg font-['Bebas_Neue'] tracking-wide">
+                  {openIndex + 1} <span className="text-white/30 text-base mx-1">/</span> {images.length}
+                </span>
+              </div>
+              <button
+                aria-label="Close"
+                onClick={() => setOpenIndex(null)}
+                className="pointer-events-auto rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white w-12 h-12 flex items-center justify-center transition-all duration-300 hover:rotate-90 hover:border-[#BE5161]/50 hover:text-[#BE5161]"
+              >
+                ✕
+              </button>
             </div>
-          </div>
-        </div>
-      )}
+
+            {/* Main Content */}
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="relative z-[105] w-full max-w-7xl h-full flex items-center justify-center"
+              onClick={e => e.stopPropagation()}
+            >
+              <button
+                aria-label="Previous"
+                onClick={() => setOpenIndex(i => (i === null ? null : Math.max(0, i - 1)))}
+                className="absolute left-0 sm:-left-4 z-20 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 backdrop-blur-md text-white w-14 h-14 flex items-center justify-center transition-all hover:-translate-x-2 hidden md:flex hover:border-[#BE5161]/50 hover:text-[#BE5161]"
+              >
+                ◀
+              </button>
+
+              <div className="relative w-full max-h-[85vh] aspect-video shadow-[0_0_100px_rgba(0,0,0,0.8)] rounded-xl overflow-hidden ring-1 ring-white/10">
+                <Image
+                  src={images[openIndex].src}
+                  alt={images[openIndex].alt ?? `image-${openIndex}`}
+                  fill
+                  className="object-contain bg-black/50"
+                  priority
+                />
+              </div>
+
+              <button
+                aria-label="Next"
+                onClick={() => setOpenIndex(i => (i === null ? null : Math.min(images.length - 1, i + 1)))}
+                className="absolute right-0 sm:-right-4 z-20 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 backdrop-blur-md text-white w-14 h-14 flex items-center justify-center transition-all hover:translate-x-2 hidden md:flex hover:border-[#BE5161]/50 hover:text-[#BE5161]"
+              >
+                ▶
+              </button>
+            </motion.div>
+
+            {/* Mobile Navigation Footer */}
+            <div className="fixed bottom-8 flex gap-6 md:hidden z-[110]">
+              <button
+                onClick={() => setOpenIndex(i => (i === null ? null : Math.max(0, i - 1)))}
+                className="rounded-full bg-white/10 border border-white/10 text-white w-14 h-14 flex items-center justify-center active:scale-95 transition-transform"
+              >
+                ◀
+              </button>
+              <button
+                onClick={() => setOpenIndex(i => (i === null ? null : Math.min(images.length - 1, i + 1)))}
+                className="rounded-full bg-white/10 border border-white/10 text-white w-14 h-14 flex items-center justify-center active:scale-95 transition-transform"
+              >
+                ▶
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
