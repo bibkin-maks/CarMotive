@@ -2,12 +2,13 @@
 import * as React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAward } from "@fortawesome/free-solid-svg-icons";
-import { useState, useRef, useEffect } from "react";
+import { useRef } from "react";
 import { Poppins } from "next/font/google";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["200", "300","400", "500", "600", "700"],
+  weight: ["200", "300", "400", "500", "600", "700"],
 });
 
 interface HeroIntroSectionProps {
@@ -19,156 +20,192 @@ interface HeroIntroSectionProps {
 const Header: React.FC<HeroIntroSectionProps> = ({
   imageSrc = "/image/3d_logo_carmotive.png",
   imageAlt = "Carmotive hero",
-  onSchedule
+  onSchedule,
 }) => {
-  const [pos, setPos] = useState({ x: 0, y: 0 });
-  const imageRef = useRef<HTMLImageElement | null>(null);
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const targetRef = useRef({ x: 0, y: 0 });
-  const currentRef = useRef({ x: 0, y: 0 });
-  const rafRef = useRef<number | null>(null);
+  // --- Mouse Parallax / Magnetic Effect using Framer Motion ---
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
 
-  const RADIUS = 200;
-  const STRENGTH = 1.0;
-  const SMOOTHING = 0.01;
+  // Smooth springs for the image movement
+  const springConfig = { damping: 25, stiffness: 150 }; // Smooth and floaty
+  const rotateX = useSpring(useTransform(y, [-300, 300], [10, -10]), springConfig);
+  const rotateY = useSpring(useTransform(x, [-300, 300], [-10, 10]), springConfig);
+  const moveX = useSpring(useTransform(x, [-300, 300], [-20, 20]), springConfig);
+  const moveY = useSpring(useTransform(y, [-300, 300], [-20, 20]), springConfig);
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!imageRef.current) return;
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    x.set(e.clientX - centerX);
+    y.set(e.clientY - centerY);
+  };
 
-      const rect = imageRef.current.getBoundingClientRect();
-      const imgCx = rect.left + rect.width / 2;
-      const imgCy = rect.top + rect.height / 2;
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
 
-      const dx = imgCx - e.clientX;
-      const dy = imgCy - e.clientY;
-      const distance = Math.sqrt(dx * dx + dy * dy);
+  // --- Animation Variants ---
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.2, // Small delay to let page load
+      },
+    },
+  };
 
-      const influence = Math.max(0, (RADIUS - distance) / RADIUS);
-
-      if (influence > 0) {
-        const nx = dx / (distance || 1);
-        const ny = dy / (distance || 1);
-
-        const push = influence * RADIUS * STRENGTH * 0.6;
-        const targetX = nx * push;
-        const targetY = ny * push;
-
-        targetRef.current.x = targetX;
-        targetRef.current.y = targetY;
-      } else {
-        targetRef.current.x = 0;
-        targetRef.current.y = 0;
-      }
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-
-    const animate = () => {
-      const cx = currentRef.current.x;
-      const cy = currentRef.current.y;
-      const tx = targetRef.current.x;
-      const ty = targetRef.current.y;
-
-      const nx = cx + (tx - cx) * SMOOTHING;
-      const ny = cy + (ty - cy) * SMOOTHING;
-
-      currentRef.current.x = nx;
-      currentRef.current.y = ny;
-
-      if (wrapperRef.current) {
-        wrapperRef.current.style.transform = `translate(${nx}px, ${ny}px)`;
-      }
-
-      if (Math.abs(nx - pos.x) > 0.5 || Math.abs(ny - pos.y) > 0.5) {
-        setPos({ x: nx, y: ny });
-      }
-
-      rafRef.current = requestAnimationFrame(animate);
-    };
-
-    rafRef.current = requestAnimationFrame(animate);
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }
+    },
+  };
 
   return (
-    <section className="relative w-full overflow-hidden">
-      {/* Content above bulbs */}
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 py-8 sm:py-12 lg:py-24">
-        <div className="max-w-[1440px] pl-4 sm:pl-0 lg:pl-[115px] flex flex-col-reverse lg:flex-row items-center gap-6 sm:gap-8 lg:gap-10 relative z-10">
-          {/* Left: text area */}
-          <div className="flex-1 max-w-2xl w-full text-center lg:text-left">
-            <div className="inline-flex items-center mb-4 sm:mb-6 justify-center lg:justify-start">
+    <section
+      className="relative w-full "
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      {/* Background ambient element */}
+      <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-blue-600/5 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 py-12 lg:py-20 lg:mr-[-100px]">
+        <div className="flex flex-col-reverse lg:flex-row items-center gap-10 lg:gap-20 relative z-10">
+
+          {/* Left: Text Content - STAGGERED ANIMATION */}
+          <motion.div
+            className="flex-1 w-full text-center lg:text-left flex flex-col items-center lg:items-start"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+          >
+
+            {/* Badge */}
+            <motion.div variants={itemVariants} className="inline-flex items-center justify-center lg:justify-start mb-6">
               <div
-                className={`${poppins.className} flex items-center justify-center w-full max-w-[500px] sm:w-[378px] h-[45px] sm:h-[55.6px] text-[#99BACA] text-[14px] sm:text-[16px] uppercase font-bold tracking-[3.90px] sm:tracking-[4.90px] break-words border border-[#99BACA] rounded-[40.6px] px-4`}
+                className={`${poppins.className} flex items-center gap-3 px-5 py-2.5 rounded-full border border-[#99BACA]/40 bg-[#99BACA]/5 backdrop-blur-sm text-[#99BACA] text-sm sm:text-base font-bold tracking-[0.15em] uppercase shadow-sm transition hover:bg-[#99BACA]/10 hover:border-[#99BACA]/60`}
               >
-                <FontAwesomeIcon icon={faAward} className="mr-2 sm:mr-3 w-3 h-3 sm:w-4 sm:h-4" />
-                10 YEARS OF EXPERIENCE
+                <FontAwesomeIcon icon={faAward} className="text-base" />
+                <span>10 Years of Experience</span>
               </div>
-            </div>
+            </motion.div>
 
-            <h2
-              className="mt-[16px] sm:mt-[20px] text-[clamp(32px,8vw,48px)] sm:text-[clamp(48px,5vw,60px)] lg:text-[60px] font-['Bebas_Neue'] font-normal uppercase leading-[110%] text-[#FEFCFA] tracking-[3.08px] sm:tracking-[4.08px] lg:tracking-[6.08px] break-words"
-            >
-              Hey, we are Carmotive <span className="inline-block">👋</span>
-              <br className="hidden sm:block" />
-              <span className="sm:hidden"><br /></span>
-              we do various services for your car.
-            </h2>
-
-            <p className={`pt-[20px] sm:pt-[30px] self-stretch text-[#e8f7fde6] text-[16px] sm:text-[18px] lg:text-[20px] font-[100] capitalize tracking-[1.08px] sm:tracking-[1.58px] lg:tracking-[2.08px] break-words leading-relaxed ${poppins.className}`}
-            >
-              Service &amp; Maintenance | Roadworthy Check | Brakes &amp;
-              Suspension | Ignition &amp; Starting Systems | AC, Heating &amp;
-              Cooling | Tyres &amp; Exhaust...
-            </p>
-
-            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4">
-              <button
-                type="button"
-                className={`transition-transform duration-200 ease-in-out hover:scale-105 
-                        flex items-center justify-center gap-3 bg-[#BF6069] hover:bg-[#AE4550] 
-                        text-white font-semibold px-4 py-3 rounded-[100px] w-full sm:w-[210px] 
-                        max-w-[280px] sm:max-w-[210px] h-[50px] sm:h-[55px] shadow-md cursor-pointer text-[14px] sm:text-[16px] ${poppins.className}`}
-                onClick={onSchedule}
+            {/* Heading */}
+            <motion.h1 variants={itemVariants} className="font-['Bebas_Neue'] text-5xl sm:text-7xl lg:text-[90px] leading-[0.95] tracking-wide text-white drop-shadow-lg mb-6">
+              Hey, we are <br className="hidden lg:block" />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#BE5161] to-[#E67D8C]">Carmotive</span>
+              <motion.span
+                className="inline-block ml-4"
+                animate={{ rotate: [0, 20, 0, 20, 0], scale: [1, 1.1, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 2 }}
               >
-                <span>Schedule now</span>
-              </button>
+                👋
+              </motion.span>
+            </motion.h1>
 
-              <button
-                className={`transition-transform duration-200 ease-in-out hover:scale-105 
-                        flex items-center justify-center gap-3 bg-[#BF6069] hover:bg-[#AE4550] 
-                        text-white font-semibold px-4 py-3 rounded-[100px] w-full sm:w-[151px] 
-                        max-w-[280px] sm:max-w-[151px] h-[50px] sm:h-[55px] shadow-md cursor-pointer text-[14px] sm:text-[16px] ${poppins.className}`}
-                onClick={()=>{window.location.href = '/services'}}
-              >
-                Services
-              </button>
-            </div>
-          </div>
-
-          {/* Right: hero image */}
-          <div className="w-full lg:w-1/2 max-w-xl flex-shrink-0 flex justify-center lg:justify-end relative z-20">
-            <div
-              ref={wrapperRef}
-              style={{ willChange: "transform" }}
-              className="relative"
-              aria-hidden="false"
+            {/* Subtitle - Responsive Flex Layout */}
+            <motion.div
+              variants={itemVariants}
+              className={`flex flex-wrap justify-center lg:justify-start gap-x-3 gap-y-2 text-base sm:text-xl lg:text-2xl text-blue-100/80 font-light max-w-2xl leading-relaxed mb-8 sm:mb-10 ${poppins.className}`}
             >
+              {[
+                "Service & Maintenance",
+                "Roadworthy Check",
+                "Brakes & Suspension",
+                "AC & Cooling"
+              ].map((item, index, array) => (
+                <div key={item} className="flex items-center">
+                  <span>{item}</span>
+                  {index < array.length - 1 && (
+                    <span className="text-white/20 ml-3 hidden sm:inline">|</span>
+                  )}
+                </div>
+              ))}
+            </motion.div>
+
+            {/* Buttons */}
+            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center gap-5 w-full sm:w-auto">
+              {/* Primary Button */}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => {
+                  const form = document.querySelector('#contactForm');
+                  if (form) form.scrollIntoView({ behavior: 'smooth' });
+                  else window.location.href = '#contactForm';
+                }}
+                className="
+                flex items-center justify-center
+                relative overflow-hidden
+                px-8 py-4 sm:py-5 rounded-full
+                bg-[#BE5161] text-white font-semibold  tracking-wide
+                border border-[#BE5161]/50
+                shadow-[0_4px_20px_rgba(190,81,97,0.3)]
+                transition-all duration-300
+                w-full sm:w-auto
+                group/cta
+              "
+              >
+                <span className="relative z-10 flex items-center gap-2 font-['Poppins']">
+                  Schedule Now
+                  <svg className="w-4 h-4 transform group-hover/cta:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </span>
+                {/* Shimmer Effect */}
+                <div className="absolute inset-0 translate-x-[-100%] group-hover/cta:translate-x-[100%] transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12" />
+              </motion.button>
+
+              {/* Secondary Button */}
+              <motion.button
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className={`group bg-transparent border border-white/20 hover:border-white/50 text-white font-semibold px-8 py-4 rounded-full w-full sm:w-auto min-w-[160px] transition-colors ${poppins.className}`}
+                onClick={() => {
+                  window.location.href = "/services";
+                }}
+              >
+                <span className="text-lg">Services</span>
+              </motion.button>
+            </motion.div>
+          </motion.div>
+
+          {/* Right: Hero Image - FLOATING ANIMATION */}
+          <motion.div
+            className="w-full lg:w-[45%] flex justify-center lg:justify-end"
+            initial={{ opacity: 0, scale: 0.8, x: 50 }}
+            whileInView={{ opacity: 1, scale: 1, x: 0 }}
+            transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+            viewport={{ once: true }}
+            style={{
+              rotateX,
+              rotateY,
+              x: moveX,
+              y: moveY,
+              perspective: 1000
+            }}
+          >
+            <div className="relative z-10">
               <img
                 src={imageSrc}
                 alt={imageAlt}
-                ref={imageRef}
-                className="max-w-[280px] sm:max-w-[400px] lg:max-w-[620px] w-full h-auto rounded-2xl object-cover levitate"
-                style={{ display: "block" }}
+                className="w-full max-w-[320px] sm:max-w-[480px] lg:max-w-[700px] h-auto object-contain drop-shadow-2xl"
+                style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.5))" }}
               />
+
+              {/* Decorative radial gradient behind image */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-blue-500/10 rounded-full blur-[80px] -z-10 pointer-events-none mix-blend-screen animate-pulse-slow"></div>
             </div>
-          </div>
+          </motion.div>
+
         </div>
       </div>
     </section>
