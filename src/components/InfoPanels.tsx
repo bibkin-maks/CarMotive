@@ -2,114 +2,138 @@
 
 import React from "react";
 import Image from "next/image";
-import { IconServ } from "./icons";
-import "../app/globals.css";
 import { motion } from "framer-motion";
+import { IconServ } from "./icons";
 import { containerVariants, itemVariants } from "@/utils/animations";
+import { asset } from "@/utils/navigation";
 
 interface InfoPanelsProps {
-    handleAbout?: () => void;
-    handleContact?: () => void;
+  handleAbout?: () => void;
+  handleContact?: () => void;
 }
 
-export const InfoPanels: React.FC<InfoPanelsProps> = ({ handleAbout, handleContact }) => {
-    const panels = [
-        {
-            title: "OUR\nSERVICES",
-            image: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/services.png`,
-            className: "gear",
-            onClick: () => { window.location.href = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/services` }
-        },
-        {
-            title: "ABOUT\nUS",
-            image: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/about.png`,
-            className: "pulse",
-            onClick: handleAbout
-        },
-        {
-            title: "GET IN TOUCH",
-            image: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/contact.png`,
-            className: "phone-ring",
-            onClick: handleContact
-        },
-    ];
+export const InfoPanels: React.FC<InfoPanelsProps> = ({
+  handleAbout,
+  handleContact,
+}) => {
+  const panels = [
+    {
+      index: "01",
+      title: "Our Services",
+      blurb:
+        "Mechanical, auto electrical and fleetcare — the full range, under one roof.",
+      cta: "Browse services",
+      image: asset("/image/services.png"),
+      iconClass: "gear",
+      onClick: () => {
+        window.location.href = asset("/services");
+      },
+    },
+    {
+      index: "02",
+      title: "About Us",
+      blurb:
+        "A workshop built on 100+ years of combined experience in southeastern Melbourne.",
+      cta: "Our story",
+      image: asset("/image/about.png"),
+      iconClass: "pulse",
+      onClick: handleAbout,
+    },
+    {
+      index: "03",
+      title: "Get in Touch",
+      blurb:
+        "Book a slot, ask a question, or get a quote — we'll come back to you quickly.",
+      cta: "Contact us",
+      image: asset("/image/contact.png"),
+      iconClass: "phone-ring",
+      onClick: handleContact,
+    },
+  ];
 
-    return (
-        <motion.div
-            className="flex flex-wrap justify-center gap-8 w-full max-w-7xl mx-auto px-4 py-8"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+  return (
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.15 }}
+      /* Was `flex-wrap` with `min-w-[20rem]` on each card, which forced a
+         320px floor and overflowed viewports at or below 360px. A grid
+         with `minmax(0, 1fr)` tracks cannot overflow. */
+      className="mx-auto grid w-full max-w-[1280px] grid-cols-1 gap-5 px-5 sm:px-8 md:grid-cols-3 lg:gap-6"
+    >
+      {panels.map((panel, i) => (
+        <motion.button
+          key={panel.index}
+          type="button"
+          onClick={panel.onClick}
+          variants={itemVariants}
+          /* The old card carried both the `fade-in-up` CSS keyframe and a
+             framer-motion opacity variant. Both animated opacity from 0,
+             so whichever finished second re-hid the card mid-entrance.
+             Motion is now owned by framer alone. */
+          className={`
+            group relative block-${panel.iconClass}
+            min-w-0 overflow-hidden rounded-panel border border-steel-800
+            bg-steel-900 text-left
+            transition-colors duration-300 hover:border-steel-700
+          `}
         >
-            {panels.map((panel, i) => (
-                <motion.div
-                    key={i}
-                    onClick={panel.onClick}
-                    variants={itemVariants}
-                    className={`
-                        group relative w-full md:w-80 min-w-[20rem] h-[28rem]
-                        rounded-2xl cursor-pointer flex-shrink-0
-                        transform transition-all duration-500 ease-out
-                        hover:scale-[1.02] hover:-translate-y-2
-                        block-${panel.className}
-                        fade-in-up delay-${(i + 1) * 100}
-                    `}
-                >
-                    {/* Metallic Border Gradient Background */}
-                    < div
-                        className="absolute inset-0 rounded-2xl opacity-80 transition-opacity duration-300 group-hover:opacity-100"
-                        style={{
-                            background: `linear-gradient(145deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 20%, rgba(0,0,0,0.8) 50%, rgba(255,255,255,0.1) 80%, rgba(255,255,255,0.4) 100%)`,
-                            padding: '1px',
-                        }}
-                    >
-                        {/* Inner Content Container */}
-                        <div className="relative h-full w-full rounded-2xl overflow-hidden bg-[#0a0a0a] flex flex-col items-center justify-end pb-12">
+          {/* Photo */}
+          <div className="relative h-44 overflow-hidden lg:h-52">
+            <Image
+              src={panel.image}
+              alt=""
+              fill
+              sizes="(min-width: 768px) 33vw, 100vw"
+              className="object-cover object-center opacity-45 grayscale transition-all duration-700 group-hover:scale-105 group-hover:opacity-65 group-hover:grayscale-0"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-steel-900 via-steel-900/60 to-transparent" />
 
-                            {/* Background Image with Overlay */}
-                            <div className="absolute inset-0 z-0 select-none">
-                                <Image
-                                    src={panel.image}
-                                    alt={panel.title.replace("\n", " ")}
-                                    fill
-                                    className="object-cover object-center transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40"
-                                    sizes="(min-width: 768px) 20rem, 100vw"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent" />
-                            </div>
+            {/* Index marker */}
+            <span className="absolute right-5 top-4 font-mono text-xs tracking-widest text-steel-500">
+              {panel.index}
+            </span>
 
-                            {/* Main Content */}
-                            <div className="relative z-10 flex flex-col items-center gap-8 text-center p-6">
+            {/* Icon sits on the seam between photo and body */}
+            <div className="absolute -bottom-6 left-6 flex h-12 w-12 items-center justify-center rounded-xl border border-steel-700 bg-steel-850 shadow-lg">
+              <IconServ
+                choice={i}
+                className={`h-6 w-6 text-brand-500 ${panel.iconClass}`}
+              />
+            </div>
+          </div>
 
-                                {/* Icon Container with Glow */}
-                                <div className="relative flex items-center justify-center">
-                                    {/* Ambient Glow behind icon */}
-                                    <div className="absolute w-24 h-24 bg-red-600/30 blur-[40px] rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+          {/* Body */}
+          <div className="px-6 pb-6 pt-10">
+            <h3 className="font-display text-3xl tracking-wide text-steel-50">
+              {panel.title}
+            </h3>
+            <p className="mt-2.5 text-sm leading-relaxed text-steel-300">
+              {panel.blurb}
+            </p>
 
-                                    <IconServ
-                                        choice={i}
-                                        className={`w-20 h-20 text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-transform duration-500 ${panel.className}`}
-                                    />
-                                </div>
+            <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand-300">
+              {panel.cta}
+              <svg
+                className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2.5}
+                aria-hidden
+              >
+                <path strokeLinecap="round" d="M5 12h14m0 0l-6-6m6 6l-6 6" />
+              </svg>
+            </span>
+          </div>
 
-                                {/* Typography */}
-                                <div className="space-y-2">
-                                    <h3 className="text-5xl font-['Bebas_Neue'] tracking-widest text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400 drop-shadow-lg leading-[0.9]">
-                                        {panel.title}
-                                    </h3>
-                                    <div className="h-[2px] w-0 bg-red-600 mx-auto transition-all duration-300 group-hover:w-16" />
-                                </div>
-                            </div>
-
-                            {/* Decorative element for 3rd item */}
-                            {i === 2 && (
-                                <div className="absolute bottom-20 right-10 w-32 h-32 bg-red-600/20 blur-[50px] -z-10 rounded-full pointer-events-none" />
-                            )}
-                        </div>
-                    </div>
-                </motion.div>
-            ))}
-        </motion.div>
-    );
+          {/* Bottom accent that draws in on hover */}
+          <span className="absolute inset-x-0 bottom-0 h-px w-0 bg-brand-500 transition-all duration-500 group-hover:w-full" />
+        </motion.button>
+      ))}
+    </motion.div>
+  );
 };
+
+export default InfoPanels;

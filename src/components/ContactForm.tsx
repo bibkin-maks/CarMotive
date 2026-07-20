@@ -1,108 +1,172 @@
+"use client";
+
 import { motion } from "framer-motion";
 import {
   FaMapMarkerAlt,
   FaPhoneAlt,
   FaEnvelope,
   FaInstagram,
-  FaTwitter,
   FaFacebook,
-  FaYoutube,
 } from "react-icons/fa";
-import ContactInput from "./contact/ContactInput";
-import ContactTextarea from "./contact/ContactTextarea";
-import FormButton from "./contact/FormButton";
+import Field from "./contact/Field";
 import ContactInfoItem from "./contact/ContactInfoItem";
 import MapWidget from "./contact/MapWidget";
-import SocialLinks from "./contact/SocialLinks";
-import { AnimatedBackground, LuxuryHeading } from "./ui/LuxuryElements";
+import SocialLinks, { type SocialLink } from "./contact/SocialLinks";
+import SectionHeading from "./ui/SectionHeading";
+import Button from "./ui/Button";
 
-const ContactForm: React.FC = () => {
-  // Shared simple variants for container staggered entrance
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1, // Faster stagger
-        delayChildren: 0.2
-      }
-    }
-  };
+/* TODO: point these at the real Carmotive profiles. Any platform the
+   workshop isn't on should simply be removed from this array — the
+   component renders nothing for an empty list. */
+const SOCIALS: SocialLink[] = [
+  { icon: FaFacebook, href: "#", label: "Carmotive on Facebook" },
+  { icon: FaInstagram, href: "#", label: "Carmotive on Instagram" },
+];
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }} // Reduced distance
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }} // Trigger earlier
-      transition={{ duration: 0.6, ease: "easeOut" }} // Simple ease
-      className="relative w-full max-w-7xl mx-auto rounded-[24px] sm:rounded-[32px] overflow-hidden border border-white/10 bg-[#0e141a] shadow-2xl flex flex-col lg:flex-row"
-    >
-      {/* Optimized Background */}
-      <AnimatedBackground />
+const OPENING_HOURS = [
+  { days: "Monday – Friday", hours: "8:00am – 5:30pm" },
+  { days: "Saturday – Sunday", hours: "Closed" },
+];
 
-      {/* Subtle Grid Overlay */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\u002260\u0022 height=\u002260\u0022 xmlns=\u0022http://www.w3.org/2000/svg\u0022%3E%3Cdefs%3E%3Cpattern id=\u0022grid\u0022 width=\u002260\u0022 height=\u002260\u0022 patternUnits=\u0022userSpaceOnUse\u0022%3E%3Cpath d=\u0022M 60 0 L 0 0 0 60\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(255,255,255,0.02)\u0022 stroke-width=\u00221\u0022/%3E%3C/pattern%3E%3C/defs%3E%3Crect width=\u0022100%25\u0022 height=\u0022100%25\u0022 fill=\u0022url(%23grid)\u0022/%3E%3C/svg%3E')] opacity-30 pointer-events-none" />
+const ContactForm: React.FC = () => (
+  <motion.section
+    initial={{ opacity: 0, y: 16 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-50px" }}
+    transition={{ duration: 0.5, ease: "easeOut" }}
+    className="relative mx-auto grid w-full max-w-[1280px] overflow-hidden rounded-panel border border-steel-800 bg-steel-900 lg:grid-cols-[1.15fr_0.85fr]"
+    aria-label="Contact"
+  >
+    <div className="grid-rules-fine absolute inset-0 opacity-40" aria-hidden />
 
-      {/* Left Form Section */}
-      <div className="relative z-10 lg:w-3/5 p-8 sm:p-12 lg:p-16 flex flex-col">
-        <LuxuryHeading heading="Get in touch" className="mb-10 sm:mb-12" />
+    {/* ---------- Form ---------- */}
+    <div className="relative p-6 sm:p-10 lg:p-14">
+      <SectionHeading
+        eyebrow="Book a service"
+        heading="Get in touch"
+        lede="Tell us about the vehicle and what it needs. We'll confirm a time that works."
+      />
 
-        <motion.form
-          className="flex flex-col space-y-5 flex-grow"
-          variants={containerVariants}
+      <form className="mt-10 flex flex-col gap-5">
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Field index={0} label="Name" name="name" autoComplete="name" />
+          <Field
+            index={1}
+            label="Phone"
+            name="phone"
+            type="tel"
+            autoComplete="tel"
+          />
+        </div>
+
+        <Field
+          index={2}
+          label="Email"
+          name="email"
+          type="email"
+          autoComplete="email"
+        />
+
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Field
+            index={3}
+            label="Vehicle make & model"
+            name="vehicle"
+            placeholder="e.g. Toyota Hilux 2018"
+          />
+          <Field
+            index={4}
+            label="Service type"
+            name="service"
+            placeholder="e.g. Logbook service"
+          />
+        </div>
+
+        <Field
+          index={5}
+          label="Preferred date"
+          name="date"
+          type="date"
+          style={{ colorScheme: "dark" }}
+        />
+
+        <Field
+          index={6}
+          label="Message"
+          name="message"
+          multiline
+          rows={4}
+          placeholder="Anything else we should know?"
+        />
+
+        <motion.div
+          custom={7}
+          variants={{
+            hidden: { opacity: 0, y: 14 },
+            visible: {
+              opacity: 1,
+              y: 0,
+              transition: { delay: 0.28, duration: 0.35 },
+            },
+          }}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
+          className="pt-2"
         >
-          <ContactInput index={0} type="text" placeholder="Name" />
-          <ContactInput index={1} type="text" placeholder="Phone Number" />
-          <ContactInput index={2} type="email" placeholder="Email" />
+          <Button type="submit" size="lg" withArrow className="w-full sm:w-auto">
+            Send request
+          </Button>
+        </motion.div>
+      </form>
+    </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <ContactInput index={3} type="text" placeholder="Vehicle Make & Model" />
-            <ContactInput index={4} type="text" placeholder="Service Type" />
-          </div>
+    {/* ---------- Details ---------- */}
+    <div className="relative flex flex-col gap-8 border-t border-steel-800 bg-steel-850 p-6 sm:p-10 lg:border-l lg:border-t-0 lg:p-12">
+      <MapWidget />
 
-          <ContactInput index={5} type="date" placeholder="Preferred Date" className="appearance-none" style={{ colorScheme: 'dark' }} />
-          <ContactTextarea index={6} placeholder="Message" rows={4} />
-
-          <FormButton index={7}>Submit Request</FormButton>
-        </motion.form>
+      <div className="space-y-4">
+        <ContactInfoItem
+          icon={FaMapMarkerAlt}
+          text="292 Boundary Road, Dingley Village VIC 3172"
+          href="https://maps.google.com/?q=292+Boundary+Road+Dingley+Village+VIC+3172"
+          delay={0.05}
+        />
+        <ContactInfoItem
+          icon={FaPhoneAlt}
+          text="(03) 9551 6555"
+          href="tel:+61395516555"
+          delay={0.1}
+        />
+        <ContactInfoItem
+          icon={FaEnvelope}
+          text="info@carmotive.com.au"
+          href="mailto:info@carmotive.com.au"
+          delay={0.15}
+        />
       </div>
 
-      {/* Right Info Section */}
-      <div className="relative lg:w-2/5 bg-[#131d27]/80 backdrop-blur-md p-8 sm:p-12 lg:p-16 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-white/5">
-
-        {/* Shimmer Effect Background - kept but lighter */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-[50%] -left-[50%] w-[200%] h-[200%] bg-gradient-to-br from-transparent via-white/[0.03] to-transparent rotate-45" />
-        </div>
-
-        <div className="relative z-10">
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.4 }} // Optimized delay
-            className="text-gray-300 text-lg leading-relaxed mb-10 font-light"
-          >
-            Have a question or need assistance? Reach out to us regarding any of our services and we’ll get back to you as soon as possible.
-          </motion.p>
-
-          <MapWidget />
-
-          <div className="space-y-6 text-gray-200">
-            <ContactInfoItem icon={FaMapMarkerAlt} text="292 Boundary Road, Dingley Village VIC 3172" delay={0.6} />
-            <ContactInfoItem icon={FaPhoneAlt} text="(03) 9551 6555" delay={0.7} />
-            <ContactInfoItem icon={FaEnvelope} text="info@carmotive.com.au" delay={0.8} />
-          </div>
-        </div>
-
-        <SocialLinks icons={[FaInstagram, FaTwitter, FaFacebook, FaYoutube]} />
-
+      {/* Opening hours were previously buried inside an FAQ answer, where
+          nobody checking "are they open now?" would look. */}
+      <div className="border-t border-steel-800 pt-6">
+        <h3 className="mb-3 text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-steel-400">
+          Opening hours
+        </h3>
+        <dl className="space-y-2">
+          {OPENING_HOURS.map((row) => (
+            <div key={row.days} className="flex justify-between gap-4 text-sm">
+              <dt className="text-steel-300">{row.days}</dt>
+              <dd className="font-medium text-steel-50">{row.hours}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
-    </motion.div>
-  );
-};
+
+      <div className="mt-auto border-t border-steel-800 pt-6">
+        <SocialLinks links={SOCIALS} />
+      </div>
+    </div>
+  </motion.section>
+);
 
 export default ContactForm;

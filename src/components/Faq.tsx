@@ -1,13 +1,12 @@
-import React, { useState, useRef, useCallback, useMemo, memo } from "react";
-import {
-  motion,
-  useInView,
-} from "framer-motion";
+"use client";
+
+import React, { useState, useRef, useCallback, memo } from "react";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import Image from "next/image";
-import { IconClock, ScheduleIcon } from "@/components/icons";
-import { ChevronRight } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { containerVariants, itemVariants } from "@/utils/animations";
-import { LuxuryHeading, AnimatedBackground } from "@/components/ui/LuxuryElements";
+import SectionHeading from "@/components/ui/SectionHeading";
+import { asset } from "@/utils/navigation";
 
 interface FAQItem {
   id: string;
@@ -17,13 +16,11 @@ interface FAQItem {
 
 interface Props {
   heading?: string;
-  accentColor?: string;
   imageSrc?: string;
   items?: FAQItem[];
   className?: string;
 }
 
-// 5. Extract static data
 const DEFAULT_ITEMS: FAQItem[] = [
   {
     id: "faq-1",
@@ -37,224 +34,188 @@ const DEFAULT_ITEMS: FAQItem[] = [
   },
 ];
 
-// 1. Memoize static components & 3. Optimize animations
-const LuxuryAccordionItem = memo(function LuxuryAccordionItem({
+/* Credibility figures, pulled out of the prose so they can be scanned. */
+const STATS = [
+  { value: "100+", label: "Years combined experience" },
+  { value: "10", label: "Years in Dingley Village" },
+  { value: "5", label: "Days a week" },
+];
+
+const AccordionItem = memo(function AccordionItem({
   item,
-  index,
   isOpen,
-  onClick
+  onToggle,
 }: {
   item: FAQItem;
-  index: number;
   isOpen: boolean;
-  onClick: () => void;
+  onToggle: () => void;
 }) {
-  return (
-    <motion.article
-      variants={itemVariants}
-      onClick={onClick}
-      style={{ willChange: 'transform, opacity' }} // GPU acceleration
-      className={`
-        group relative w-full rounded-xl overflow-hidden 
-        cursor-pointer transition-all duration-300
-        border backdrop-blur-sm
-        ${isOpen
-          ? "bg-white/[0.03] border-[#BE5161]/40"
-          : "bg-transparent border-white/5 hover:border-white/10 hover:bg-white/[0.01]"
-        }
-      `}
-    >
-      <div className="relative flex items-center p-6 gap-5 z-10">
-        {/* Icon */}
-        <div
-          className={`
-            w-10 h-10 rounded-full flex items-center justify-center 
-            shrink-0 transition-all duration-300
-            ${isOpen
-              ? 'bg-[#BE5161] text-white'
-              : 'bg-white/5 text-gray-400 group-hover:text-white group-hover:bg-white/10'
-            }
-          `}
-        >
-          {index === 0 ? (
-            <IconClock className="w-5 h-5" />
-          ) : (
-            <ScheduleIcon className="w-5 h-5" />
-          )}
-        </div>
-
-        <h4 className={`
-          font-medium text-lg flex-1 transition-colors duration-300
-          ${isOpen ? "text-white" : "text-gray-300 group-hover:text-white"}
-        `}>
-          {item.title}
-        </h4>
-
-        <div
-          className={`
-             transition-transform duration-300
-            ${isOpen ? 'rotate-90 text-[#BE5161]' : 'text-gray-500 group-hover:text-gray-300'}
-          `}
-        >
-          <ChevronRight className="w-5 h-5" />
-        </div>
-      </div>
-
-      {/* Content */}
-      <div
-        className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}
-      >
-        <div className="px-6 pb-6 pt-0 pl-[4.5rem]">
-          <p className="text-gray-400 font-light text-base leading-relaxed">
-            {item.body}
-          </p>
-        </div>
-      </div>
-    </motion.article>
-  );
-});
-
-// 4. Use CSS containment for image & memoize
-const LuxuryImage = memo(function LuxuryImage({ imageSrc }: { imageSrc: string }) {
   return (
     <motion.div
       variants={itemVariants}
-      style={{ contain: 'layout paint' }} // CSS containment
-      className="relative w-full h-[400px] lg:h-full rounded-2xl overflow-hidden 
-                 border border-white/10 bg-black/20"
+      className={`overflow-hidden rounded-card border transition-colors duration-300 ${
+        isOpen
+          ? "border-brand-500/40 bg-steel-850"
+          : "border-steel-800 bg-steel-900/60 hover:border-steel-700"
+      }`}
     >
-      <Image
-        src={imageSrc}
-        alt="Workshop"
-        fill
-        priority={false}
-        loading="lazy" // Lazy load non-critical images
-        quality={85} // Reduce image quality slightly
-        className="object-cover opacity-90 transition-opacity duration-500 hover:opacity-100"
-        sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 450px"
-      />
+      {/* Was a click handler on a non-interactive <article> with no
+          keyboard access or state exposed. Now a real disclosure button. */}
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        aria-controls={`${item.id}-panel`}
+        className="flex w-full items-center gap-4 px-5 py-4 text-left lg:px-6 lg:py-5"
+      >
+        <span
+          className={`h-1.5 w-1.5 shrink-0 rounded-full transition-colors duration-300 ${
+            isOpen ? "bg-brand-500" : "bg-steel-600"
+          }`}
+        />
+        <span
+          className={`flex-1 text-[0.9375rem] font-medium transition-colors duration-300 lg:text-base ${
+            isOpen ? "text-steel-50" : "text-steel-200"
+          }`}
+        >
+          {item.title}
+        </span>
+        <ChevronDown
+          className={`h-4 w-4 shrink-0 transition-transform duration-300 ${
+            isOpen ? "rotate-180 text-brand-400" : "text-steel-500"
+          }`}
+          aria-hidden
+        />
+      </button>
 
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0e141a] via-transparent to-transparent opacity-40 z-10" />
+      {/* Height is animated properly instead of the previous
+          max-h-[500px] guess, which made short answers snap open. */}
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            id={`${item.id}-panel`}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <p className="px-5 pb-5 pl-12 text-sm leading-relaxed text-steel-300 lg:px-6 lg:pb-6 lg:pl-14">
+              {item.body}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 });
 
-const FaqSection = ({
-  heading = "WHO WE ARE",
-  accentColor = "#BE5161",
-  imageSrc = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/FAQ.png`,
+const AboutSection = ({
+  heading = "Who we are",
+  imageSrc = asset("/image/FAQ.png"),
   items = DEFAULT_ITEMS,
   className,
 }: Props) => {
-  const [openId, setOpenId] = useState<string | null>(null);
+  const [openId, setOpenId] = useState<string | null>(DEFAULT_ITEMS[0].id);
   const sectionRef = useRef<HTMLDivElement>(null);
-
-  // Reduced threshold for better performance
   const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
 
-  // 2. Optimize handlers with useCallback
-  const handleItemClick = useCallback((id: string) => {
-    setOpenId(prev => prev === id ? null : id);
+  const toggle = useCallback((id: string) => {
+    setOpenId((prev) => (prev === id ? null : id));
   }, []);
-
-  // Memoize items array to prevent unnecessary re-renders of list
-  const memoizedItems = useMemo(() => items, [items]);
-
-  // 7. Optimize re-renders with key selection and stable render function
-  const renderItem = useCallback((item: FAQItem, index: number) => (
-    <LuxuryAccordionItem
-      key={item.id}
-      item={item}
-      index={index}
-      isOpen={openId === item.id}
-      onClick={() => handleItemClick(item.id)}
-    />
-  ), [openId, handleItemClick]);
 
   return (
     <section
       ref={sectionRef}
-      className={`relative w-full max-w-7xl mx-auto rounded-[32px] 
-                  border border-white/10 bg-gradient-to-br 
-                  from-[#0e141a] to-[#131c24] overflow-hidden 
-                  ${className || ""}`}
-      style={{
-        boxShadow: `
-          0 20px 60px rgba(190, 81, 97, 0.15),
-          0 0 0 1px rgba(255,255,255,0.1),
-          inset 0 1px 0 rgba(255,255,255,0.1)
-        `,
-        '--accent-color': accentColor,
-      } as React.CSSProperties}
+      className={`relative w-full overflow-hidden rounded-panel border border-steel-800 bg-steel-900 ${
+        className || ""
+      }`}
     >
-      <AnimatedBackground />
+      <div className="grid-rules-fine absolute inset-0 opacity-50" aria-hidden />
 
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
-        className="relative z-10 flex flex-col xl:flex-row gap-12 xl:gap-20 p-10"
+        className="relative grid gap-12 p-6 sm:p-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16 lg:p-14"
       >
-        {/* Left Content */}
-        <div className="flex-1 flex flex-col">
-          <LuxuryHeading heading={heading} />
+        {/* ---------- Copy ---------- */}
+        <div className="flex flex-col">
+          <SectionHeading eyebrow="About Carmotive" heading={heading} />
 
-          {/* Text content */}
-          <div
-            className="text-gray-300/90 font-light text-lg 
-                       leading-relaxed space-y-6 max-w-2xl my-12"
-          >
+          <div className="mt-8 space-y-5 text-[0.9375rem] leading-relaxed text-steel-300 lg:text-base">
             {[
-              "Carmotive is an automotive repairs workshop which focuses on providing an all-encompassing service to our valued customers in southeastern Melbourne.",
-              "Whether it's mechanical, auto electrical, or fleetcare services, Carmotive is fully equipped and skilled to provide automotive repairs.",
-              "With over 100 years of combined experience, we are confident in saying that no matter what automotive problem you're having, we can help."
-            ].map((paragraph, index) => (
-              <motion.p
-                key={index}
-                variants={itemVariants}
-              >
+              "Carmotive is an automotive repairs workshop focused on providing an all-encompassing service to our customers in southeastern Melbourne.",
+              "Whether it's mechanical, auto electrical, or fleetcare services, we're fully equipped and skilled to handle the job.",
+              "With over 100 years of combined experience, no matter what automotive problem you're having, we can help.",
+            ].map((paragraph, i) => (
+              <motion.p key={i} variants={itemVariants}>
                 {paragraph}
               </motion.p>
             ))}
           </div>
 
-          {/* FAQ Section */}
-          <div>
-            <motion.div
-              variants={itemVariants}
-              className="flex items-center gap-4 mb-8"
-            >
-              <h3 className="font-['Bebas_Neue'] tracking-wider text-5xl text-white">
-                <span className="bg-gradient-to-r from-white to-gray-300 
-                                bg-clip-text text-transparent">
-                  FAQS
-                </span>
-              </h3>
-              <div
-                className="flex-1 h-[1px] bg-gradient-to-r from-white/20 
-                          via-white/40 to-transparent origin-left opacity-100"
-              />
-            </motion.div>
-
-            {/* Accordion List */}
-            <div
-              className="flex flex-col gap-4"
-            >
-              {memoizedItems.map(renderItem)}
-            </div>
-          </div>
+          {/* Stats strip */}
+          <motion.dl
+            variants={itemVariants}
+            className="mt-10 grid grid-cols-3 gap-px overflow-hidden rounded-card border border-steel-800 bg-steel-800"
+          >
+            {STATS.map((stat) => (
+              <div key={stat.label} className="bg-steel-850 px-4 py-5">
+                <dt className="sr-only">{stat.label}</dt>
+                <dd>
+                  <span className="block font-display text-4xl leading-none text-brand-500">
+                    {stat.value}
+                  </span>
+                  <span className="mt-2 block text-[0.6875rem] uppercase leading-tight tracking-[0.1em] text-steel-400">
+                    {stat.label}
+                  </span>
+                </dd>
+              </div>
+            ))}
+          </motion.dl>
         </div>
 
-        {/* Right Image */}
-        <div
-          className="w-full xl:w-[450px] shrink-0"
-        >
-          <LuxuryImage imageSrc={imageSrc} />
+        {/* ---------- Image + FAQ ---------- */}
+        <div className="flex flex-col gap-8">
+          <motion.div
+            variants={itemVariants}
+            className="relative h-64 overflow-hidden rounded-card border border-steel-800 lg:h-80"
+          >
+            <Image
+              src={imageSrc}
+              alt="Inside the Carmotive workshop"
+              fill
+              loading="lazy"
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 45vw"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-steel-900/80 to-transparent" />
+          </motion.div>
+
+          <div>
+            <motion.h3
+              variants={itemVariants}
+              className="mb-4 flex items-center gap-4 font-display text-2xl tracking-wide text-steel-50"
+            >
+              Common questions
+              <span className="rule-fade flex-1" />
+            </motion.h3>
+
+            <div className="flex flex-col gap-3">
+              {items.map((item) => (
+                <AccordionItem
+                  key={item.id}
+                  item={item}
+                  isOpen={openId === item.id}
+                  onToggle={() => toggle(item.id)}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </motion.div>
     </section>
   );
 };
 
-export default memo(FaqSection);
+export default memo(AboutSection);

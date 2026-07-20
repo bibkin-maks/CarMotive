@@ -1,198 +1,192 @@
 "use client";
+
 import * as React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAward } from "@fortawesome/free-solid-svg-icons";
-import { Poppins } from "next/font/google";
 import Image from "next/image";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { containerVariants, itemVariants } from "@/utils/animations";
+import { asset, scrollToContact } from "@/utils/navigation";
+import Button from "@/components/ui/Button";
 
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["200", "300", "400", "500", "600", "700"],
-});
-
-interface HeroIntroSectionProps {
+interface HeroProps {
   imageSrc?: string;
   imageAlt?: string;
 }
 
-const Header: React.FC<HeroIntroSectionProps> = ({
-  imageSrc = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/3d_logo_carmotive.png`,
-  imageAlt = "Carmotive hero",
+/* The four service pillars, promoted from a pipe-separated run of text
+   into a real spec strip — this is the site's proof of competence, so it
+   gets structure rather than being buried in a subtitle. */
+const CAPABILITIES = [
+  { label: "Service & Maintenance", detail: "Logbook stamped" },
+  { label: "Roadworthy Check", detail: "VicRoads certified" },
+  { label: "Brakes & Suspension", detail: "Same-day fitting" },
+  { label: "AC & Cooling", detail: "Regas & repair" },
+];
+
+const Hero: React.FC<HeroProps> = ({
+  imageSrc = asset("/image/3d_logo_carmotive.png"),
+  imageAlt = "Carmotive emblem",
 }) => {
-  // --- Mouse Parallax / Magnetic Effect using Framer Motion ---
+  /* Pointer parallax on the emblem. Softened from the original: the old
+     values swung the mark 20px and 10deg, which fought the text for
+     attention on every mouse move. */
   const x = useMotionValue(0);
   const y = useMotionValue(0);
+  const spring = { damping: 30, stiffness: 120 };
 
-  // Smooth springs for the image movement
-  const springConfig = { damping: 25, stiffness: 150 }; // Smooth and floaty
-  const rotateX = useSpring(useTransform(y, [-300, 300], [10, -10]), springConfig);
-  const rotateY = useSpring(useTransform(x, [-300, 300], [-10, 10]), springConfig);
-  const moveX = useSpring(useTransform(x, [-300, 300], [-20, 20]), springConfig);
-  const moveY = useSpring(useTransform(y, [-300, 300], [-20, 20]), springConfig);
+  const rotateX = useSpring(useTransform(y, [-400, 400], [6, -6]), spring);
+  const rotateY = useSpring(useTransform(x, [-400, 400], [-6, 6]), spring);
+  const moveX = useSpring(useTransform(x, [-400, 400], [-12, 12]), spring);
+  const moveY = useSpring(useTransform(y, [-400, 400], [-12, 12]), spring);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    x.set(e.clientX - centerX);
-    y.set(e.clientY - centerY);
+    x.set(e.clientX - (rect.left + rect.width / 2));
+    y.set(e.clientY - (rect.top + rect.height / 2));
   };
 
-  const handleMouseLeave = () => {
+  const resetPointer = () => {
     x.set(0);
     y.set(0);
   };
 
-  // --- Animation Variants ---
-  // Imported from utils
-
   return (
     <section
-      className="relative w-full "
+      className="relative w-full"
       onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      onMouseLeave={resetPointer}
+      aria-label="Introduction"
     >
-      {/* Background ambient element */}
-      <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-blue-600/5 rounded-full blur-[120px] pointer-events-none" />
-
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 py-12 lg:py-20 lg:mr-[-100px]">
-        <div className="flex flex-col-reverse lg:flex-row items-center gap-10 lg:gap-20 relative z-10">
-
-          {/* Left: Text Content - STAGGERED ANIMATION */}
+      <div className="mx-auto w-full max-w-[1280px] px-5 pb-16 pt-10 sm:px-8 lg:px-12 lg:pb-24 lg:pt-16">
+        <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+          {/* ---------- Copy column ---------- */}
           <motion.div
-            className="flex-1 w-full text-center lg:text-left flex flex-col items-center lg:items-start"
             variants={containerVariants}
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            animate="visible"
+            className="order-2 text-center lg:order-1 lg:text-left"
           >
-
-            {/* Badge */}
-            <motion.div variants={itemVariants} className="inline-flex items-center justify-center lg:justify-start mb-6">
-              <div
-                className={`${poppins.className} flex items-center gap-3 px-5 py-2.5 rounded-full border border-[#99BACA]/40 bg-[#99BACA]/5 backdrop-blur-sm text-[#99BACA] text-sm sm:text-base font-bold tracking-[0.15em] uppercase shadow-sm transition hover:bg-[#99BACA]/10 hover:border-[#99BACA]/60`}
-              >
-                <FontAwesomeIcon icon={faAward} className="text-base" />
-                <span>10 Years of Experience</span>
-              </div>
-            </motion.div>
-
-            {/* Heading */}
-            <motion.h1 variants={itemVariants} className="font-['Bebas_Neue'] text-5xl sm:text-7xl lg:text-[90px] leading-[0.95] tracking-wide text-white drop-shadow-lg mb-6">
-              Hey, we are <br className="hidden lg:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#BE5161] to-[#E67D8C]">Carmotive</span>
-              <motion.span
-                className="inline-block ml-4"
-                animate={{ rotate: [0, 20, 0, 20, 0], scale: [1, 1.1, 1] }}
-                transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 2 }}
-              >
-                👋
-              </motion.span>
-            </motion.h1>
-
-            {/* Subtitle - Responsive Flex Layout */}
+            {/* Credential chip */}
             <motion.div
               variants={itemVariants}
-              className={`flex flex-wrap justify-center lg:justify-start gap-x-3 gap-y-2 text-base sm:text-xl lg:text-2xl text-blue-100/80 font-light max-w-2xl leading-relaxed mb-8 sm:mb-10 ${poppins.className}`}
+              className="mb-7 inline-flex items-center gap-2.5 rounded-full border border-steel-700 bg-steel-900/70 py-1.5 pl-1.5 pr-4 backdrop-blur-sm"
             >
-              {[
-                "Service & Maintenance",
-                "Roadworthy Check",
-                "Brakes & Suspension",
-                "AC & Cooling"
-              ].map((item, index, array) => (
-                <div key={item} className="flex items-center">
-                  <span>{item}</span>
-                  {index < array.length - 1 && (
-                    <span className="text-white/20 ml-3 hidden sm:inline">|</span>
-                  )}
-                </div>
-              ))}
+              <span className="rounded-full bg-brand-600 px-2.5 py-1 text-[0.625rem] font-bold uppercase tracking-[0.14em] text-white">
+                Est. 10 Yrs
+              </span>
+              <span className="text-xs font-medium tracking-wide text-steel-200">
+                100+ years combined experience
+              </span>
             </motion.div>
 
-            {/* Buttons */}
-            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center gap-5 w-full sm:w-auto">
-              {/* Primary Button */}
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => {
-                  const form = document.querySelector('#contactForm');
-                  if (form) form.scrollIntoView({ behavior: 'smooth' });
-                  else window.location.href = '#contactForm';
-                }}
-                className="
-                flex items-center justify-center
-                relative overflow-hidden
-                px-8 py-4 sm:py-5 rounded-full
-                bg-[#BE5161] text-white font-semibold  tracking-wide
-                border border-[#BE5161]/50
-                shadow-[0_4px_20px_rgba(190,81,97,0.3)]
-                transition-all duration-300
-                w-full sm:w-auto
-                group/cta
-              "
-              >
-                <span className="relative z-10 flex items-center gap-2 font-['Poppins']">
-                  Schedule Now
-                  <svg className="w-4 h-4 transform group-hover/cta:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
-                </span>
-                {/* Shimmer Effect */}
-                <div className="absolute inset-0 translate-x-[-100%] group-hover/cta:translate-x-[100%] transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12" />
-              </motion.button>
+            {/* Headline. Solid white with a single red accent word — the old
+                version gradient-clipped the brand name into a dusty rose,
+                which neither matched the logo nor held contrast. */}
+            <motion.h1
+              variants={itemVariants}
+              className="font-display text-display-lg tracking-[0.01em] text-steel-50 sm:text-display-xl"
+            >
+              Melbourne&rsquo;s
+              <br />
+              <span className="text-brand-500">automotive</span> workshop
+            </motion.h1>
 
-              {/* Secondary Button */}
-              <motion.button
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                className={`group bg-transparent border border-white/20 hover:border-white/50 text-white font-semibold px-8 py-4 rounded-full w-full sm:w-auto min-w-[160px] transition-colors ${poppins.className}`}
+            <motion.p
+              variants={itemVariants}
+              className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-steel-300 lg:mx-0 lg:text-lg"
+            >
+              Mechanical, auto electrical and fleetcare repairs done properly
+              &mdash; in Dingley Village, southeastern Melbourne.
+            </motion.p>
+
+            {/* Actions */}
+            <motion.div
+              variants={itemVariants}
+              className="mt-9 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center lg:justify-start"
+            >
+              <Button size="lg" onClick={scrollToContact} withArrow>
+                Book a service
+              </Button>
+              <Button
+                size="lg"
+                variant="secondary"
                 onClick={() => {
-                  window.location.href = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/services`;
+                  window.location.href = asset("/services");
                 }}
               >
-                <span className="text-lg">Services</span>
-              </motion.button>
+                View services
+              </Button>
+            </motion.div>
+
+            {/* Direct line — a workshop's most-used action shouldn't be
+                buried at the bottom of the contact panel. */}
+            <motion.div
+              variants={itemVariants}
+              className="mt-7 flex items-center justify-center gap-3 lg:justify-start"
+            >
+              <span className="text-xs uppercase tracking-[0.16em] text-steel-400">
+                Or call
+              </span>
+              <a
+                href="tel:+61395516555"
+                className="font-display text-2xl tracking-wide text-steel-50 transition-colors hover:text-brand-400"
+              >
+                (03) 9551 6555
+              </a>
             </motion.div>
           </motion.div>
 
-          {/* Right: Hero Image - FLOATING ANIMATION */}
+          {/* ---------- Emblem column ---------- */}
           <motion.div
-            className="w-full lg:w-[45%] flex justify-center lg:justify-end"
-            initial={{ opacity: 0, scale: 0.8, x: 50 }}
-            whileInView={{ opacity: 1, scale: 1, x: 0 }}
-            transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-            viewport={{ once: true }}
-            style={{
-              rotateX,
-              rotateY,
-              x: moveX,
-              y: moveY,
-              perspective: 1000
-            }}
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            style={{ rotateX, rotateY, x: moveX, y: moveY, perspective: 1200 }}
+            className="order-1 flex justify-center lg:order-2"
           >
-            <div className="relative z-10">
+            <div className="relative">
+              {/* Concentric technical rings behind the mark */}
+              <div className="absolute left-1/2 top-1/2 h-[86%] w-[86%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-steel-700/50" />
+              <div className="absolute left-1/2 top-1/2 h-[108%] w-[108%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-steel-800/60" />
+              <div className="absolute left-1/2 top-1/2 h-[70%] w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-600/10 blur-[70px]" />
+
               <Image
                 src={imageSrc}
                 alt={imageAlt}
-                width={700}
-                height={700}
-                className="w-full max-w-[320px] sm:max-w-[480px] lg:max-w-[700px] h-auto object-contain drop-shadow-2xl"
-                style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.5))" }}
+                width={620}
+                height={620}
+                priority
+                className="relative w-full max-w-[260px] object-contain sm:max-w-[360px] lg:max-w-[480px]"
+                style={{ filter: "drop-shadow(0 24px 48px rgba(0,0,0,0.6))" }}
               />
-
-              {/* Decorative radial gradient behind image */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-blue-500/10 rounded-full blur-[80px] -z-10 pointer-events-none mix-blend-screen animate-pulse-slow"></div>
             </div>
           </motion.div>
-
         </div>
+
+        {/* ---------- Capability strip ---------- */}
+        <motion.ul
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          className="mt-16 grid grid-cols-2 gap-px overflow-hidden rounded-card border border-steel-800 bg-steel-800 lg:mt-24 lg:grid-cols-4"
+        >
+          {CAPABILITIES.map((cap) => (
+            <motion.li
+              key={cap.label}
+              variants={itemVariants}
+              className="group bg-steel-900 p-5 transition-colors duration-300 hover:bg-steel-850 lg:p-6"
+            >
+              <div className="mb-3 h-px w-8 bg-brand-500 transition-all duration-300 group-hover:w-14" />
+              <p className="text-sm font-semibold leading-snug text-steel-50 lg:text-base">
+                {cap.label}
+              </p>
+              <p className="mt-1 text-xs text-steel-400">{cap.detail}</p>
+            </motion.li>
+          ))}
+        </motion.ul>
       </div>
     </section>
   );
 };
 
-export default Header;
+export default Hero;

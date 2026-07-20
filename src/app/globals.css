@@ -1,81 +1,193 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
 @import "tailwindcss";
 
+/* ============================================================
+   CARMOTIVE DESIGN SYSTEM
+   Direction: "Precision Workshop" — cool machined steel,
+   vivid brand red used as a signal, structure from rules and
+   grids rather than ambient glow.
 
+   Palette derived from the brand assets:
+   - brand red  #EC1A2A  sampled from the logo car mark
+   - steel ramp          sampled from the 3D chrome emblem
+   ============================================================ */
 
-:root {
-  --background: #ffffff;
-  --foreground: #101B21;
+@theme {
+  /* --- Steel neutrals (cool graphite / machined metal) --- */
+  --color-steel-950: #070a0d; /* page background            */
+  --color-steel-900: #0c1116; /* section surface            */
+  --color-steel-850: #111820; /* card surface               */
+  --color-steel-800: #18212b; /* raised card / input        */
+  --color-steel-700: #22303c; /* strong border              */
+  --color-steel-600: #334554; /* hairline on light surfaces */
+  --color-steel-500: #4a5f70;
+  --color-steel-400: #6b8497; /* disabled / faint text      */
+  --color-steel-300: #93a9b9; /* muted body text            */
+  --color-steel-200: #bdcdd9; /* secondary text             */
+  --color-steel-100: #dee7ed;
+  --color-steel-50: #f4f8fa; /* primary text                */
+
+  /* --- Brand red ---
+     brand-500 is the logo red: use for marks and large display accents.
+     brand-600 is the CTA fill: white text on it clears AA (5.75:1).
+     brand-300 is the accent *text* colour on dark (6.9:1).       */
+  --color-brand-700: #a50f1c;
+  --color-brand-600: #c81523;
+  --color-brand-500: #ec1a2a;
+  --color-brand-400: #ff4351;
+  --color-brand-300: #ff7079;
+
+  /* --- Typography --- */
+  --font-display: var(--font-bebas), "Arial Narrow", sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Display scale — condensed face, tight leading */
+  --text-display-sm: 2.25rem;
+  --text-display-sm--line-height: 0.95;
+  --text-display-md: 3.25rem;
+  --text-display-md--line-height: 0.92;
+  --text-display-lg: 4.5rem;
+  --text-display-lg--line-height: 0.9;
+  --text-display-xl: 6rem;
+  --text-display-xl--line-height: 0.88;
+
+  /* --- Motion --- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-rise: rise 0.7s var(--ease-out-expo) forwards;
+  --animate-sweep: sweep 2.4s linear infinite;
+
+  /* --- Radii --- */
+  --radius-card: 1rem;
+  --radius-panel: 1.5rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #101B21;
-    --foreground: #101B21;
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
   }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+
+html {
+  scroll-behavior: smooth;
+  /* Prevent iOS text inflation from fighting the type scale */
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-
+  background: var(--color-steel-950);
+  color: var(--color-steel-50);
+  font-family: var(--font-sans);
+  /* Cool ambient floor so the near-black never reads flat */
+  background-image: radial-gradient(
+    120% 80% at 50% -10%,
+    rgba(51, 69, 84, 0.35) 0%,
+    transparent 60%
+  );
+  background-attachment: fixed;
 }
 
-
-@keyframes levitate {
-  0% {
-    transform: rotate(0deg) translateX(10px) rotate(0deg);
-  }
-
-  25% {
-    transform: rotate(90deg) translateX(10px) rotate(-90deg);
-  }
-
-  50% {
-    transform: rotate(180deg) translateX(10px) rotate(-180deg);
-  }
-
-  75% {
-    transform: rotate(270deg) translateX(10px) rotate(-270deg);
-  }
-
-  100% {
-    transform: rotate(360deg) translateX(10px) rotate(-360deg);
-  }
+::selection {
+  background: var(--color-brand-600);
+  color: #fff;
 }
 
-/* Slight slower, subtle levitation */
-.levitate {
-  animation: levitate 5.5s ease-in-out infinite;
+/* Consistent focus ring across the whole site */
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-brand-400);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+
+/* Technical blueprint grid — replaces the old blurred glow orbs.
+   Two hairline grids at different scales read as engineering paper. */
+@utility grid-rules {
+  background-image: linear-gradient(
+      to right,
+      rgba(147, 169, 185, 0.06) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgba(147, 169, 185, 0.06) 1px, transparent 1px);
+  background-size: 96px 96px;
+}
+
+@utility grid-rules-fine {
+  background-image: linear-gradient(
+      to right,
+      rgba(147, 169, 185, 0.04) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgba(147, 169, 185, 0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Eyebrow / kicker label above headings */
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-brand-300);
+}
+
+/* Hairline divider that fades out — used to close sections */
+@utility rule-fade {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    var(--color-steel-700),
+    transparent
+  );
+}
+
+/* ============================================================
+   ICON MICRO-INTERACTIONS
+   Retained from the original site — these are tied to the
+   service/about/contact panel icons.
+   ============================================================ */
+
+.gear,
+.pulse,
+.phone-ring {
+  display: inline-block;
   transform-origin: center;
-  will-change: transform;
 }
 
 .gear {
-  display: inline-block;
   transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
-  transform-origin: center;
-  /* ensures it spins around its center */
 }
-
 .block-gear:hover .gear {
   transform: rotate(360deg);
 }
 
-
-
-
-.phone-ring {
-  display: inline-block;
+.pulse {
+  transition: transform 0.3s ease-in-out;
+}
+.block-pulse:hover .pulse {
+  transform: scale(1.1);
 }
 
 .block-phone-ring:hover .phone-ring {
@@ -83,113 +195,42 @@ body {
 }
 
 @keyframes ring {
-  0% {
+  0%,
+  100% {
     transform: rotate(0);
   }
-
   15% {
     transform: rotate(15deg);
   }
-
   30% {
     transform: rotate(-10deg);
   }
-
   45% {
     transform: rotate(5deg);
   }
-
   60% {
     transform: rotate(-5deg);
   }
-
   75% {
     transform: rotate(2deg);
   }
-
-  100% {
-    transform: rotate(0);
-  }
 }
 
+/* ============================================================
+   REDUCED MOTION
+   The original site had no reduced-motion handling at all.
+   ============================================================ */
 
-
-.pulse {
-  display: inline-block;
-  transition: transform 0.3s ease-in-out;
-}
-
-.block-pulse:hover .pulse {
-  transform: scale(1.1);
-}
-
-.info-panel-bg {
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.71) 0%, rgba(0, 0, 0, 0.71) 100%),
-    linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.85) 63%);
-  transition: opacity 0.3s ease-in-out;
-  opacity: 1;
-}
-
-.info-panel:hover .info-panel-bg {
-  opacity: 0.7;
-  /* lighten the overlay */
-}
-
-/* Custom Smooth Animations */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 40px, 0);
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
-}
-
-.fade-in-up {
-  animation: fadeInUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-  /* Smooth easing */
-  opacity: 0;
-  /* meaningful start state */
-}
-
-/* Stagger delays */
-.delay-100 {
-  animation-delay: 100ms;
-}
-
-.delay-200 {
-  animation-delay: 200ms;
-}
-
-.delay-300 {
-  animation-delay: 300ms;
-}
-
-.delay-400 {
-  animation-delay: 400ms;
-}
-
-.delay-500 {
-  animation-delay: 500ms;
-}
-
-/* Enhanced Levitate - smoother, slower floating */
-@keyframes float {
-
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-
-  50% {
-    transform: translateY(-20px);
-  }
-}
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-  will-change: transform;
 }

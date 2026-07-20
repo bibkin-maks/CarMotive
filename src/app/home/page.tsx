@@ -1,36 +1,37 @@
 "use client";
+
 import { useRef, useCallback, useEffect, useState } from "react";
-import Header from "@/components/Header";
-import FaqSection from "@/components/Faq";
-import NewHeader from "@/components/TopFlyingHeader";
+import Hero from "@/components/Header";
+import AboutSection from "@/components/Faq";
+import SiteNav from "@/components/TopFlyingHeader";
 import { InfoPanels } from "@/components/InfoPanels";
 import ContactForm from "@/components/ContactForm";
-import { Poppins } from "next/font/google"; // Keep font for now, though it might be better in layout
-import "@/app/globals.css";
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["200", "300", "400", "500", "600", "700"],
-});
+import Backdrop from "@/components/ui/Backdrop";
+import SiteFooter from "@/components/SiteFooter";
 
 const ScrollProgress = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const updateProgress = () => {
-      const scrollTop = window.scrollY;
+    const update = () => {
       const docHeight = document.body.scrollHeight - window.innerHeight;
-      setProgress((scrollTop / docHeight) * 100);
+      /* Guard against divide-by-zero on short pages — the original wrote
+         NaN into the width style before the page grew tall enough. */
+      setProgress(docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0);
     };
-
-    window.addEventListener('scroll', updateProgress);
-    return () => window.removeEventListener('scroll', updateProgress);
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
   }, []);
 
   return (
-    <div className="fixed top-0 left-0 right-0 h-1 z-50 bg-gray-900/50">
+    <div className="fixed inset-x-0 top-0 z-[60] h-0.5 bg-transparent">
       <div
-        className="h-full bg-gradient-to-r from-[#BE5161] to-[#1e3a5f] transition-all duration-300"
+        className="h-full bg-brand-500 transition-[width] duration-150 ease-out"
         style={{ width: `${progress}%` }}
       />
     </div>
@@ -38,112 +39,86 @@ const ScrollProgress = () => {
 };
 
 export default function Home() {
-  const contactForm = useRef<HTMLDivElement>(null);
-  const aboutBlock = useRef<HTMLDivElement>(null);
-  const [showBackToTop, setShowBackToTop] = useState(false);
+  const contactRef = useRef<HTMLDivElement>(null);
+  const aboutRef = useRef<HTMLDivElement>(null);
+  const [showTop, setShowTop] = useState(false);
 
   useEffect(() => {
-    const toggleVisibility = () => {
-      setShowBackToTop(window.scrollY > 500);
-    };
-    window.addEventListener('scroll', toggleVisibility);
-    return () => window.removeEventListener('scroll', toggleVisibility);
+    const toggle = () => setShowTop(window.scrollY > 600);
+    window.addEventListener("scroll", toggle, { passive: true });
+    return () => window.removeEventListener("scroll", toggle);
   }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
-
-  const scrollContact = useCallback(() => {
-    contactForm.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-  }, []);
-
-  const scrollAbout = useCallback(() => {
-    aboutBlock.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
+  const scrollTo = useCallback((ref: React.RefObject<HTMLDivElement | null>) => {
+    ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
   return (
-    <main
-      className={`${poppins.className} bg-background min-h-screen text-white relative selection:bg-[#BE5161] selection:text-white`}
-      style={{ zoom: "75%" }}
-    >
+    /* The `zoom: 75%` that used to wrap every page is gone. It scaled the
+       whole document down while media queries kept measuring the real
+       viewport, so the responsive breakpoints never lined up with what was
+       on screen, and every font size was 25% smaller than authored. The
+       type scale is now set at true size instead. */
+    <main className="relative min-h-screen">
       <ScrollProgress />
+      <Backdrop />
 
-      {/* GLOBAL BACKGROUND - Ambient Glows */}
-      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none glows-container">
-        <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] sm:w-[30vw] sm:h-[30vw] bg-[#2D222A] rounded-full blur-[120px] opacity-60 mix-blend-screen animate-pulse-slow"></div>
-        <div className="absolute top-[20%] right-[-5%] w-[40vw] h-[40vw] sm:w-[25vw] sm:h-[25vw] bg-[#1e3a5f] rounded-full blur-[120px] opacity-40 mix-blend-screen"></div>
-        <div className="absolute bottom-[-10%] left-[20%] w-[45vw] h-[45vw] sm:w-[35vw] sm:h-[35vw] bg-[#0F2940] rounded-full blur-[100px] opacity-50 mix-blend-screen"></div>
-      </div>
+      <div className="relative z-10">
+        <SiteNav />
 
-      <div className="relative z-10 flex flex-col items-center w-full">
-        <div className="relative z-50 w-full flex flex-col items-center">
-          <NewHeader className="mb-4 sm:mb-8" />
+        <Hero />
 
-        </div>
-
-        <div className="relative z-0">
-          <Header />
-        </div>
-
-        <div className="flex flex-wrap justify-center items-center p-4 my-16 sm:my-24 w-full ">
-          <div className="transition-all duration-300 w-full">
-            <InfoPanels handleAbout={scrollAbout} handleContact={scrollContact} />
-          </div>
-        </div>
-
-        <section
-          className="flex flex-wrap justify-center items-center w-full max-w-[1440px] px-4 md:px-8 mb-24 scroll-mt-20 sm:scroll-mt-28"
-          id="about"
-          ref={aboutBlock}
-          aria-label="About section"
-        >
-          <FaqSection className="rounded-[20px] sm:rounded-[40px] shadow-2xl shadow-black/20" />
+        {/* Section rhythm is now a consistent vertical scale rather than
+            the previous mix of my-16 / mb-24 / mt-[120px] one-offs. */}
+        <section className="py-20 lg:py-28" aria-label="Explore">
+          <InfoPanels
+            handleAbout={() => scrollTo(aboutRef)}
+            handleContact={() => scrollTo(contactRef)}
+          />
         </section>
 
-        <div
-          className="flex flex-wrap justify-center items-center w-full px-4 mb-20 scroll-mt-20 sm:scroll-mt-28 relative z-20"
+        <section
+          id="about"
+          ref={aboutRef}
+          className="scroll-mt-24 px-5 pb-20 sm:px-8 lg:pb-28"
+        >
+          <div className="mx-auto max-w-[1280px]">
+            <AboutSection />
+          </div>
+        </section>
+
+        <section
           id="contactForm"
-          ref={contactForm}
+          ref={contactRef}
+          className="scroll-mt-24 px-5 pb-20 sm:px-8 lg:pb-28"
         >
           <ContactForm />
-        </div>
+        </section>
 
-        <footer className="w-full flex justify-center pb-10 px-4">
-          <div className="flex justify-center items-center w-full max-w-[1130px] py-8 rounded-3xl border border-[#28475A] bg-[#050F15]/80 backdrop-blur-sm text-center">
-            <span className="footer-text text-sm sm:text-base">
-              Copyright 2025 © Carmotive | Site by OurAuto Digital
-            </span>
-          </div>
-        </footer>
+        <SiteFooter />
       </div>
 
-      {/* Back to Top Button */}
-      {showBackToTop && (
-        <button
-          onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-50 p-4 rounded-full bg-[#BE5161] text-white shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50"
-          aria-label="Back to top"
+      {/* Back to top */}
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        aria-label="Back to top"
+        className={`
+          fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center
+          rounded-full border border-steel-700 bg-steel-850/90 text-steel-50 backdrop-blur
+          transition-all duration-300 hover:border-brand-500 hover:bg-brand-600
+          ${showTop ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-3 opacity-0"}
+        `}
+      >
+        <svg
+          className="h-4 w-4"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2.5}
+          viewBox="0 0 24 24"
         >
-          <svg
-            className="w-5 h-5 sm:w-6 sm:h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-          </svg>
-        </button>
-      )}
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 19V5m0 0l-7 7m7-7l7 7" />
+        </svg>
+      </button>
     </main>
   );
 }
