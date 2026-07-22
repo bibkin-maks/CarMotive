@@ -94,7 +94,7 @@ export default function TopFlyingHeader({ className }: { className?: string }) {
                   group/navitem
                 "
               >
-                <span className="relative z-10 font-['Poppins'] uppercase text-xs">{item.name}</span>
+                <span className="relative z-10 font-sans uppercase text-xs">{item.name}</span>
                 {/* Subtle Hover Indicator */}
                 <span className="absolute -bottom-1 left-1/2 w-1 h-1 bg-[#BE5161] rounded-full transform -translate-x-1/2 scale-0 group-hover/navitem:scale-100 transition-transform duration-300" />
               </a>
@@ -116,7 +116,7 @@ export default function TopFlyingHeader({ className }: { className?: string }) {
                 hidden min-[1100px]:flex items-center justify-center
                 relative overflow-hidden
                 px-6 py-3 rounded-full
-                bg-[#BE5161] text-white font-semibold text-xs tracking-widest uppercase font-['Poppins']
+                bg-[#BE5161] text-white font-semibold text-xs tracking-widest uppercase font-sans
                 border border-[#BE5161]/50
                 shadow-[0_4px_20px_rgba(190,81,97,0.3)]
                 transition-all duration-300
@@ -173,7 +173,7 @@ export default function TopFlyingHeader({ className }: { className?: string }) {
 
             {/* Watermark */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-              <span className="text-[20vw] font-['Bebas_Neue'] text-white/[0.02] leading-none select-none">
+              <span className="text-[20vw] font-display text-white/[0.02] leading-none select-none">
                 MENU
               </span>
             </div>
@@ -219,7 +219,7 @@ export default function TopFlyingHeader({ className }: { className?: string }) {
                     className="group/link relative block py-2"
                   >
                     <span className="
-                          block text-5xl sm:text-7xl font-['Bebas_Neue'] text-white/50
+                          block text-5xl sm:text-7xl font-display text-white/50
                           transition-all duration-500 ease-out
                           group-hover/link:text-white group-hover/link:scale-105
                         ">
@@ -256,7 +256,7 @@ export default function TopFlyingHeader({ className }: { className?: string }) {
                   }}
                   className="
                       w-full max-w-sm py-4 rounded-xl
-                      bg-[#BE5161] text-white font-bold text-lg tracking-wide font-['Poppins']
+                      bg-[#BE5161] text-white font-bold text-lg tracking-wide font-sans
                       shadow-[0_10px_30px_-10px_rgba(190,81,97,0.5)]
                       hover:shadow-[0_15px_40px_-5px_rgba(190,81,97,0.6)]
                       active:scale-[0.98] transition-all duration-300
@@ -264,7 +264,7 @@ export default function TopFlyingHeader({ className }: { className?: string }) {
                 >
                   SCHEDULE APPOINTMENT
                 </button>
-                <p className="text-white/30 text-xs tracking-[0.2em] font-['Poppins'] uppercase">
+                <p className="text-white/30 text-xs tracking-[0.2em] font-sans uppercase">
                   Driven by Excellence
                 </p>
               </div>
