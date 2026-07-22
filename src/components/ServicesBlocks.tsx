@@ -1,11 +1,5 @@
 import React, { SVGProps } from "react";
 import Image from "next/image";
-import { Poppins } from "next/font/google";
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["200", "300", "400", "500", "600", "700"],
-});
 
 interface Props {
   imageSrc?: string;
@@ -16,6 +10,8 @@ interface Props {
   ScheduleIcon?: React.FC<SVGProps<SVGSVGElement>>;
   swapOrder?: boolean;
 }
+
+const CARD_BG = "#05090C";
 
 const DefaultLearnIcon: React.FC<SVGProps<SVGSVGElement>> = (p) => (
   <svg width={16} height={16} viewBox="0 0 24 24" fill="none" {...p} xmlns="http://www.w3.org/2000/svg" aria-hidden>
@@ -34,121 +30,109 @@ const DefaultScheduleIcon: React.FC<SVGProps<SVGSVGElement>> = (p) => (
 export default function ServiceHero({
   imageSrc = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/Vehicle Inspections.png`,
   heading = "VEHICLE INSPECTIONS",
-  description = "We think that pre-trip inspections are vital if you&apos;re planning a long road trip or a camping trip, simply because we think it&apos;s a lot better to find a problem with your vehicle in a mechanic&apos;s workshop than to find out about it in the middle of nowhere.",
+  description = "We think that pre-trip inspections are vital if you're planning a long road trip or a camping trip, simply because we think it's a lot better to find a problem with your vehicle in a mechanic's workshop than to find out about it in the middle of nowhere.",
   onLearn,
   LearnIcon = DefaultLearnIcon,
   ScheduleIcon = DefaultScheduleIcon,
   swapOrder = false,
 }: Props) {
-
   const handleButtons = () => {
     if (onLearn) onLearn();
   };
 
   return (
     <section
-      aria-label="Vehicle inspection hero"
-      className="relative flex flex-col lg:flex-row items-stretch w-full max-w-[1260px] 
-      bg-[#05090C]
-      rounded-3xl overflow-hidden mt-6 lg:mt-[50px] 
-      min-h-[400px] lg:min-h-[600px] 
-      shadow-[0_20px_50px_rgba(0,0,0,0.4)]
-      hover:shadow-[0_20px_60px_rgba(59,130,246,0.15)]
-      transition-all duration-500
-      mx-auto group isolate"
+      aria-label={`${heading} service`}
+      className="group relative mx-auto mt-6 flex w-full max-w-[1260px] flex-col items-stretch
+                 overflow-hidden rounded-[28px] border border-white/10 bg-[#05090C]
+                 transition-shadow duration-500 lg:mt-[50px] lg:min-h-[560px] lg:flex-row"
+      style={{
+        boxShadow: `
+          0 20px 60px rgba(190, 81, 97, 0.12),
+          inset 0 1px 0 rgba(255,255,255,0.08)
+        `,
+      }}
     >
-      {/* Gradient Border Implementation - Blue Accent */}
-      <div className="absolute inset-0 rounded-3xl p-[1px] bg-gradient-to-br from-white/10 via-white/5 to-[#3B82F6]/40 -z-10 group-hover:via-[#3B82F6]/20 transition-all duration-700" />
-
-      {/* Slight Background Grid */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.03]"
-        style={{
-          backgroundImage: `linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px)`,
-          backgroundSize: '40px 40px',
-        }}
-      />
-
       {/* Text column */}
       <div
-        className={`flex-1 flex flex-col justify-center p-8 lg:p-16 relative z-10 ${swapOrder ? "lg:order-2" : "lg:order-1"
-          }`}
+        className={`relative z-10 flex flex-1 flex-col justify-center p-8 lg:p-14
+                    ${swapOrder ? "lg:order-2" : "lg:order-1"}`}
       >
-        {/* Engineered Corner Accents - Blue */}
-        <div className="absolute top-8 left-8 w-8 h-8 border-t border-l border-[#3B82F6]/30 rounded-tl-lg" />
-        <div className="absolute bottom-8 right-8 w-8 h-8 border-b border-r border-[#3B82F6]/30 rounded-br-lg hidden lg:block" />
+        <h2 className="m-0 font-display text-4xl leading-[0.95] tracking-wide text-white lg:text-6xl">
+          {heading}
+        </h2>
 
-        {/* Background Glow - Blue */}
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-[#3B82F6]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+        <span className="mt-5 block h-1 w-16 rounded-full bg-[#BE5161]" />
 
-        <div className="relative z-10 mt-[1rem]">
-          <h2
-            className="leading-[0.9] m-0 font-['Bebas_Neue',system-ui,sans-serif] text-4xl lg:text-7xl tracking-wide  mb-6
-            text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-gray-400 drop-shadow-sm"
-          >
-            {heading}
-          </h2>
-
-          <div className="font-light text-base lg:text-lg leading-relaxed text-gray-300/80 max-w-[600px]">
-            {description}
-          </div>
+        <div className="mt-7 max-w-[620px] text-base font-light leading-relaxed text-gray-300/85 lg:text-lg">
+          {description}
         </div>
 
-        {/* Buttons container */}
-        <div className="flex flex-col sm:flex-row gap-4 mt-8 lg:mt-12 w-full max-w-[500px]">
+        <div className="mt-9 flex w-full max-w-[480px] flex-col gap-4 sm:flex-row">
           <button
+            type="button"
             onClick={handleButtons}
-            className={`
-              flex-1 inline-flex items-center justify-center gap-2 
-              rounded-full px-6 py-4 
-              border border-white/10 hover:border-[#3B82F6]/50
-              bg-white/5 hover:bg-white/10
-              font-medium text-sm lg:text-base text-white 
-              transition-all duration-300
-              backdrop-blur-sm
-              ${poppins.className}
-            `}
-            aria-label="Learn more"
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-full
+                       border border-white/20 px-6 py-3.5 text-sm font-semibold text-white
+                       transition-colors duration-300 hover:border-white/50 hover:bg-white/[0.04]
+                       lg:text-base"
+            aria-label={`Learn more about ${heading}`}
           >
             <span>Learn more</span>
-            <LearnIcon className="w-4 h-4 opacity-70" />
+            <LearnIcon className="h-4 w-4 opacity-70" />
           </button>
 
           <button
+            type="button"
             onClick={handleButtons}
-            className={`
-              flex-[1.5] inline-flex items-center justify-center gap-2
-              rounded-full px-6 py-4 
-              bg-gradient-to-r from-[#BE5161] to-[#a34452]
-              hover:from-[#D65D6E] hover:to-[#BE5161]
-              text-white font-semibold text-sm lg:text-base tracking-wide
-              shadow-[0_10px_30px_rgba(190,81,97,0.3)]
-              hover:shadow-[0_10px_40px_rgba(190,81,97,0.5)]
-              hover:-translate-y-0.5
-              transition-all duration-300
-              ${poppins.className}
-            `}
-            aria-label="Schedule now"
+            className="inline-flex flex-[1.4] items-center justify-center gap-2 rounded-full
+                       border border-[#BE5161]/50 bg-[#BE5161] px-6 py-3.5
+                       text-sm font-semibold tracking-wide text-white
+                       shadow-[0_4px_20px_rgba(190,81,97,0.3)]
+                       transition-transform duration-300 hover:scale-[1.02] active:scale-[0.98]
+                       motion-reduce:transition-none motion-reduce:hover:scale-100
+                       lg:text-base"
+            aria-label={`Schedule ${heading}`}
           >
-            <ScheduleIcon className="w-5 h-5" />
-            <span>SCHEDULE NOW</span>
+            <ScheduleIcon className="h-5 w-5" />
+            <span>Schedule now</span>
           </button>
         </div>
       </div>
 
       {/* Image column */}
       <div
-        className={`relative w-full lg:w-[45%] h-[300px] lg:h-auto overflow-hidden ${swapOrder ? "lg:order-1" : "lg:order-2"}`}
+        className={`relative h-[280px] w-full overflow-hidden lg:h-auto lg:w-[45%]
+                    ${swapOrder ? "lg:order-1" : "lg:order-2"}`}
       >
-        {/* Enhanced Image Blending */}
-        {/* <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-l from-[#05090C] via-[#05090C]/20 to-transparent z-10" /> */}
-        <div className="absolute inset-0 bg-[#3B82F6] mix-blend-overlay opacity-0 group-hover:opacity-10 transition-opacity duration-700 z-20" />
-
         <Image
           src={imageSrc}
-          alt="Vehicle inspection"
+          alt={`${heading} at the Carmotive workshop`}
           fill
-          className="w-full h-full object-cover transform transition-transform duration-1000 ease-out group-hover:scale-105"
+          loading="lazy"
+          quality={85}
+          sizes="(max-width: 1024px) 100vw, 560px"
+          className="object-cover transition-transform duration-1000 ease-out
+                     group-hover:scale-105 motion-reduce:transform-none"
+        />
+
+        {/* Seam: the photo fades into the panel on whichever side the panel
+            actually sits, so the join reads as one surface rather than a
+            pasted-in rectangle. Stacked, the panel is above; side by side it
+            is left or right depending on swapOrder. */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 lg:hidden"
+          style={{
+            background: `linear-gradient(to bottom, ${CARD_BG} 0%, ${CARD_BG}00 42%)`,
+          }}
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 hidden lg:block"
+          style={{
+            background: `linear-gradient(to ${swapOrder ? "left" : "right"}, ${CARD_BG} 0%, ${CARD_BG}66 22%, ${CARD_BG}00 55%)`,
+          }}
         />
       </div>
     </section>
