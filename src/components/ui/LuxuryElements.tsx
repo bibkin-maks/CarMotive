@@ -30,7 +30,7 @@ export const LuxuryHeading = ({ heading, className = "" }: { heading: string; cl
         <div className={`relative mb-2 ${className}`}>
             <motion.h2
                 variants={itemVariants}
-                className="font-['Bebas_Neue'] text-4xl sm:text-7xl tracking-wide leading-none"
+                className="font-display text-4xl sm:text-7xl tracking-wide leading-none"
             >
                 <span className="bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
                     {heading}
