@@ -1,17 +1,12 @@
 "use client";
 import { useRef, useCallback, useEffect, useState } from "react";
 import Header from "@/components/Header";
+import AboutUs from "@/components/AboutUs";
 import FaqSection from "@/components/Faq";
 import NewHeader from "@/components/TopFlyingHeader";
 import { InfoPanels } from "@/components/InfoPanels";
 import ContactForm from "@/components/ContactForm";
-import { Poppins } from "next/font/google"; // Keep font for now, though it might be better in layout
 import "@/app/globals.css";
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["200", "300", "400", "500", "600", "700"],
-});
 
 const ScrollProgress = () => {
   const [progress, setProgress] = useState(0);
@@ -73,7 +68,7 @@ export default function Home() {
 
   return (
     <main
-      className={`${poppins.className} bg-background min-h-screen text-white relative selection:bg-[#BE5161] selection:text-white`}
+      className="bg-background min-h-screen text-white relative selection:bg-[#BE5161] selection:text-white"
       style={{ zoom: "75%" }}
     >
       <ScrollProgress />
@@ -106,6 +101,13 @@ export default function Home() {
           id="about"
           ref={aboutBlock}
           aria-label="About section"
+        >
+          <AboutUs className="rounded-[20px] sm:rounded-[40px] shadow-2xl shadow-black/20" />
+        </section>
+
+        <section
+          className="flex flex-wrap justify-center items-center w-full max-w-[1440px] px-4 md:px-8 mb-24"
+          aria-label="Frequently asked questions"
         >
           <FaqSection className="rounded-[20px] sm:rounded-[40px] shadow-2xl shadow-black/20" />
         </section>
