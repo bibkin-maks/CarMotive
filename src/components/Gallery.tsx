@@ -127,7 +127,7 @@ export default function Gallery({
             {/* Controls Container */}
             <div className="fixed top-0 left-0 right-0 p-6 flex justify-between z-[110] pointer-events-none">
               <div className="pointer-events-auto flex items-center gap-4">
-                <span className="text-[#BE5161] text-lg font-['Bebas_Neue'] tracking-wide">
+                <span className="text-[#BE5161] text-lg font-display tracking-wide">
                   {openIndex + 1} <span className="text-white/30 text-base mx-1">/</span> {images.length}
                 </span>
               </div>
