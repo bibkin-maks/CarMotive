@@ -2,42 +2,48 @@
 import * as React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAward } from "@fortawesome/free-solid-svg-icons";
-import { Poppins } from "next/font/google";
 import Image from "next/image";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { containerVariants, itemVariants } from "@/utils/animations";
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["200", "300", "400", "500", "600", "700"],
-});
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+  Variants,
+} from "framer-motion";
 
 interface HeroIntroSectionProps {
   imageSrc?: string;
   imageAlt?: string;
 }
 
+const SERVICES = [
+  "Service & Maintenance",
+  "Roadworthy Check",
+  "Brakes & Suspension",
+  "AC & Cooling",
+] as const;
+
 const Header: React.FC<HeroIntroSectionProps> = ({
   imageSrc = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/3d_logo_carmotive.png`,
-  imageAlt = "Carmotive hero",
+  imageAlt = "The Carmotive badge — a chrome wordmark struck through by a lightning bolt",
 }) => {
-  // --- Mouse Parallax / Magnetic Effect using Framer Motion ---
+  const reduceMotion = useReducedMotion();
+
+  // Mouse parallax on the badge. Springs keep it floaty rather than twitchy.
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-
-  // Smooth springs for the image movement
-  const springConfig = { damping: 25, stiffness: 150 }; // Smooth and floaty
+  const springConfig = { damping: 25, stiffness: 150 };
   const rotateX = useSpring(useTransform(y, [-300, 300], [10, -10]), springConfig);
   const rotateY = useSpring(useTransform(x, [-300, 300], [-10, 10]), springConfig);
   const moveX = useSpring(useTransform(x, [-300, 300], [-20, 20]), springConfig);
   const moveY = useSpring(useTransform(y, [-300, 300], [-20, 20]), springConfig);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    if (reduceMotion) return;
     const rect = e.currentTarget.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    x.set(e.clientX - centerX);
-    y.set(e.clientY - centerY);
+    x.set(e.clientX - (rect.left + rect.width / 2));
+    y.set(e.clientY - (rect.top + rect.height / 2));
   };
 
   const handleMouseLeave = () => {
@@ -45,150 +51,199 @@ const Header: React.FC<HeroIntroSectionProps> = ({
     y.set(0);
   };
 
-  // --- Animation Variants ---
-  // Imported from utils
+  // Same self-driving reveal the About Us and FAQ sections use — no parent
+  // stagger, so nothing can be stranded at opacity 0 by variant propagation.
+  const rise: Variants = {
+    hidden: { opacity: 0, y: reduceMotion ? 0 : 24 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+    },
+  };
+
+  const reveal = {
+    initial: "hidden",
+    whileInView: "visible",
+    viewport: { once: true, amount: 0.2 },
+    variants: rise,
+  } as const;
+
+  const scrollToContact = () => {
+    const form = document.querySelector("#contactForm");
+    if (form) form.scrollIntoView({ behavior: "smooth" });
+    else window.location.href = "#contactForm";
+  };
 
   return (
     <section
-      className="relative w-full "
+      className="relative w-full overflow-hidden"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
-      {/* Background ambient element */}
-      <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-blue-600/5 rounded-full blur-[120px] pointer-events-none" />
+      {/* Ambient light. Radial gradients rather than blurred discs: a blurred
+          circle parked at a negative offset is still bright where the section's
+          overflow clip lands, which cut the glow off along a hard straight edge.
+          These fade to zero well inside every edge, so nothing can be cropped. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: [
+            "radial-gradient(36% 42% at 68% 36%, rgba(190,81,97,0.17) 0%, rgba(190,81,97,0) 72%)",
+            "radial-gradient(26% 34% at 20% 68%, rgba(153,186,202,0.11) 0%, rgba(153,186,202,0) 72%)",
+          ].join(", "),
+        }}
+      />
 
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 py-12 lg:py-20 lg:mr-[-100px]">
-        <div className="flex flex-col-reverse lg:flex-row items-center gap-10 lg:gap-20 relative z-10">
-
-          {/* Left: Text Content - STAGGERED ANIMATION */}
-          <motion.div
-            className="flex-1 w-full text-center lg:text-left flex flex-col items-center lg:items-start"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-          >
-
-            {/* Badge */}
-            <motion.div variants={itemVariants} className="inline-flex items-center justify-center lg:justify-start mb-6">
-              <div
-                className={`${poppins.className} flex items-center gap-3 px-5 py-2.5 rounded-full border border-[#99BACA]/40 bg-[#99BACA]/5 backdrop-blur-sm text-[#99BACA] text-sm sm:text-base font-bold tracking-[0.15em] uppercase shadow-sm transition hover:bg-[#99BACA]/10 hover:border-[#99BACA]/60`}
-              >
-                <FontAwesomeIcon icon={faAward} className="text-base" />
-                <span>10 Years of Experience</span>
-              </div>
+      <div className="relative z-10 mx-auto max-w-[1440px] px-4 sm:px-8 lg:px-12 py-14 sm:py-16 lg:py-24">
+        <div className="flex flex-col-reverse items-center gap-12 lg:flex-row lg:gap-16">
+          {/* Left: the pitch */}
+          <div className="flex w-full flex-1 flex-col items-center text-center lg:items-start lg:text-left">
+            <motion.div {...reveal}>
+              <span className="inline-flex items-center gap-2.5 rounded-full border border-[#99BACA]/30 bg-[#99BACA]/[0.06] px-4 py-2 text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.22em] text-[#99BACA]">
+                <FontAwesomeIcon icon={faAward} className="text-xs" />
+                10 Years of Experience
+              </span>
             </motion.div>
 
-            {/* Heading */}
-            <motion.h1 variants={itemVariants} className="font-['Bebas_Neue'] text-5xl sm:text-7xl lg:text-[90px] leading-[0.95] tracking-wide text-white drop-shadow-lg mb-6">
-              Hey, we are <br className="hidden lg:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#BE5161] to-[#E67D8C]">Carmotive</span>
+            <motion.p
+              {...reveal}
+              className="mt-7 text-lg sm:text-xl font-light text-white/60"
+            >
+              Hey, we are
+            </motion.p>
+
+            {/* Held at greeting scale on purpose — the 3D badge alongside
+                already spells CARMOTIVE, so a masthead-sized wordmark here
+                would print the brand name twice. */}
+            <motion.h1
+              {...reveal}
+              className="mt-1 font-display text-[56px] sm:text-[76px] lg:text-[88px] leading-[0.94] tracking-wide text-white"
+            >
+              Carmotive
               <motion.span
-                className="inline-block ml-4"
-                animate={{ rotate: [0, 20, 0, 20, 0], scale: [1, 1.1, 1] }}
-                transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 2 }}
+                className="ml-3 inline-block"
+                animate={reduceMotion ? undefined : { rotate: [0, 18, 0, 18, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 2.5 }}
               >
                 👋
               </motion.span>
             </motion.h1>
 
-            {/* Subtitle - Responsive Flex Layout */}
+            <motion.span
+              {...reveal}
+              className="mt-6 block h-1 w-20 rounded-full bg-[#BE5161]"
+            />
+
+            {/* Capability strip — same hairline/eyebrow language as the
+                indexed rows in About Us and the FAQ. */}
             <motion.div
-              variants={itemVariants}
-              className={`flex flex-wrap justify-center lg:justify-start gap-x-3 gap-y-2 text-base sm:text-xl lg:text-2xl text-blue-100/80 font-light max-w-2xl leading-relaxed mb-8 sm:mb-10 ${poppins.className}`}
+              {...reveal}
+              className="mt-8 w-full border-y border-white/[0.12] py-5"
             >
-              {[
-                "Service & Maintenance",
-                "Roadworthy Check",
-                "Brakes & Suspension",
-                "AC & Cooling"
-              ].map((item, index, array) => (
-                <div key={item} className="flex items-center">
-                  <span>{item}</span>
-                  {index < array.length - 1 && (
-                    <span className="text-white/20 ml-3 hidden sm:inline">|</span>
-                  )}
-                </div>
-              ))}
+              {/* Fixed 2×2. A plain wrap stranded "AC & Cooling" alone on a
+                  second line; four columns squeezed every other label onto two
+                  lines, leaving ragged baselines. Two columns keeps them all
+                  on one line at every width. */}
+              <ul className="grid grid-cols-2 gap-x-6 gap-y-3.5">
+                {SERVICES.map((service) => (
+                  <li
+                    key={service}
+                    className="flex items-center gap-2.5 text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.18em] text-white/65"
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="h-1 w-1 shrink-0 rounded-full bg-[#BE5161]"
+                    />
+                    {service}
+                  </li>
+                ))}
+              </ul>
             </motion.div>
 
-            {/* Buttons */}
-            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center gap-5 w-full sm:w-auto">
-              {/* Primary Button */}
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => {
-                  const form = document.querySelector('#contactForm');
-                  if (form) form.scrollIntoView({ behavior: 'smooth' });
-                  else window.location.href = '#contactForm';
-                }}
-                className="
-                flex items-center justify-center
-                relative overflow-hidden
-                px-8 py-4 sm:py-5 rounded-full
-                bg-[#BE5161] text-white font-semibold  tracking-wide
-                border border-[#BE5161]/50
-                shadow-[0_4px_20px_rgba(190,81,97,0.3)]
-                transition-all duration-300
-                w-full sm:w-auto
-                group/cta
-              "
+            <motion.div
+              {...reveal}
+              className="mt-9 flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row"
+            >
+              <button
+                type="button"
+                onClick={scrollToContact}
+                className="group/cta relative flex w-full items-center justify-center overflow-hidden
+                           rounded-full border border-[#BE5161]/50 bg-[#BE5161]
+                           px-8 py-4 font-semibold tracking-wide text-white
+                           shadow-[0_4px_20px_rgba(190,81,97,0.3)]
+                           transition-transform duration-300 hover:scale-[1.02] active:scale-[0.98]
+                           motion-reduce:transition-none motion-reduce:hover:scale-100
+                           sm:w-auto"
               >
-                <span className="relative z-10 flex items-center gap-2 font-['Poppins']">
+                <span className="relative z-10 flex items-center gap-2 font-sans">
                   Schedule Now
-                  <svg className="w-4 h-4 transform group-hover/cta:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg
+                    aria-hidden="true"
+                    className="h-4 w-4 transition-transform group-hover/cta:translate-x-1 motion-reduce:transition-none"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
                 </span>
-                {/* Shimmer Effect */}
-                <div className="absolute inset-0 translate-x-[-100%] group-hover/cta:translate-x-[100%] transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12" />
-              </motion.button>
+                <span className="absolute inset-0 -translate-x-full skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover/cta:translate-x-full motion-reduce:hidden" />
+              </button>
 
-              {/* Secondary Button */}
-              <motion.button
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                className={`group bg-transparent border border-white/20 hover:border-white/50 text-white font-semibold px-8 py-4 rounded-full w-full sm:w-auto min-w-[160px] transition-colors ${poppins.className}`}
+              <button
+                type="button"
                 onClick={() => {
                   window.location.href = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/services`;
                 }}
+                className="w-full rounded-full border border-white/20 px-8 py-4 font-semibold
+                           text-white transition-colors duration-300 hover:border-white/50
+                           hover:bg-white/[0.04] sm:w-auto sm:min-w-[160px]"
               >
-                <span className="text-lg">Services</span>
-              </motion.button>
+                Services
+              </button>
             </motion.div>
-          </motion.div>
+          </div>
 
-          {/* Right: Hero Image - FLOATING ANIMATION */}
+          {/* Right: the badge */}
           <motion.div
-            className="w-full lg:w-[45%] flex justify-center lg:justify-end"
-            initial={{ opacity: 0, scale: 0.8, x: 50 }}
-            whileInView={{ opacity: 1, scale: 1, x: 0 }}
-            transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-            viewport={{ once: true }}
-            style={{
-              rotateX,
-              rotateY,
-              x: moveX,
-              y: moveY,
-              perspective: 1000
+            className="flex w-full justify-center lg:w-[44%] lg:justify-end"
+            initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.88 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{
+              duration: reduceMotion ? 0 : 1,
+              delay: reduceMotion ? 0 : 0.15,
+              ease: "easeOut",
             }}
+            viewport={{ once: true }}
+            style={{ rotateX, rotateY, x: moveX, y: moveY, perspective: 1000 }}
           >
-            <div className="relative z-10">
+            <div className="relative">
+              {/* Same reason as the ambient light above: a blurred disc spreads
+                  ~90px past its own box, which pushed this glow through the
+                  section's overflow clip and sheared it off along a straight
+                  line above and below the badge. A radial gradient fades to
+                  zero inside its own box, so no bright pixels reach the edge. */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -inset-[14%] -z-10"
+                style={{
+                  background:
+                    "radial-gradient(56% 56% at 50% 48%, rgba(190,81,97,0.22) 0%, rgba(190,81,97,0) 72%)",
+                }}
+              />
               <Image
                 src={imageSrc}
                 alt={imageAlt}
-                width={700}
-                height={700}
-                className="w-full max-w-[320px] sm:max-w-[480px] lg:max-w-[700px] h-auto object-contain drop-shadow-2xl"
-                style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.5))" }}
+                width={620}
+                height={656}
+                priority
+                className="h-auto w-full max-w-[280px] object-contain sm:max-w-[400px] lg:max-w-[560px]"
+                style={{ filter: "drop-shadow(0 24px 48px rgba(0,0,0,0.55))" }}
               />
-
-              {/* Decorative radial gradient behind image */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-blue-500/10 rounded-full blur-[80px] -z-10 pointer-events-none mix-blend-screen animate-pulse-slow"></div>
             </div>
           </motion.div>
-
         </div>
       </div>
     </section>
