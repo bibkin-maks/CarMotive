@@ -95,7 +95,7 @@ export const InfoPanels: React.FC<InfoPanelsProps> = ({ handleAbout, handleConta
 
                                 {/* Typography */}
                                 <div className="space-y-2">
-                                    <h3 className="text-5xl font-['Bebas_Neue'] tracking-widest text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400 drop-shadow-lg leading-[0.9]">
+                                    <h3 className="text-5xl font-display tracking-widest text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400 drop-shadow-lg leading-[0.9]">
                                         {panel.title}
                                     </h3>
                                     <div className="h-[2px] w-0 bg-red-600 mx-auto transition-all duration-300 group-hover:w-16" />
