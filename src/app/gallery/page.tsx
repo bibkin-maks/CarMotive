@@ -4,13 +4,7 @@ import { motion } from "framer-motion";
 import NewHeader from "@/components/TopFlyingHeader";
 import ContactForm from "@/components/ContactForm";
 import Gallery from "@/components/Gallery";
-import { Poppins } from "next/font/google"; // Import Poppins
 import "@/app/globals.css";
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["200", "300", "400", "500", "600", "700"],
-});
 
 const FloatingParticles = () => {
   const [mounted, setMounted] = useState(false);
@@ -102,7 +96,7 @@ const LuxuryBackground = () => (
 
 export default function GalleryPage() {
   return (
-    <main className={`${poppins.className} min-h-screen text-white overflow-x-hidden relative selection:bg-[#BE5161]/30 selection:text-white`} style={{ zoom: "75%" }}>
+    <main className="min-h-screen text-white overflow-x-hidden relative selection:bg-[#BE5161]/30 selection:text-white" style={{ zoom: "75%" }}>
       <LuxuryBackground />
 
       <div className="relative z-10">
@@ -114,7 +108,7 @@ export default function GalleryPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="font-['Bebas_Neue'] text-6xl sm:text-8xl lg:text-9xl tracking-wide text-white drop-shadow-2xl mb-6"
+            className="font-display text-6xl sm:text-8xl lg:text-9xl tracking-wide text-white drop-shadow-2xl mb-6"
           >
             OUR <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#BE5161] to-[#E67D8C]">GALLERY</span>
           </motion.h1>
