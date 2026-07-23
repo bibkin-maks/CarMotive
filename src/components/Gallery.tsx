@@ -17,19 +17,11 @@ interface Props {
   showCaptions?: boolean;
 }
 
-const imgArray: ImageItem[] = [];
-
-for (let i = 1; i <= 13; i++) {
-  const item: ImageItem = {
-    src: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/gallery/Carmotive-${i}.jpg`,
-    alt: `Carmotive ${i}`,
-    caption: ''
-  };
-  imgArray.push(item);
-}
-
+// No baked-in list: the gallery page reads public/image/galleryAssets at build
+// time and passes the result in. A hardcoded Carmotive-1..13 range meant a
+// missing file rendered a broken tile with no way to notice.
 export default function Gallery({
-  images = [...imgArray],
+  images = [],
   maxWidthClass = "max-w-7xl",
   gapClass = "gap-3 sm:gap-6",
   showCaptions = true,
