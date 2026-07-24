@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAward } from "@fortawesome/free-solid-svg-icons";
+import { faAward, faPhone, faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import {
   motion,
@@ -117,19 +117,12 @@ const Header: React.FC<HeroIntroSectionProps> = ({
               </span>
             </motion.div>
 
-            <motion.p
-              {...reveal}
-              className="mt-7 text-lg sm:text-xl font-light text-white/60"
-            >
-              Hey, we are
-            </motion.p>
-
             {/* Held at greeting scale on purpose — the 3D badge alongside
                 already spells CARMOTIVE, so a masthead-sized wordmark here
                 would print the brand name twice. */}
             <motion.h1
               {...reveal}
-              className="mt-1 font-display text-[56px] sm:text-[76px] lg:text-[88px] leading-[0.94] tracking-wide text-white"
+              className="mt-7 font-display text-[56px] sm:text-[76px] lg:text-[88px] leading-[0.94] tracking-wide text-white"
             >
               Carmotive
               <motion.span
@@ -145,6 +138,34 @@ const Header: React.FC<HeroIntroSectionProps> = ({
               {...reveal}
               className="mt-6 block h-1 w-20 rounded-full bg-[#BE5161]"
             />
+
+            {/* Address & phone up front, so visitors get the essentials on the
+                first screen without scrolling to the contact section. */}
+            <motion.div
+              {...reveal}
+              className="mt-7 flex flex-col items-center gap-3 lg:items-start"
+            >
+              <a
+                href="tel:+61395516555"
+                className="group inline-flex items-center gap-3 text-white transition-colors hover:text-[#E67D8C]"
+              >
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#BE5161]/40 bg-[#BE5161]/10 text-[#BE5161]">
+                  <FontAwesomeIcon icon={faPhone} className="text-xs" />
+                </span>
+                <span className="text-lg sm:text-xl font-semibold tracking-wide">(03) 9551 6555</span>
+              </a>
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=Carmotive+292B+Boundary+Road+Dingley+Village+VIC+3172"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-3 text-white/75 transition-colors hover:text-white"
+              >
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] text-[#99BACA]">
+                  <FontAwesomeIcon icon={faLocationDot} className="text-xs" />
+                </span>
+                <span className="text-sm sm:text-base font-light">292B Boundary Road, Dingley Village VIC 3172</span>
+              </a>
+            </motion.div>
 
             {/* Capability strip — same hairline/eyebrow language as the
                 indexed rows in About Us and the FAQ. */}
