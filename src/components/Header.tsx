@@ -97,10 +97,11 @@ const Header: React.FC<HeroIntroSectionProps> = ({
         className="pointer-events-none absolute inset-0"
         style={{
           background: [
-            // `circle <vw>` keeps these true circles at any aspect ratio — the
-            // old percentage radii squeezed into ellipses on narrow viewports.
-            "radial-gradient(circle 32vw at 68% 36%, rgba(190,81,97,0.17) 0%, rgba(190,81,97,0) 72%)",
-            "radial-gradient(circle 24vw at 20% 68%, rgba(153,186,202,0.11) 0%, rgba(153,186,202,0) 72%)",
+            // `circle closest-side` keeps these true circles (no aspect-ratio
+            // squeeze) AND always fades to transparent at the nearest edge, so
+            // the section's overflow-hidden can never crop a bright edge.
+            "radial-gradient(circle closest-side at 68% 36%, rgba(190,81,97,0.17) 0%, rgba(190,81,97,0) 100%)",
+            "radial-gradient(circle closest-side at 20% 68%, rgba(153,186,202,0.11) 0%, rgba(153,186,202,0) 100%)",
           ].join(", "),
         }}
       />
