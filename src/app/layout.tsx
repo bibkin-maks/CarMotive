@@ -51,6 +51,59 @@ export const metadata: Metadata = {
     description,
     images: [ogImage],
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
+  formatDetection: { telephone: true, address: true },
+  category: "Automotive Repair",
+};
+
+// Local-business structured data. Search engines use this for rich results and
+// local/Maps listings — name, address, phone, hours and geo in one place.
+const localBusinessJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "AutoRepair",
+  "@id": `${siteUrl}/#business`,
+  name: "Carmotive",
+  description,
+  url: `${siteUrl}/`,
+  image: ogImage,
+  logo: `${siteUrl}/image/logo.png`,
+  telephone: "+61395516555",
+  email: "info@carmotive.com.au",
+  priceRange: "$$",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "292B Boundary Road",
+    addressLocality: "Dingley Village",
+    addressRegion: "VIC",
+    postalCode: "3172",
+    addressCountry: "AU",
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: -37.985615,
+    longitude: 145.110033,
+  },
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "08:00",
+      closes: "17:00",
+    },
+  ],
+  areaServed: [
+    "Dingley Village",
+    "Melbourne",
+    "Mordialloc",
+    "Springvale",
+    "Keysborough",
+    "Clayton",
+    "Moorabbin",
+  ].map((name) => ({ "@type": "City", name })),
 };
 
 export default function RootLayout({
@@ -59,11 +112,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en-AU">
       <body
         suppressHydrationWarning={true}
         className={`${poppins.variable} ${bebasNeue.variable} font-sans antialiased`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+        />
         {children}
       </body>
     </html>

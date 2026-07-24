@@ -1,6 +1,14 @@
 import fs from "node:fs";
 import path from "node:path";
+import type { Metadata } from "next";
 import GalleryPageClient from "./GalleryPageClient";
+
+export const metadata: Metadata = {
+  title: "Workshop Gallery",
+  description:
+    "A look inside the Carmotive workshop in Dingley Village — our team, our hoists, and the vehicles we care for.",
+  alternates: { canonical: "https://bibkin-maks.github.io/CarMotive/gallery" },
+};
 
 const GALLERY_DIR = "image/galleryAssets";
 const IMAGE_EXT = /\.(jpe?g|png|webp|avif)$/i;
