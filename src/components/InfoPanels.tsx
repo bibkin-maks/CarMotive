@@ -12,7 +12,7 @@ interface InfoPanelsProps {
     handleContact?: () => void;
 }
 
-export const InfoPanels: React.FC<InfoPanelsProps> = ({ handleAbout }) => {
+export const InfoPanels: React.FC<InfoPanelsProps> = ({ handleAbout, handleContact }) => {
     const panels = [
         {
             title: "OUR\nSERVICES",
@@ -25,6 +25,12 @@ export const InfoPanels: React.FC<InfoPanelsProps> = ({ handleAbout }) => {
             image: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/about.png`,
             className: "pulse",
             onClick: handleAbout
+        },
+        {
+            title: "GET IN TOUCH",
+            image: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/contact.png`,
+            className: "phone-ring",
+            onClick: handleContact
         },
     ];
 
@@ -42,7 +48,7 @@ export const InfoPanels: React.FC<InfoPanelsProps> = ({ handleAbout }) => {
                     onClick={panel.onClick}
                     variants={itemVariants}
                     className={`
-                        group relative w-full md:w-80 min-w-[20rem] h-[28rem]
+                        group relative w-full max-w-[22rem] md:max-w-none md:w-80 min-w-0 md:min-w-[20rem] h-[20rem] sm:h-[24rem] md:h-[28rem]
                         rounded-2xl cursor-pointer flex-shrink-0
                         transform transition-all duration-500 ease-out
                         hover:scale-[1.02] hover:-translate-y-2

@@ -30,6 +30,13 @@ const Header: React.FC<HeroIntroSectionProps> = ({
 }) => {
   const reduceMotion = useReducedMotion();
 
+  // The badge parallax is a pointer-driven flourish — only wire it up on
+  // devices with a real hovering pointer (i.e. not phones/tablets).
+  const [canHover, setCanHover] = React.useState(false);
+  React.useEffect(() => {
+    setCanHover(window.matchMedia("(hover: hover) and (pointer: fine)").matches);
+  }, []);
+
   // Mouse parallax on the badge. Springs keep it floaty rather than twitchy.
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -40,7 +47,7 @@ const Header: React.FC<HeroIntroSectionProps> = ({
   const moveY = useSpring(useTransform(y, [-300, 300], [-20, 20]), springConfig);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    if (reduceMotion) return;
+    if (reduceMotion || !canHover) return;
     const rect = e.currentTarget.getBoundingClientRect();
     x.set(e.clientX - (rect.left + rect.width / 2));
     y.set(e.clientY - (rect.top + rect.height / 2));
@@ -90,8 +97,10 @@ const Header: React.FC<HeroIntroSectionProps> = ({
         className="pointer-events-none absolute inset-0"
         style={{
           background: [
-            "radial-gradient(36% 42% at 68% 36%, rgba(190,81,97,0.17) 0%, rgba(190,81,97,0) 72%)",
-            "radial-gradient(26% 34% at 20% 68%, rgba(153,186,202,0.11) 0%, rgba(153,186,202,0) 72%)",
+            // `circle <vw>` keeps these true circles at any aspect ratio — the
+            // old percentage radii squeezed into ellipses on narrow viewports.
+            "radial-gradient(circle 32vw at 68% 36%, rgba(190,81,97,0.17) 0%, rgba(190,81,97,0) 72%)",
+            "radial-gradient(circle 24vw at 20% 68%, rgba(153,186,202,0.11) 0%, rgba(153,186,202,0) 72%)",
           ].join(", "),
         }}
       />

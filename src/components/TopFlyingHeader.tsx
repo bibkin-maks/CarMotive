@@ -165,7 +165,7 @@ export default function TopFlyingHeader({ className }: { className?: string }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 z-[100] flex flex-col bg-[#05090C]/98 backdrop-blur-3xl"
+            className="fixed inset-0 z-[100] flex flex-col bg-[#05090C]/98 backdrop-blur-xl"
           >
             {/* Abstract Background Elements */}
             <div className="hidden sm:block absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-[#BE5161]/10 rounded-full blur-[120px] pointer-events-none mix-blend-screen" />

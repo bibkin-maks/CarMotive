@@ -12,14 +12,23 @@ const ScrollProgress = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    let raf = 0;
     const updateProgress = () => {
-      const scrollTop = window.scrollY;
-      const docHeight = document.body.scrollHeight - window.innerHeight;
-      setProgress((scrollTop / docHeight) * 100);
+      raf = 0;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0);
     };
-
-    window.addEventListener('scroll', updateProgress);
-    return () => window.removeEventListener('scroll', updateProgress);
+    // Coalesce scroll events to one update per frame; passive so the listener
+    // never blocks scrolling.
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(updateProgress);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    updateProgress();
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
 
   return (
@@ -38,11 +47,20 @@ export default function Home() {
   const [showBackToTop, setShowBackToTop] = useState(false);
 
   useEffect(() => {
-    const toggleVisibility = () => {
-      setShowBackToTop(window.scrollY > 500);
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const next = window.scrollY > 500;
+      setShowBackToTop((prev) => (prev === next ? prev : next));
     };
-    window.addEventListener('scroll', toggleVisibility);
-    return () => window.removeEventListener('scroll', toggleVisibility);
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
 
   const scrollToTop = () => {
@@ -74,8 +92,8 @@ export default function Home() {
       <ScrollProgress />
 
       {/* GLOBAL BACKGROUND - Ambient Glows */}
-      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none glows-container">
-        <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] sm:w-[30vw] sm:h-[30vw] bg-[#2D222A] rounded-full blur-[120px] opacity-60 mix-blend-screen animate-pulse-slow"></div>
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none glows-container" style={{ transform: "translateZ(0)" }}>
+        <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] sm:w-[30vw] sm:h-[30vw] bg-[#2D222A] rounded-full blur-[120px] opacity-60 mix-blend-screen"></div>
         <div className="absolute top-[20%] right-[-5%] w-[40vw] h-[40vw] sm:w-[25vw] sm:h-[25vw] bg-[#1e3a5f] rounded-full blur-[120px] opacity-40 mix-blend-screen"></div>
         <div className="absolute bottom-[-10%] left-[20%] w-[45vw] h-[45vw] sm:w-[35vw] sm:h-[35vw] bg-[#0F2940] rounded-full blur-[100px] opacity-50 mix-blend-screen"></div>
       </div>

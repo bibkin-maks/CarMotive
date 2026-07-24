@@ -114,7 +114,7 @@ export default function Gallery({
             onClick={() => setOpenIndex(null)}
           >
             {/* Backdrop */}
-            <div className="absolute inset-0 bg-[#05090C]/98 backdrop-blur-3xl" />
+            <div className="absolute inset-0 bg-[#05090C]/98 backdrop-blur-xl" />
 
             {/* Controls Container */}
             <div className="fixed top-0 left-0 right-0 p-6 flex justify-between z-[110] pointer-events-none">

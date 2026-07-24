@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, useMemo } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import NewHeader from "@/components/TopFlyingHeader";
 import ContactForm from "@/components/ContactForm";
 import Gallery from "@/components/Gallery";
@@ -13,14 +13,16 @@ type ImageItem = {
 };
 
 const FloatingParticles = () => {
-  const [mounted, setMounted] = useState(false);
+  const reduceMotion = useReducedMotion();
+  const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    // Decorative only — skip on phones/touch devices to spare the main thread.
+    setEnabled(window.matchMedia("(min-width: 640px) and (pointer: fine)").matches);
   }, []);
 
   const particles = useMemo(() => {
-    return Array.from({ length: 20 }).map(() => ({
+    return Array.from({ length: 10 }).map(() => ({
       x: [Math.random() * 100, Math.random() * 100],
       y: [Math.random() * 100, Math.random() * 100],
       duration: Math.random() * 20 + 20,
@@ -30,7 +32,7 @@ const FloatingParticles = () => {
     }));
   }, []);
 
-  if (!mounted) return null;
+  if (!enabled || reduceMotion) return null;
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -60,42 +62,21 @@ const FloatingParticles = () => {
 
 // Luxury Background Component
 const LuxuryBackground = () => (
-  <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+  <div
+    className="fixed inset-0 z-0 pointer-events-none overflow-hidden"
+    style={{ transform: "translateZ(0)" }}
+  >
     {/* Dark base background */}
     <div className="absolute inset-0 bg-[#0e141a]" />
 
-    {/* Primary gradient orb */}
-    <motion.div
-      animate={{
-        scale: [1, 1.2, 1],
-        rotate: [0, 90, 0],
-        opacity: [0.15, 0.2, 0.15]
-      }}
-      transition={{
-        duration: 20,
-        repeat: Infinity,
-        ease: "linear"
-      }}
-      className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-gradient-to-br from-[#BE5161] via-purple-900/40 to-blue-900/40 rounded-full blur-[120px]"
-    />
+    {/* Primary gradient orb — static. Animating a 120px blur re-rasterised the
+        whole bitmap every frame, which was the main scroll-jank source. */}
+    <div className="absolute top-[-20%] right-[-10%] w-[80vw] h-[80vw] max-w-[800px] max-h-[800px] bg-gradient-to-br from-[#BE5161] via-purple-900/40 to-blue-900/40 rounded-full blur-[120px] opacity-[0.18]" />
 
-    {/* Secondary floating orb */}
-    <motion.div
-      animate={{
-        scale: [1, 1.1, 1],
-        x: [0, 50, 0],
-        y: [0, -50, 0],
-        opacity: [0.1, 0.15, 0.1]
-      }}
-      transition={{
-        duration: 25,
-        repeat: Infinity,
-        ease: "linear"
-      }}
-      className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-gradient-to-tr from-blue-900/30 via-transparent to-emerald-900/20 rounded-full blur-[100px]"
-    />
+    {/* Secondary orb — static */}
+    <div className="absolute bottom-[-10%] left-[-10%] w-[60vw] h-[60vw] max-w-[600px] max-h-[600px] bg-gradient-to-tr from-blue-900/30 via-transparent to-emerald-900/20 rounded-full blur-[100px] opacity-[0.12]" />
 
-    {/* Dynamic Flying Particles */}
+    {/* Dynamic Flying Particles (desktop only) */}
     <FloatingParticles />
   </div>
 );
