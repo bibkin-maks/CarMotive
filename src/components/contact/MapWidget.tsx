@@ -8,7 +8,7 @@ const MapWidget: React.FC = () => {
             whileInView={{ scale: 1, opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.4, duration: 0.6 }}
-            className="w-full h-[250px] sm:h-[300px] rounded-2xl overflow-hidden border border-white/10 shadow-2xl mb-10 bg-[#0a0f14] relative group"
+            className="w-full h-[340px] sm:h-[440px] lg:h-full lg:min-h-[440px] rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-[#0a0f14] relative group"
         >
             <div className="absolute inset-0 bg-gradient-to-t from-[#0e141a]/80 to-transparent pointer-events-none z-10 transition-opacity duration-500 group-hover:opacity-50" />
             <iframe

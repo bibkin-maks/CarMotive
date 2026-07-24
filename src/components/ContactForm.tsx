@@ -33,7 +33,7 @@ const ContactForm: React.FC = () => {
       <div className="relative z-10 p-8 sm:p-12 lg:p-16">
         <LuxuryHeading heading="Visit Us" className="mb-10 sm:mb-12" />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-stretch">
           {/* Map */}
           <MapWidget />
 

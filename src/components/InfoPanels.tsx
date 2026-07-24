@@ -12,7 +12,7 @@ interface InfoPanelsProps {
     handleContact?: () => void;
 }
 
-export const InfoPanels: React.FC<InfoPanelsProps> = ({ handleAbout, handleContact }) => {
+export const InfoPanels: React.FC<InfoPanelsProps> = ({ handleAbout }) => {
     const panels = [
         {
             title: "OUR\nSERVICES",
@@ -25,12 +25,6 @@ export const InfoPanels: React.FC<InfoPanelsProps> = ({ handleAbout, handleConta
             image: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/about.png`,
             className: "pulse",
             onClick: handleAbout
-        },
-        {
-            title: "GET IN TOUCH",
-            image: `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/image/contact.png`,
-            className: "phone-ring",
-            onClick: handleContact
         },
     ];
 
