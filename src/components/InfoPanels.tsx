@@ -36,7 +36,7 @@ export const InfoPanels: React.FC<InfoPanelsProps> = ({ handleAbout, handleConta
 
     return (
         <motion.div
-            className="flex flex-wrap justify-center gap-8 w-full max-w-7xl mx-auto px-4 py-8"
+            className="grid grid-cols-2 gap-4 sm:gap-6 md:flex md:flex-wrap md:justify-center md:gap-8 w-full max-w-7xl mx-auto px-4 py-8"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
@@ -48,7 +48,9 @@ export const InfoPanels: React.FC<InfoPanelsProps> = ({ handleAbout, handleConta
                     onClick={panel.onClick}
                     variants={itemVariants}
                     className={`
-                        group relative w-full max-w-[22rem] md:max-w-none md:w-80 min-w-0 md:min-w-[20rem] h-[20rem] sm:h-[24rem] md:h-[28rem]
+                        group relative w-full md:max-w-none md:w-80 min-w-0 md:min-w-[20rem]
+                        h-[13rem] sm:h-[17rem] md:h-[28rem]
+                        ${i === panels.length - 1 && panels.length % 2 === 1 ? "col-span-2 md:col-span-1" : ""}
                         rounded-2xl cursor-pointer flex-shrink-0
                         transform transition-all duration-500 ease-out
                         hover:scale-[1.02] hover:-translate-y-2
@@ -65,7 +67,7 @@ export const InfoPanels: React.FC<InfoPanelsProps> = ({ handleAbout, handleConta
                         }}
                     >
                         {/* Inner Content Container */}
-                        <div className="relative h-full w-full rounded-2xl overflow-hidden bg-[#0a0a0a] flex flex-col items-center justify-end pb-12">
+                        <div className="relative h-full w-full rounded-2xl overflow-hidden bg-[#0a0a0a] flex flex-col items-center justify-end pb-6 sm:pb-10 md:pb-12">
 
                             {/* Background Image with Overlay */}
                             <div className="absolute inset-0 z-0 select-none">
@@ -80,7 +82,7 @@ export const InfoPanels: React.FC<InfoPanelsProps> = ({ handleAbout, handleConta
                             </div>
 
                             {/* Main Content */}
-                            <div className="relative z-10 flex flex-col items-center gap-8 text-center p-6">
+                            <div className="relative z-10 flex flex-col items-center gap-3 sm:gap-6 md:gap-8 text-center p-4 sm:p-6">
 
                                 {/* Icon Container with Glow */}
                                 <div className="relative flex items-center justify-center">
@@ -89,13 +91,13 @@ export const InfoPanels: React.FC<InfoPanelsProps> = ({ handleAbout, handleConta
 
                                     <IconServ
                                         choice={i}
-                                        className={`w-20 h-20 text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-transform duration-500 ${panel.className}`}
+                                        className={`w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-transform duration-500 ${panel.className}`}
                                     />
                                 </div>
 
                                 {/* Typography */}
                                 <div className="space-y-2">
-                                    <h3 className="text-5xl font-display tracking-widest text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400 drop-shadow-lg leading-[0.9]">
+                                    <h3 className="text-2xl sm:text-4xl md:text-5xl font-display tracking-wide sm:tracking-widest text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400 drop-shadow-lg leading-[0.9]">
                                         {panel.title}
                                     </h3>
                                     <div className="h-[2px] w-0 bg-red-600 mx-auto transition-all duration-300 group-hover:w-16" />
