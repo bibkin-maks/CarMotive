@@ -124,7 +124,7 @@ export default function TopFlyingHeader({ className }: { className?: string }) {
               "
             >
               <span className="relative z-10 flex items-center gap-2">
-                Schedule Now
+                Contact Us
                 <svg className="w-3.5 h-3.5 transform group-hover/cta:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
@@ -262,7 +262,7 @@ export default function TopFlyingHeader({ className }: { className?: string }) {
                       active:scale-[0.98] transition-all duration-300
                     "
                 >
-                  SCHEDULE APPOINTMENT
+                  CONTACT US
                 </button>
                 <p className="text-white/30 text-xs tracking-[0.2em] font-sans uppercase">
                   Driven by Excellence

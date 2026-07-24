@@ -19,7 +19,7 @@ const bebasNeue = Bebas_Neue({
 const siteUrl = "https://bibkin-maks.github.io/CarMotive";
 const ogImage = `${siteUrl}/image/3d_logo_carmotive.png`;
 const description =
-  "Carmotive is an automotive repairs workshop in southeastern Melbourne, offering mechanical, auto electrical and fleetcare services for all passenger vehicles. Open Monday to Friday, 8:00am to 5:30pm.";
+  "Carmotive is an automotive repairs workshop in southeastern Melbourne, offering mechanical, auto electrical and fleetcare services for all passenger vehicles. Open Monday to Friday, 8:00am to 5:00pm.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

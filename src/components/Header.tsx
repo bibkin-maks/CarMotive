@@ -103,7 +103,7 @@ const Header: React.FC<HeroIntroSectionProps> = ({
             <motion.div {...reveal}>
               <span className="inline-flex items-center gap-2.5 rounded-full border border-[#99BACA]/30 bg-[#99BACA]/[0.06] px-4 py-2 text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.22em] text-[#99BACA]">
                 <FontAwesomeIcon icon={faAward} className="text-xs" />
-                10 Years of Experience
+                30 Years of Experience
               </span>
             </motion.div>
 
@@ -178,7 +178,7 @@ const Header: React.FC<HeroIntroSectionProps> = ({
                            sm:w-auto"
               >
                 <span className="relative z-10 flex items-center gap-2 font-sans">
-                  Schedule Now
+                  Contact Us
                   <svg
                     aria-hidden="true"
                     className="h-4 w-4 transition-transform group-hover/cta:translate-x-1 motion-reduce:transition-none"

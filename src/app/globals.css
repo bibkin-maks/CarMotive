@@ -4,8 +4,11 @@
    --font-poppins (body) and --font-bebas (display). */
 
 :root {
-  --background: #ffffff;
-  --foreground: #101B21;
+  /* Dark-only design: keep the canvas dark regardless of the OS light/dark
+     setting. The hero section has no background of its own, so in light mode
+     its white text was rendering on a white page (unreadable). */
+  --background: #101B21;
+  --foreground: #ffffff;
 }
 
 @theme inline {

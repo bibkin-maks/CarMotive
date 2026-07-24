@@ -22,7 +22,7 @@ const DEFAULT_ITEMS: FAQItem[] = [
   {
     id: "faq-1",
     title: "What hours are you open?",
-    body: "Carmotive is open five days a week, from 8:00am to 5:30pm Monday to Friday.",
+    body: "Carmotive is open five days a week, from 8:00am to 5:00pm Monday to Friday.",
   },
   {
     id: "faq-2",

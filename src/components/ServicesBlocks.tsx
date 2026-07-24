@@ -92,10 +92,10 @@ export default function ServiceHero({
                        transition-transform duration-300 hover:scale-[1.02] active:scale-[0.98]
                        motion-reduce:transition-none motion-reduce:hover:scale-100
                        lg:text-base"
-            aria-label={`Schedule ${heading}`}
+            aria-label={`Contact us about ${heading}`}
           >
             <ScheduleIcon className="h-5 w-5" />
-            <span>Schedule now</span>
+            <span>Contact us</span>
           </button>
         </div>
       </div>
