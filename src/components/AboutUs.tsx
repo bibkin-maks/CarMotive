@@ -135,13 +135,13 @@ const AboutUs = ({
               Family owned &amp; operated
             </span>
 
-            <h2 className="mt-4 sm:mt-5 font-display text-[62px] sm:text-[88px] lg:text-[112px] leading-[0.92] tracking-wide text-white">
+            <h2 className="mt-3 sm:mt-5 font-display text-[44px] sm:text-[88px] lg:text-[112px] leading-[0.95] sm:leading-[0.92] tracking-wide text-white">
               {heading}
             </h2>
 
-            <span className="mt-4 sm:mt-5 block h-1 w-20 sm:w-24 rounded-full bg-[#BE5161]" />
+            <span className="mt-3 sm:mt-5 block h-1 w-16 sm:w-24 rounded-full bg-[#BE5161]" />
 
-            <p className="mt-5 sm:mt-6 text-lg sm:text-xl lg:text-[26px] font-light leading-[1.45] text-white">
+            <p className="mt-4 sm:mt-6 text-[15px] sm:text-xl lg:text-[26px] font-light leading-[1.5] sm:leading-[1.45] text-white">
               Carmotive is a proudly family-owned and operated workshop, run by
               husband and wife team{" "}
               <span className="text-[#BE5161]">Harijs and Linda</span>.
