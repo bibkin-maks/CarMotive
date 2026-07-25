@@ -1,8 +1,11 @@
 name: Deploy to GitHub Pages
 
+# Only `main` is allowed to publish to the github-pages environment, so only
+# deploy from main. Pushing feature branches no longer triggers a (rejected)
+# deploy. Use "Run workflow" (workflow_dispatch) on main for a manual deploy.
 on:
   push:
-    branches: [main, feat/site-redesign]
+    branches: [main]
   workflow_dispatch:
 
 # Allow the workflow to publish to Pages.
@@ -20,10 +23,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - run: npm ci
       - run: npm run build
