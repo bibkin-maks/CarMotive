@@ -4,10 +4,7 @@ import {
   FaPhoneAlt,
   FaEnvelope,
   FaRegClock,
-  FaInstagram,
-  FaTwitter,
   FaFacebook,
-  FaYoutube,
 } from "react-icons/fa";
 import ContactInfoItem from "./contact/ContactInfoItem";
 import MapWidget from "./contact/MapWidget";
@@ -56,7 +53,15 @@ const ContactForm: React.FC = () => {
               <ContactInfoItem icon={FaRegClock} text="Monday – Friday, 8:00am – 5:00pm" delay={0.7} />
             </div>
 
-            <SocialLinks icons={[FaInstagram, FaTwitter, FaFacebook, FaYoutube]} />
+            <SocialLinks
+              links={[
+                {
+                  icon: FaFacebook,
+                  href: "https://www.facebook.com/1486638981632276",
+                  label: "Carmotive on Facebook",
+                },
+              ]}
+            />
           </div>
         </div>
       </div>
